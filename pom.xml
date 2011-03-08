@@ -1,0 +1,136 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>agile2d</groupId>
+  <artifactId>agile2d</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <!-- Repositories -->
+  <repositories>
+	<repository>
+     <id>maven2-repository.dev.java.net</id>
+     <name>Java.net Repository for Maven</name>
+     <url>http://download.java.net/maven/2/</url>
+     <layout>default</layout>
+    </repository>
+    <repository>
+      <id>central</id>
+      <name>Maven Repository</name>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
+  </repositories>
+	    <dependencies>
+	    <dependency>
+		<groupId>jogl2</groupId>
+		<artifactId>jogl.all</artifactId>
+		<version>2.0</version>
+	    </dependency>
+	    <dependency>
+		<groupId>jogl2</groupId>
+		<artifactId>gluegen</artifactId>
+		<version>2.0</version>
+	    </dependency>
+	    <dependency>
+		<groupId>jogl2</groupId>
+		<artifactId>nativewindow.all</artifactId>
+		<version>2.0</version>
+	    </dependency>
+	    <dependency>
+		<groupId>jogl2</groupId>
+		<artifactId>newt.all</artifactId>
+		<version>2.0</version>
+	    </dependency>
+	    </dependencies>
+  <profiles>
+  	<!-- Windows -->
+	<profile>
+		<!-- mvn -P win ... -->
+		<id>win</id>
+		<activation>
+          <activeByDefault>true</activeByDefault>
+        </activation>
+	    <dependencies>
+
+	    </dependencies>
+	</profile>
+	<!-- Mac OS X -->
+	<profile>
+		<!-- mvn -P osx ... -->
+		<id>osx</id>
+	    <dependencies>
+	    </dependencies>
+	</profile>
+	<!-- Linux -->
+	<profile>
+		<!-- mvn -P lin ... -->
+		<id>lin</id>
+	    <dependencies>
+	    <dependency>
+		<groupId>download.java.net</groupId>
+		<artifactId>nativewindow.x11</artifactId>
+		<version>2.0</version>
+	    </dependency>
+	    </dependencies>
+	</profile>
+  </profiles>
+  
+  <build>
+    <plugins>
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+	<version>2.3.1</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>agile2d.AgileCanvas</mainClass>
+              <packageName>agile2d</packageName>
+              <addClasspath>true</addClasspath>
+            </manifest>
+            <manifestEntries>
+              <mode>development</mode>
+              <url>${pom.url}</url>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>dependency-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>2.3.2</version>
+	<configuration>
+	  <source>1.5</source>
+	  <target>1.5</target>
+	  <showDeprecation>true</showDeprecation>
+	</configuration>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-eclipse-plugin</artifactId>
+	<version>2.8</version>
+	<configuration>
+	  <downloadSources>true</downloadSources>
+	</configuration>
+      </plugin>
+	</plugins>
+  </build>
+</project>
