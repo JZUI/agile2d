@@ -270,7 +270,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			glState.glEnable(GL2.GL_LINE_SMOOTH);
 			glState.glEnable(GL2.GL_POLYGON_SMOOTH);
 //GL_BLEND should be enablend in order to apply antialiasing on lines and points
-//but, presently, is disabled by doSetColor()
+//but, presently, it's by default disabled in doSetColor() routine
 //			glState.glEnable(GL2.GL_BLEND);
 			gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -278,8 +278,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
             // For images
             maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);
-	    	if (maxTexSize > 1024) { // limit texture size to 1024
-			maxTexSize = 1024;
+	    	if (maxTexSize > 2048) { // limit texture size to 1024
+			maxTexSize = 2048;
             }
             buf = new BufferedImage(maxTexSize, maxTexSize, BufferedImage.TYPE_INT_ARGB);
             bg = (Graphics2D)buf.getGraphics();
@@ -311,7 +311,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			imageManager = new ImageManager(gl, buf, bg);
 			stencilManager = new StencilManager(gl);
 			textureFont = new TextureFontRenderer();
-			//TextureFontRenderer.setMaxTextureSize(maxTexSize);
+//			TextureFontRenderer.setMaxTextureSize(maxTexSize);
 			outlineFont = new OutlineFontRenderer(tesselator);
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
@@ -470,6 +470,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				glState.glDisable(GL.GL_SCISSOR_TEST);
 				glState.glDisable(GL2.GL_CLIP_PLANE0);
 				glState.glDisable(GL2.GL_CLIP_PLANE1);
+
+
 
 
 

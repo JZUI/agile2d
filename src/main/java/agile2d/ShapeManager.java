@@ -322,7 +322,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
     /**
      * @see agile2d.TesselatorVisitor#combine(double[], double[], float[], double[])
      */
-    public void combine(double[] coords, double[] vertex_data, float[] weight, double[] dataOut) {
+    public void combine(double[] coords, Object[] vertex_data, float[] weight, Object[] dataOut) {
         Tesselator.defaultCombine(coords, vertex_data, weight, dataOut);
     }
 

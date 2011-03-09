@@ -30,8 +30,6 @@ import java.awt.font.FontRenderContext;
 import java.text.AttributedString;
 import java.text.AttributedCharacterIterator;
 
-
-
 import java.io.File;
 import java.io.IOException;
 
@@ -43,6 +41,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
+import javax.media.opengl.glu.GLU;
 
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLCapabilities;
@@ -63,6 +62,8 @@ public class AgileCanvas implements GLEventListener, KeyListener {
     private int keyPressed, exampleNb;
     private boolean interactive_antialias = false;
     private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
+    private double rTheta = 1.0;
+    private double zFactor = 1.00;
 
     /**
      * Creates an Agile canvas from a Component.
@@ -79,18 +80,22 @@ public class AgileCanvas implements GLEventListener, KeyListener {
      * {@inheritDoc}
      */
     public void init(GLAutoDrawable drawable) {
+	GLU glu = new GLU();
         jgraphics = new AgileGraphics2D(drawable);
         GL2 gl = drawable.getGL().getGL2();
-        System.err.println("INIT GL IS: " + gl.getClass().getName());
-	gl.setSwapInterval(1);
+        System.out.println("INIT GL IS: " + gl.getClass().getName());
+        System.out.println("GLU version is: " + glu.gluGetString(GLU.GLU_VERSION));
 
 	//Check if MULTISAMPLE is enabled	
 	int[] buf = new int[2];
 	int[] samples = new int[2];
 	gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
 	gl.glGetIntegerv(GL2.GL_SAMPLES, samples, 0);
-        System.err.println("Number of sample buffers: " + buf[0]);
-        System.err.println("Number of samples: " + samples[0]);
+        System.out.println("Number of sample buffers: " + buf[0]);
+        System.out.println("Number of samples: " + samples[0]);
+
+	//Defines frequency in which buffers (back and front) are changed
+	gl.setSwapInterval(1);
     }
 
     /**
@@ -158,11 +163,11 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		break;
 
 		case 6:
-		drawRotateArc(400, 300, jgraphics);
+		drawRotateArc(100, 100, rTheta, jgraphics);
 		break;
 
 		case 7:
-		drawBigText(400, 300, jgraphics);
+		drawBigText(400, 300, zFactor, jgraphics);
 		break;
 
 		default:
@@ -234,6 +239,18 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			System.out.println("Antialiasing is OFF");
 		}
 	break;
+	case KeyEvent.VK_R:
+		rTheta += 0.15;
+	break;
+	case KeyEvent.VK_I://zoom in
+		zFactor += 0.1;
+	break;
+	case KeyEvent.VK_O:
+		zFactor -= 0.1;
+	break;
+
+
+
 	}
 		root.repaint();	
 }
@@ -261,12 +278,14 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	glCaps.setDoubleBuffered(true);// request double buffer display mode
 	glCaps.setSampleBuffers(true);
 	glCaps.setNumSamples(NB_OF_SAMPLES_FOR_MULTISAMPLE);
+	
 
 	if(args[0].equals("GLCanvas")){
 	        final GLCanvas canvas = new GLCanvas(glCaps);
 	        frame.add(canvas);
                 canvas.addGLEventListener(agile);
                 agile.setRoot(canvas);
+System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
 	}
 	else if(args[0].equals("GLJPanel")){
 		final GLJPanel panel = new GLJPanel(glCaps);
@@ -290,17 +309,21 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 }
 
 //Sample display to test tesselation while rotating an arc 
-	void drawRotateArc(int x, int y, AgileGraphics2D glGraphics){	
-		double thetaArc = 5.0;
-		glGraphics.rotate(thetaArc);
-		glGraphics.fillArc(100, 100, 50, 50, 5, 100);
+	void drawRotateArc(int x, int y, double rotation, AgileGraphics2D glGraphics){	
+		jgraphics.setColor(Color.GREEN);
+		glGraphics.translate(x, y);		
+		glGraphics.rotate(rotation);		
+		glGraphics.fillArc(0, 0, 200, 200, 0, 220);
 	}
 
 
 
 //Sample display to test text rendering performance during zooming
-	void drawBigText(int x, int y, AgileGraphics2D glGraphics){
-		jgraphics.drawString("Test drawString", 50, 50);
+	void drawBigText(int x, int y, double zoomFactor, AgileGraphics2D glGraphics){
+		glGraphics.scale(zoomFactor, zoomFactor);
+		jgraphics.drawString("Test drawString", 0, 30);
+		jgraphics.setColor(Color.GREEN);
+		jgraphics.drawRect(90, 90, 120, 120);
 	}
 
 
@@ -502,6 +525,7 @@ public void drawDemoFonts(int w, int h, AgileGraphics2D glGraphics) {
         // adds a cubic curve to the path
         p.curveTo(w*.4f, h*.5f, w*.6f, 0.0f, w*.8f, h*.25f);
 
+
         p.moveTo(w*.2f, h*.6f);
 
         // adds a quad curve to the path
@@ -525,6 +549,7 @@ public void drawDemoAlpha(int w, int h, AgileGraphics2D glGraphics) {
          * N increases
          */
         for (int N = 0; N < 18; N++) {
+
             float i = (N + 2) / 2.0f;
             float x = (float) (5+i*(w/2/10));
             float y = (float) (5+i*(h/2/10));
@@ -557,11 +582,10 @@ public void drawDemoStrokes(int w, int h, AgileGraphics2D glGraphics) {
         float sh = (float) tl.getAscent() + tl.getDescent();
         glGraphics.setColor(Color.BLACK);
         tl.draw(glGraphics, (float) (w/2-sw/2), sh+5);
-        System.out.println("Before BasicStrokeDotted OK");
 
         BasicStroke dotted = new BasicStroke(3, BasicStroke.CAP_ROUND, 
                      BasicStroke.JOIN_ROUND, 0, new float[]{0,6,0,6}, 0);
-        System.out.println("After BasicStrokeDotted OK");
+
         glGraphics.setStroke(dotted);
         glGraphics.drawRect(3,3,w-6,h-6);
 
@@ -579,17 +603,16 @@ public void drawDemoStrokes(int w, int h, AgileGraphics2D glGraphics) {
                                 BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
             y += 5;
         }
-        System.out.println("After BasicStrokeDotted OK");
         Shape shape = null;
         y = 0;
 
         for (int i = 0; i < 6; i++) {
             x = (i == 0 || i == 3) ? (w/3-w/5)/2 : x + w/3;
             y = (i <= 2) ? (int) sh+h/12 : h/2;
-	    System.out.println("Setting stroke "+i);
+
             glGraphics.setStroke(bs[i]);
             glGraphics.translate(x, y);  
-	    System.out.println("Stroke "+i+" set");
+
 
             switch (i) {
                 case 0 : shape = new Arc2D.Float(0.0f, 0.0f, w/5, h/4, 45, 270, Arc2D.PIE);

@@ -206,6 +206,7 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      */
     public void error(int errorCode) {
         visitor.error(errorCode);
+	System.err.println("GLU Tesselation Error Description: " + glu.gluErrorString(errorCode));
     }
 
 
@@ -220,8 +221,8 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      * @param weight DOCUMENT ME!
      * @param dataOut DOCUMENT ME!
      */
-    public void combine(double[] coords, double[] data, float[] weight,
-                            double[] dataOut) {
+//    public void combine(double[] coords, double[] data, float[] weight, double[] dataOut) {
+      public void combine(double[] coords, Object[] data, float[] weight, Object[] dataOut) {
         visitor.combine(coords, data, weight, dataOut);
     }
 
@@ -235,11 +236,39 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      * @param weight DOCUMENT ME!
      * @param dataOut DOCUMENT ME!
      */
-    public static void defaultCombine(double[] coords, double[] data,
-                                      float[] weight, double[] dataOut) {
-        dataOut[0] = coords[0];
-        dataOut[1] = coords[1];
-        dataOut[2] = coords[2];
+
+  public static void defaultCombine(double[] coords, Object[] data,float[] weight, Object[] dataOut) {
+      double[] vertex = new double[6];
+      
+	/*
+	//System.err.println("Vertex length: "+vertex.length+", data length :"+data.length+" and weight length: "+weight.length);
+	//Trace info about data object
+	int max_i, max_j;
+	max_i = data.length;
+	for (int i=0; i<max_i; i++){
+		max_j=((double[])data[i]).length;	
+		for(int j=0;j<max_j; j++)
+			System.out.println("data["+i+"]["+j+"]= "+((double[])data[i])[j]);
+	}
+	*/
+
+      //Crashs while accessing the data[] array
+      /*    for (int i = 3; i < 6; i++){
+	System.out.println("I: "+i);
+        vertex[i] =
+	weight[0] * ((double[]) data[0])[i] +
+	weight[1] * ((double[]) data[1])[i];
+	//weight[2] * ((double[]) data[2])[i] +
+	//weight[3] * ((double[]) data[3])[i];
+	}
+      */
+
+      vertex[0] = coords[0];
+      vertex[1] = coords[1];
+      vertex[2] = coords[2];
+      
+      dataOut[0] = vertex;
+
     }
 
     /**
@@ -249,10 +278,8 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      * @param errorCode DOCUMENT ME!
      */
     public static void defaultError(int errorCode) {
-        System.err.println("Tess Error: " + errorCode);
+        System.err.println("GLU Tesselation Error Code: " + errorCode);
     }
-
-
 
    /**
      * Fills a specified shape.

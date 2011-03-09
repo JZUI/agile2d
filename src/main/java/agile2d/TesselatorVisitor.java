@@ -26,6 +26,6 @@ interface TesselatorVisitor {
 	public void addVertex(double x, double y);
 	public void end();
 	public void error(int errorCode);
-	public void combine(double[] coords, double[] vertex_data, float[] weight, double[] dataOut);
-
+//	public void combine(double[] coords, double[] vertex_data, float[] weight, double[] dataOut);
+	public void combine(double[] coords, Object[] vertex_data, float[] weight, Object[] dataOut);
 }

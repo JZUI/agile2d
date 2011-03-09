@@ -80,7 +80,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
 		}
 
 		// TesselatorVisitor
-		public void combine(double coords[/*3*/], double data[/*4xn*/],  float weight[/*4*/], double[/*3*/] dataOut) {
+		public void combine(double coords[/*3*/], Object data[/*4xn*/],  float weight[/*4*/], Object[/*3*/] dataOut) {
 			Tesselator.defaultCombine(coords, data, weight, dataOut);
 		}
 

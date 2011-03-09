@@ -48,10 +48,9 @@ public void addVertex(double x, double y){
 
     public void combine(
             double[] coords,
-            //Object[] vertex_data,
-	    double[] vertex_data,
-            float[] weight,
-            double[] dataOut) {
+            Object[] vertex_data,//double[] vertex_data,
+            float[] weight,            
+	    Object[] dataOut) { //double[] dataOut) {
         Tesselator.defaultCombine(coords, vertex_data, weight, dataOut);
     }
 
