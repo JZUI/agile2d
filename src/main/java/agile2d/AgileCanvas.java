@@ -313,7 +313,8 @@ System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampl
 		jgraphics.setColor(Color.GREEN);
 		glGraphics.translate(x, y);		
 		glGraphics.rotate(rotation);		
-		glGraphics.fillArc(0, 0, 200, 200, 0, 220);
+//		glGraphics.fillArc(0, 0, 200, 200, 0, 220);
+		glGraphics.drawArc(0, 0, 200, 200, 0, 220);
 	}
 
 
@@ -323,7 +324,9 @@ System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampl
 		glGraphics.scale(zoomFactor, zoomFactor);
 		jgraphics.drawString("Test drawString", 0, 30);
 		jgraphics.setColor(Color.GREEN);
-		jgraphics.drawRect(90, 90, 120, 120);
+		jgraphics.drawRect(4, 4, 120, 120);
+		jgraphics.setColor(Color.RED);
+		jgraphics.drawLine(3, 3, 130, 130);
 	}
 
 

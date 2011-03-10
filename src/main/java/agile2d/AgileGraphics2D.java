@@ -236,6 +236,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		BufferedImage    buf;
 		Graphics2D       bg;
 		double		 maxLineWidth;
+		double		 minLineWidth;
 		int              maxTexSize;
 
 		GraphicsEngine(GLAutoDrawable drawable) {
@@ -291,6 +292,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE, maxLineRange, 0);
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_GRANULARITY, lineWidthGranularity, 0);
 //			System.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
+			minLineWidth = maxLineRange[0];		
 			maxLineWidth = maxLineRange[1];		
 			
 			// We need a Java Graphics2D to fall back on in certain cases, so make one
@@ -579,11 +581,15 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (stroke instanceof BasicStroke) {
 				BasicStroke basic = (BasicStroke)stroke;
 				lineWidth = basic.getLineWidth();
-				absLineWidth = lineWidth * scale;
-
+				absLineWidth = lineWidth * scale;				
+				
+				//If this stroke uses a stroke pattern (e.g., dotted),
+				//get the shape of the line and paint it as a shape
+				if(basic.getDashArray() != null){
+					useFastShapes=false;
+				}
 				if (absLineWidth < maxLineWidth) {
 					float t = (float)absLineWidth;
-//					System.out.println("doSetStroke(). strokeW is "+t);
 					if (t < 1)
 						t = 1;
 					gl.glLineWidth(t);
@@ -860,7 +866,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			int y4 = y1 + height;
 
 			if (useFastShapes) {
-//				if (absLineWidth < 3.0) {
 				if (absLineWidth < maxLineWidth) {
 					// For 4 vertices, glBegin/glEnd is faster than vertex arrays
 					gl.glBegin(GL.GL_LINE_LOOP);
@@ -892,17 +897,14 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		void doDrawShape(Shape shape) {
-//			if (useFastShapes && absLineWidth < 3.0) {
 			if (useFastShapes && absLineWidth < maxLineWidth) {
 				// Fastest route - flatten the shape in object space and
 				// draw the vertices using GL Lines.
 				//
 				PathIterator path = shape.getPathIterator(null, shapeManager.getTolerance()/scale);
 				shapeManager.send(path, false);
-//				System.out.println("Use fast shapes");
 			} else {
 				drawShape(shape, null, immutableShapeHint, convexHint);
-//				System.out.println("In doDrawShape. Use SLOW shapes. absLineWidth: "+absLineWidth);
 			}
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
@@ -942,10 +944,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		void doFillPolygon(int[] xPts, int[] yPts, int nPts) {			
 			if (useFastShapes) {
-//				System.out.println("doFillPolygons(): Use FAST shapes");
 				shapeManager.fill(xPts, yPts, nPts, convexHint);
 			} else {
-//				System.out.println("doFillPolygons(): Use SLOW shapes");
 				Polygon p = new Polygon(xPts, yPts, nPts);
 				fillShape(p, null, false, false);
 			}
