@@ -587,7 +587,7 @@ public void drawDemoStrokes(int w, int h, AgileGraphics2D glGraphics) {
         tl.draw(glGraphics, (float) (w/2-sw/2), sh+5);
 
         BasicStroke dotted = new BasicStroke(3, BasicStroke.CAP_ROUND, 
-                     BasicStroke.JOIN_ROUND, 0, new float[]{0,6,0,6}, 0);
+                     BasicStroke.JOIN_ROUND, 0, new float[]{6,6,6,6}, 0);
 
         glGraphics.setStroke(dotted);
         glGraphics.drawRect(3,3,w-6,h-6);

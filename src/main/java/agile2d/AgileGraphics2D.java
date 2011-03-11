@@ -587,6 +587,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				//get the shape of the line and paint it as a shape
 				if(basic.getDashArray() != null){
 					useFastShapes=false;
+					float[] dashArray = basic.getDashArray();
+					//System.out.println("First entry of dash array (of length "+dashArray.length+"): "+dashArray[0]);
 				}
 				if (absLineWidth < maxLineWidth) {
 					float t = (float)absLineWidth;
@@ -598,6 +600,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
+
 
 		// PAINT MODE
 		void doSetPaintXOR(boolean xor) {
@@ -624,6 +627,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 		}
+
 
 		private void loadIdentityMatrix() {
 			if (modelViewMatrix == null) {
