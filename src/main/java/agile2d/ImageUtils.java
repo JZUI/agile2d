@@ -25,11 +25,10 @@ public class ImageUtils {
 	 * @return the power of	2 immediately larger or	equal to the specified size
 	 */
 	public static int nextPowerOf2(int size) {
-		if (size ==	0)
+		if (size == 0)
 			return 0;
-//		for	(int i = 1;	i <= 1024; i *=	2) {
-		for	(int i = 1;	i <= 2048; i *=	2) {  
-		  //	no more	than 1024
+		for (int i = 1; i <= 2048; i *= 2) {  
+	        //no more than maxSize (2048)
 			if (i >= size)
 				return i;
 		}

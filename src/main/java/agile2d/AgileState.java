@@ -14,6 +14,8 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import sun.text.IntHashtable;
+import java.util.Hashtable;
+
 
 /**
  * <code>AgileState</code> locally keeps OpenGL state to avoid useless
@@ -38,14 +40,17 @@ import sun.text.IntHashtable;
  */
 public class AgileState {
     IntHashtable state;
+    Hashtable extensions;
     GL2 gl;
     String version;
     int savedCount;
     int doneCount;
+    int maxTexSize=0;
     static int[] tmpValue = { 0 };
     static final HashMap<GL2,AgileState> gl2state = new HashMap<GL2, AgileState>();
     static byte lastR, lastG, lastB, lastA;
     static final boolean DEBUG = false;
+    
     
     /**
      * Get/Create a <code>AgileState</code> object for a GL context.
@@ -81,6 +86,7 @@ public class AgileState {
         state.put(GL2.GL_TEXTURE_BINDING_1D, 0);
         state.put(GL2.GL_TEXTURE_BINDING_2D, 0);
         state.put(GL2.GL_TEXTURE_ENV_MODE, 0);
+	getGlExtensions();
     }
     
     private int initializeState(int attrib) {
@@ -88,7 +94,34 @@ public class AgileState {
         state.put(attrib, tmpValue[0]);
         return tmpValue[0];
     }
-    
+
+    //Gets (only once) a list of GL extensions available on the implementation being used, 
+    //splits it, and put GL extension strings in a hash table
+    private void getGlExtensions(){
+	String[] ogl_extensions;
+	int table_size;
+	ogl_extensions = (gl.glGetString(GL2.GL_EXTENSIONS)).split(" ");
+	table_size = ogl_extensions.length;
+	extensions = new Hashtable(table_size);
+	for(int i=0; i<table_size; i++)
+		extensions.put(ogl_extensions[i], 1);
+    }
+
+    /**
+     * Checks if a given GL Extension is avaiable.
+     * @checks if a given GL Extension is avaiable.
+     */
+    public boolean checkGlExtension(String extensionName){
+	if(extensions.containsKey(extensionName)){
+//		System.out.println("Extension "+extensionName+" is avaiable");
+		return true;
+	}
+	else{
+		System.out.println("GL Extension \""+extensionName+"\" is NOT avaiable");
+		return false;
+	}
+    }
+
     /**
      * Returns a String representing the version of the OpenGL implementation.
      * @return a String representing the version of the OpenGL implementation.

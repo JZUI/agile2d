@@ -63,11 +63,18 @@ final class Texture {
     Texture(GL2 gl, int components, int width, int height, boolean smooth) {
         this.gl = gl;
         this.smooth = smooth;
-        textureWidth = ImageUtils.nextPowerOf2(width);
-        textureHeight = ImageUtils.nextPowerOf2(height);
+        glState = AgileState.get(gl);	
+	if(glState.checkGlExtension("GL_ARB_texture_non_power_of_two")==true){
+	        textureWidth = width;
+	        textureHeight = height;
+	}
+	else{
+	        textureWidth = ImageUtils.nextPowerOf2(width);
+	        textureHeight = ImageUtils.nextPowerOf2(height);
+	}
         internalFormat = components;
         numComponents = components;
-        glState = AgileState.get(gl);
+
         
         switch (numComponents) {
         case 1:

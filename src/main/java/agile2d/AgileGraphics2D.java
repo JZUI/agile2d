@@ -266,12 +266,12 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 //			glState.glSetShadeModel(GL2.GL_FLAT);
 			glState.glSetShadeModel(GL2.GL_SMOOTH);
 			glState.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-			//Antialiasing of lines and points (necessary?)
+			//Antialiasing of lines and points (are they necessary?)
 			glState.glEnable(GL2.GL_POINT_SMOOTH);
 			glState.glEnable(GL2.GL_LINE_SMOOTH);
 			glState.glEnable(GL2.GL_POLYGON_SMOOTH);
-//GL_BLEND should be enablend in order to apply antialiasing on lines and points
-//but, presently, it's by default disabled in doSetColor() routine
+			//GL_BLEND should be enablend in order to apply antialiasing on lines and points
+			//but, presently, it's by default disabled in doSetColor() routine
 //			glState.glEnable(GL2.GL_BLEND);
 			gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -279,14 +279,15 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
             // For images
             maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);
-	    	if (maxTexSize > 2048) { // limit texture size to 1024
+	    if (maxTexSize > 2048) { // limit texture size to 2048
 			maxTexSize = 2048;
             }
             buf = new BufferedImage(maxTexSize, maxTexSize, BufferedImage.TYPE_INT_ARGB);
             bg = (Graphics2D)buf.getGraphics();
 
-			//The glState query on the line below crashs the application in some architectures
-			//maxLineWidth = glState.getState(GL2.GL_LINE_WIDTH_RANGE);
+			//The glState.getState(GL_LINE_WIDTH_RANGE) call would crash the
+			//application since it doesn't return the state the value, instead we must
+			//pass a pointer to a float[] so that the two state values be transmitted
 			float maxLineRange[] = new float[2];
 			float lineWidthGranularity[] = new float[1];
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE, maxLineRange, 0);
@@ -1988,6 +1989,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		int sx1, int sy1, int sx2, int sy2,
 		Color bgcolor, ImageObserver observer) {
 		makeCurrent();
+//		System.out.println("In draw image: "+(dx2-dx1)+" and "+(dy2-dy1));
 
 		// Ensure that sx/sy are positive (dx/dy can be negative)
 		if (sx2 < sx1) {

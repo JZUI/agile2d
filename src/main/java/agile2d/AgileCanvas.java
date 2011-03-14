@@ -115,6 +115,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			
 	GL2 gl = drawable.getGL().getGL2();
         AgileState glState = AgileState.get(gl);
+		
         // Call the glClear to clear the background
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 

@@ -182,8 +182,17 @@ final class ImageManager {
 		int y = (int)bounds.getY();
 		int width = (int)bounds.getWidth();
 		int height = (int)bounds.getHeight();
-		int twidth = forTexturePaint ? ImageUtils.nextPowerOf2(width) : width;
-		int theight = forTexturePaint ? ImageUtils.nextPowerOf2(height) : height;
+		//
+		int twidth, theight;		
+		if(glState.checkGlExtension("GL_ARB_texture_non_power_of_two")==true){
+			twidth = width;
+			theight = height;
+//		System.out.println("Width and height are: "+twidth+" and "+theight);
+		}
+		else{
+			twidth = forTexturePaint ? ImageUtils.nextPowerOf2(width) : width;
+			theight = forTexturePaint ? ImageUtils.nextPowerOf2(height) : height;
+		}
                 
 		// Create the texture
 		Texture texture;
