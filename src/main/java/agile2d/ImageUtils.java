@@ -20,6 +20,11 @@ import java.awt.image.*;
  */
 public class ImageUtils {
 	/**
+	 * Maximum W and H that a texture image may have. If its greater than that AgileGraphics will tile it in smaller n^2 tiles.
+	 * @Maximum W and H that a texture image may have. If its greater than that AgileGraphics will tile it in smaller n^2 tiles.
+	 */	
+	public final static int MAX_TEX_SIZE = 1024;
+	/**
 	 * Returns the power of	2 immediately larger or	equal to the specified size.
 	 * @param size the size
 	 * @return the power of	2 immediately larger or	equal to the specified size
@@ -27,13 +32,32 @@ public class ImageUtils {
 	public static int nextPowerOf2(int size) {
 		if (size == 0)
 			return 0;
-		for (int i = 1; i <= 2048; i *= 2) {  
-	        //no more than maxSize (2048)
+		for (int i = 1; i <= MAX_TEX_SIZE; i= i << 1) {  
+	        //no more than MAX_TEX_SIZE
 			if (i >= size)
 				return i;
 		}
-		return 10;
+		System.err.println("Error: Texture tile dimension is larger than "+MAX_TEX_SIZE);
+		return 100000;
 	}
+
+	/**
+	 * Returns the power of	2 immediately smaller to the specified size.
+	 * @param size the size
+	 * @return the power of	2 immediately smaller to the specified size
+	 */
+	public static int lowerPowerOf2(int size) {
+		if (size == 0)
+			return 0;
+		for (int i = MAX_TEX_SIZE; i >= 1; i= i >> 1) {
+	        //no more than maxTex
+			if (i <= size)
+				return i;
+		}
+		System.err.println("Error: Texture tile dimension is larger than "+MAX_TEX_SIZE);
+		return 100000;
+	}
+
 	/**
 	 * Returns true	if the image is	known to have no alpha channel,	and
 	 * false if	it may or may not have an alpha	channel

@@ -57,6 +57,7 @@ import javax.media.opengl.glu.GLU;
 import agile2d.geom.VertexArray;
 import agile2d.geom.VertexArraySupport;
 import agile2d.geom.VertexAttributes;
+import agile2d.ImageUtils;
 
 
 /**
@@ -279,8 +280,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
             // For images
             maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);
-	    if (maxTexSize > 2048) { // limit texture size to 2048
-			maxTexSize = 2048;
+	    if (maxTexSize > ImageUtils.MAX_TEX_SIZE) { // limit texture size to MAX_TEX_SIZE
+			maxTexSize = ImageUtils.MAX_TEX_SIZE;
             }
             buf = new BufferedImage(maxTexSize, maxTexSize, BufferedImage.TYPE_INT_ARGB);
             bg = (Graphics2D)buf.getGraphics();
@@ -1988,8 +1989,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
 		int sx1, int sy1, int sx2, int sy2,
 		Color bgcolor, ImageObserver observer) {
+		
 		makeCurrent();
-//		System.out.println("In draw image: "+(dx2-dx1)+" and "+(dy2-dy1));
 
 		// Ensure that sx/sy are positive (dx/dy can be negative)
 		if (sx2 < sx1) {
@@ -2015,10 +2016,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		int imgWidth = img.getWidth(null);
 		int imgHeight = img.getHeight(null);
 
-		int width = sx2 - sx1;
-		int height = sy2 - sy1;
-		int dw = dx2 - dx1;
-		int dh = dy2 - dy1;
+
+		int src_w = sx2 - sx1;
+		int src_h = sy2 - sy1;
+		int dst_w = dx2 - dx1;
+		int dst_h = dy2 - dy1;
 
 		// Explore simple case we can handle right away
 		if (! engine.immutableImageHint &&
@@ -2026,41 +2028,49 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			isTransformTranslation() &&
 			(img instanceof BufferedImage) &&
 			sx1 == 0 && sy1 == 0 &&
-			width == dw && height == dh &&
-			engine.imageManager.drawImage((BufferedImage)img, dx1, dy1, width, height)) {
+			src_w == dst_w && src_h == dst_h &&
+			engine.imageManager.drawImage((BufferedImage)img, dx1, dy1, src_w, src_h)) {
 			return true;
 		}
 
-		// SUPPORT IMAGES LARGER THAN 1024x1024 BY SHRINKING THEM TO FIT IN A TEXTURE
+		// SUPPORT IMAGES LARGER THAN MAX_TEX_SIZE x MAX_TEX_SIZE BY SHRINKING THEM TO FIT IN A TEXTURE
 		//
-		int sy = sy1;
-		int dy = dy1;
-		if (width > engine.maxTexSize || height > engine.maxTexSize) {
-			for (int sdy = engine.maxTexSize; sdy < (height+engine.maxTexSize); sdy += engine.maxTexSize) {
-				sdy = Math.min(sdy, height);
-
-				int sx = sx1;
-				int dx = dx1;
-				for (int sdx = engine.maxTexSize; sdx < (width+engine.maxTexSize); sdx += engine.maxTexSize) {
-					sdx = Math.min(sdx, width);
-					drawImage(
-						img,
-						dx, dy,
-						dx1 + (sdx * dw) / width, dy1 + (sdy * dh) / height,
-						sx, sy,
-						sx1+sdx, sy1+sdy,
-						bgcolor, observer);
-					sx += sdx;
-					dx = dx1 + (sdx * dw) / width;
+		int sx1_, sy1_, dx1_, dy1_;
+		sy1_ = sy1;		
+		dy1_ = dy1;		
+		if (src_w > engine.maxTexSize || src_h > engine.maxTexSize) {
+			for (int delta_y = engine.maxTexSize; delta_y < (src_h+engine.maxTexSize); delta_y += engine.maxTexSize) {
+				int sy2_, dy2_;				
+				if((delta_y > src_h) && engine.imageManager.texture_non_power_of_two==false){
+					int resting_h = src_h-sy1_;
+					delta_y = sy1_+ImageUtils.lowerPowerOf2(resting_h);
 				}
-				sy += sdy;
-				dy = dy1 + (sdy * dh) / height;
-
+				delta_y = Math.min(delta_y, src_h);
+				sx1_ = sx1;
+				dx1_ = dx1;
+				sy2_ = sy1+delta_y;
+				dy2_ = dy1 + ((delta_y * dst_h) / src_h);//delta_y must be deformed if src_w != dst_w
+				for (int delta_x = engine.maxTexSize; delta_x < (src_w+engine.maxTexSize); delta_x += engine.maxTexSize) {
+					int sx2_, dx2_;
+					if((delta_x > src_w) && engine.imageManager.texture_non_power_of_two==false){
+						int resting_w = src_w-sx1_;				
+						delta_x = sx1_+ImageUtils.lowerPowerOf2(resting_w);
+					}
+					delta_x = Math.min(delta_x, src_w);
+					sx2_ = sx1+delta_x;
+					dx2_ = dx1 + ((delta_x * dst_w) / src_w);//delta_x must be deformed if src_w != dst_w
+					drawImage(img, dx1_, dy1_, dx2_, dy2_, sx1_, sy1_, sx2_, sy2_, bgcolor, observer);
+//					drawRect(dx1_, dy1_, dx2_-dx1_, dy2_-dy1_);//uncoment this line to see the layout of the tiles
+					sx1_ = sx2_;
+					dx1_ = dx2_;
+				}
+				sy1_ = sy2_;
+				dy1_ = dy2_;
 			}
 			return true;
 		}
 
-		if (width <= 0 || height <= 0) {
+		if (src_w <= 0 || src_h <= 0) {
 			return true;
 		}
 
@@ -2068,21 +2078,20 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		if (bgcolor != null) {
 			Paint p = getPaint();
 			setColor(bgcolor);
-			engine.doFillRect(dx1, dy1, dw, dh);
+			engine.doFillRect(dx1, dy1, dst_w, dst_h);
 			setPaint(p);
 		}
 
 		Rectangle rect;
 
-		if (imgWidth == width && imgHeight == height) {
+		if (imgWidth == src_w && imgHeight == src_h) {
 			rect = new Rectangle(0, 0, imgWidth, imgHeight);
 		} else {
 			rect = new Rectangle(sx1, sy1, sx2 - sx1, sy2 - sy1);
 		}
+//		drawRect(rect.x, rect.y, rect.width, rect.height);
 
-
-		Texture tex = engine.imageManager.findTexture(img, rect,
-			engine.immutableImageHint, false);
+		Texture tex = engine.imageManager.findTexture(img, rect, engine.immutableImageHint, false);
 
 		if (tex != null) {
 			engine.doDrawTexture(tex, dx1, dy1, dx2, dy2);

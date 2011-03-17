@@ -57,7 +57,7 @@ import javax.media.opengl.GLProfile;
 public class AgileCanvas implements GLEventListener, KeyListener {
     private AgileGraphics2D jgraphics;
     private Component       root;
-    private BufferedImage img_bff = null;
+    private BufferedImage img_buff = null;
     private Image img = null;
     private int keyPressed, exampleNb;
     private boolean interactive_antialias = false;
@@ -86,7 +86,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
         System.out.println("INIT GL IS: " + gl.getClass().getName());
         System.out.println("GLU version is: " + glu.gluGetString(GLU.GLU_VERSION));
 
-	//Check if MULTISAMPLE is enabled	
+	//Check if MULTISAMPLE is avaiable	
 	int[] buf = new int[2];
 	int[] samples = new int[2];
 	gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
@@ -94,8 +94,15 @@ public class AgileCanvas implements GLEventListener, KeyListener {
         System.out.println("Number of sample buffers: " + buf[0]);
         System.out.println("Number of samples: " + samples[0]);
 
+
 	//Defines frequency in which buffers (back and front) are changed
 	gl.setSwapInterval(1);
+
+
+	try {
+		img_buff = ImageIO.read(new File("world.jpg"));
+//		img_buff = ImageIO.read(new File("DukeWave.gif"));
+	} catch (IOException e) {}
     }
 
     /**
@@ -127,8 +134,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		jgraphics.clearRect(0, 0, 400, 300);
 
 		if(interactive_antialias==true){
-			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-			
+			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);			
 		}
 
 		switch(exampleNb){
@@ -169,6 +175,10 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 
 		case 7:
 		drawBigText(400, 300, zFactor, jgraphics);
+		break;
+
+		case 8:
+		drawBigImage(5, 5, jgraphics);
 		break;
 
 		default:
@@ -228,6 +238,8 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		exampleNb=7;break;
 	case KeyEvent.VK_F8:
 		exampleNb=8;break;
+	case KeyEvent.VK_F9:
+		exampleNb=9;break;
 
 	//Other events
 	case KeyEvent.VK_A:
@@ -309,9 +321,16 @@ System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampl
 	frame.addKeyListener(agile);
 }
 
+
+//Sample display to test tesselation while rotating an arc 
+	void drawBigImage(int x, int y, AgileGraphics2D glGraphics){
+//		glGraphics.drawImage((Image)img_buff, 100, 100, 400, 300, 1000, 1000, 3000, 2000, null);
+		glGraphics.drawImage((Image)img_buff, 0, 0, 1200, 800, null);
+}
+
 //Sample display to test tesselation while rotating an arc 
 	void drawRotateArc(int x, int y, double rotation, AgileGraphics2D glGraphics){	
-		jgraphics.setColor(Color.GREEN);
+		glGraphics.setColor(Color.GREEN);
 		glGraphics.translate(x, y);		
 		glGraphics.rotate(rotation);		
 //		glGraphics.fillArc(0, 0, 200, 200, 0, 220);
@@ -517,6 +536,7 @@ public void drawDemoFonts(int w, int h, AgileGraphics2D glGraphics) {
         glGraphics.setColor(Color.green);
         glGraphics.draw(sha);
         glGraphics.setColor(Color.black);
+
         glGraphics.fill(sha);
     }
 

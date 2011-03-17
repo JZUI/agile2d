@@ -35,6 +35,9 @@ final class ImageManager {
 	private MediaTracker tracker = new MediaTracker(new Label());
 	// When the image is not cache, we reuse the same texture
 	private Texture defaultTexture;
+	//Holds the status of current OpenGL implementation concerning acception textures
+	//whoose dimensions are not power-of-two values
+	public boolean texture_non_power_of_two=false;
 
 	private class Entry {
 //		int id;
@@ -61,6 +64,8 @@ final class ImageManager {
 		this.glState = AgileState.get(gl);
 		this.buf = buf;
 		this.bg = bg;
+		if(this.glState.checkGlExtension("GL_ARB_texture_non_power_of_two")==true)
+			texture_non_power_of_two=true;
 	}
 
 	// Given a (image+bounds), return a texture object for that image.
@@ -160,11 +165,11 @@ final class ImageManager {
 		// grow the image to fit the whole texture width and height
 		// to use OpenGL 2D repeated textures. 
 		if (entry != null && immutable) {
-			if (! forTexturePaint || 
-				(forTexturePaint && entry.texture.isNormalized()))
+			if (! forTexturePaint || (forTexturePaint && entry.texture.isNormalized())){
 				return entry.texture;
+			}
 		}
-
+		
 		// System.out.println("LOAD TEXTURE " + e.texture.getSize());
 		if (!(image instanceof BufferedImage)) {
 			// Force AWT images to load
@@ -184,16 +189,14 @@ final class ImageManager {
 		int height = (int)bounds.getHeight();
 		//
 		int twidth, theight;		
-		if(glState.checkGlExtension("GL_ARB_texture_non_power_of_two")==true){
+		if(texture_non_power_of_two==true){
 			twidth = width;
 			theight = height;
-//		System.out.println("Width and height are: "+twidth+" and "+theight);
 		}
 		else{
 			twidth = forTexturePaint ? ImageUtils.nextPowerOf2(width) : width;
 			theight = forTexturePaint ? ImageUtils.nextPowerOf2(height) : height;
 		}
-                
 		// Create the texture
 		Texture texture;
 		if (entry != null) {  
