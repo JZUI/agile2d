@@ -57,7 +57,7 @@ public class TestAgileSample {
     static GLCanvas glCanvas;
     static G2DSample g2dCanvas;
     static AgileSample sample; 
-    static int width, height;
+    static int width, height, win_x, win_y;
     BufferedImage imgG2d, imgAg2d;
     final int CAP_OFFSET = 15;
 
@@ -65,6 +65,8 @@ public class TestAgileSample {
     public static void initClass() {
         width = 512;
         height = 512;
+		win_x=80;
+		win_y=120;
         glp = GLProfile.getDefault();
         Assert.assertNotNull(glp);
         GLCapabilities caps = new GLCapabilities(GLProfile.getDefault());
@@ -75,7 +77,7 @@ public class TestAgileSample {
 	glCanvas = new GLCanvas(caps);
         Assert.assertNotNull(glCanvas);
         frame.add(glCanvas);
-        frame.setLocation(0, height);
+        frame.setLocation(win_x, win_y);
         frame.setSize(width, height);
 
 
@@ -95,7 +97,7 @@ public class TestAgileSample {
 	frameg2d = new Frame("G2DCanvas Test");
 	g2dCanvas = new G2DSample();
         frameg2d.add(g2dCanvas);
-        frameg2d.setLocation(width, height);
+        frameg2d.setLocation(win_x+width, win_y);
         frameg2d.setSize(width, height);
         frameg2d.setUndecorated(true);
         frameg2d.setVisible(true);
@@ -148,7 +150,7 @@ public class TestAgileSample {
     public void testDrawString() throws InterruptedException {
 	writePreviousDiff("oval.png");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
-	endUnit(context, true, 800);
+	endUnit(context, true, 1500);
     }
 
    @Test
@@ -162,21 +164,21 @@ public class TestAgileSample {
     public void testDrawAlpha() throws InterruptedException {
 	writePreviousDiff("FillOval.png");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawAlpha());
-	endUnit(context, true, 2500);
+	endUnit(context, true, 3500);
    }
 
    @Test
     public void testGradient() throws InterruptedException {
 	writePreviousDiff("drawAlpha.png");
         AglTestContext context = new AglTestContext(new AglTestStrategyGradient());
-	endUnit(context, true, 400);
+	endUnit(context, true, 800);
    }
 
    @Test
     public void testStrokes() throws InterruptedException {
 	writePreviousDiff("drawGradient.png");
         AglTestContext context = new AglTestContext(new AglTestStrategyStrokes());
-	endUnit(context, true, 800);
+	endUnit(context, true, 1000);
    }
 
    @Test
@@ -216,7 +218,7 @@ public class TestAgileSample {
    @Test
     public void testGetFontMetrics() throws InterruptedException {
         AglTestContext context = new AglTestContext(new AglTestStrategyGetFontMetrics());
-	endUnit(context, false, 60);
+	endUnit(context, false, 120);
 	FontMetrics[] fontM_tmp = (FontMetrics[])context.getObjectsStrategy();
         Assert.assertNotNull(fontM_tmp[0]);
     }
@@ -267,8 +269,8 @@ public class TestAgileSample {
 		imgAg2d = imgG2d = null;
 		try{
 			Robot rob = new Robot();
-			imgAg2d = rob.createScreenCapture(new Rectangle(CAP_OFFSET, height+CAP_OFFSET, width-(2*CAP_OFFSET), height-(2*CAP_OFFSET)));
-			imgG2d = rob.createScreenCapture(new Rectangle(width+CAP_OFFSET, height+CAP_OFFSET, width-(2*CAP_OFFSET), height-(2*CAP_OFFSET)));
+			imgAg2d = rob.createScreenCapture(new Rectangle(win_x+CAP_OFFSET, win_y+CAP_OFFSET, width-(2*CAP_OFFSET), height-(2*CAP_OFFSET)));
+			imgG2d = rob.createScreenCapture(new Rectangle(win_x+width+CAP_OFFSET, win_y+CAP_OFFSET, width-(2*CAP_OFFSET), height-(2*CAP_OFFSET)));
   	        } catch (AWTException e) {   }
 		//
 		//Create bufferImage which is the difference of the two images
@@ -277,13 +279,13 @@ public class TestAgileSample {
 		try{
 			outputfile = new File(imgName);
 			ImageIO.write(image_dif, "png", outputfile);
-			/*			
+						
 			outputfile = new File("g2d_"+imgName);
 			ImageIO.write(imgG2d, "png", outputfile);
 
 			outputfile = new File("ag2d_"+imgName);
 			ImageIO.write(imgAg2d, "png", outputfile);
-			*/
+			
 			
 		}catch (IOException e) { }
 	}
