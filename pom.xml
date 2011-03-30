@@ -42,6 +42,21 @@
 		<artifactId>newt.all</artifactId>
 		<version>2.0</version>
 	    </dependency>
+
+	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.4</version>
+	</dependency>
+
+<dependency>
+    <groupId>batik</groupId>
+    <artifactId>batik</artifactId>
+    <version>1.1.1</version>
+</dependency>
+
+
+
 	    </dependencies>
   <profiles>
   	<!-- Windows -->
