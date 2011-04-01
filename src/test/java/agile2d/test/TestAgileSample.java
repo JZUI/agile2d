@@ -111,79 +111,80 @@ public class TestAgileSample {
 
 
 // TESTS SEQUENCE
+
     @Test
     public void prepareCanvas() throws InterruptedException {
      	AglTestContext context = new AglTestContext(new AglTestStrategyClearRect());
-	endUnit(context, true, 150);
+	endUnit(context, true, 100);
     }
 
     @Test
     public void testDrawRect() throws InterruptedException {
-	writePreviousDiff("cRect.png");
+//	writePreviousDiff("cRect");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawRect());
 	endUnit(context, true, 150);
     }
 
     @Test
     public void testDrawRoundRect() throws InterruptedException {
-	writePreviousDiff("rect.png");
+	writePreviousDiff("rect");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawRoundRect());
 	endUnit(context, true, 150);
     }
 
     @Test
     public void testDrawLine() throws InterruptedException {
-	writePreviousDiff("roundRect.png");
+	writePreviousDiff("roundRect");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawLine());
 	endUnit(context, true, 150);
     }
 
    @Test
     public void testDrawOval() throws InterruptedException {
-	writePreviousDiff("line.png");
+	writePreviousDiff("line");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawOval());
-	endUnit(context, true, 150);
+	endUnit(context, true, 450);
     }
 
 
    @Test
     public void testDrawString() throws InterruptedException {
-	writePreviousDiff("oval.png");
+	writePreviousDiff("oval");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
 	endUnit(context, true, 1500);
     }
 
    @Test
     public void testFillOval() throws InterruptedException {
-	writePreviousDiff("String.png");
+	writePreviousDiff("String");
         AglTestContext context = new AglTestContext(new AglTestStrategyFillOval());
 	endUnit(context, true, 150);
     }
 
    @Test
     public void testDrawAlpha() throws InterruptedException {
-	writePreviousDiff("FillOval.png");
+	writePreviousDiff("FillOval");
         AglTestContext context = new AglTestContext(new AglTestStrategyDrawAlpha());
 	endUnit(context, true, 3500);
    }
 
    @Test
     public void testGradient() throws InterruptedException {
-	writePreviousDiff("drawAlpha.png");
+	writePreviousDiff("drawAlpha");
         AglTestContext context = new AglTestContext(new AglTestStrategyGradient());
 	endUnit(context, true, 800);
    }
 
    @Test
     public void testStrokes() throws InterruptedException {
-	writePreviousDiff("drawGradient.png");
+	writePreviousDiff("drawGradient");
         AglTestContext context = new AglTestContext(new AglTestStrategyStrokes());
-	endUnit(context, true, 1000);
+	endUnit(context, true, 1500);
    }
 
    @Test
     public void testSetGetColor() throws InterruptedException {
-	writePreviousDiff("testStrokes.png");
+	writePreviousDiff("testStrokes");
         AglTestContext context = new AglTestContext(new AglTestStrategySetGetColor());
 	endUnit(context, false, 30);
 	Color[] color_tmp = (Color[])context.getObjectsStrategy();
@@ -210,7 +211,7 @@ public class TestAgileSample {
    @Test
     public void testSetGetFont() throws InterruptedException {
         AglTestContext context = new AglTestContext(new AglTestStrategySetGetFont());
-	endUnit(context, false, 30);
+	endUnit(context, false, 80);
 	Font[] font_tmp = (Font[])context.getObjectsStrategy();
         Assert.assertEquals(font_tmp[0], font_tmp[1]);
     }
@@ -254,9 +255,15 @@ public class TestAgileSample {
     public void endUnit(AglTestContext _context, boolean updateBothContexts, int delay) throws InterruptedException {
 	sample.setContext(_context);
 	glCanvas.repaint();
+
+	
+	//get Agile Ilage thanks to glReadPixels
+	imgAg2d = sample.getBufferedImage();
+
 	if(updateBothContexts==true){
 		g2dCanvas.setContext(_context);	
 		g2dCanvas.repaint();
+		imgG2d = g2dCanvas.getBufferedImage();
 	}
 	else{
 		g2dCanvas.setContext(null);
@@ -264,31 +271,27 @@ public class TestAgileSample {
 	try { Thread.sleep(delay);} catch (InterruptedException e) {}
     }
 
-    public void writePreviousDiff(String imgName){
-		File outputfile;
-		imgAg2d = imgG2d = null;
-		try{
-			Robot rob = new Robot();
-			imgAg2d = rob.createScreenCapture(new Rectangle(win_x+CAP_OFFSET, win_y+CAP_OFFSET, width-(2*CAP_OFFSET), height-(2*CAP_OFFSET)));
-			imgG2d = rob.createScreenCapture(new Rectangle(win_x+width+CAP_OFFSET, win_y+CAP_OFFSET, width-(2*CAP_OFFSET), height-(2*CAP_OFFSET)));
-  	        } catch (AWTException e) {   }
-		//
-		//Create bufferImage which is the difference of the two images
-		BufferedImage image_dif = batikBuildDiffImage(imgAg2d, imgG2d);
-		//
-		try{
-			outputfile = new File(imgName);
-			ImageIO.write(image_dif, "png", outputfile);
-						
-			outputfile = new File("g2d_"+imgName);
-			ImageIO.write(imgG2d, "png", outputfile);
 
-			outputfile = new File("ag2d_"+imgName);
-			ImageIO.write(imgAg2d, "png", outputfile);
-			
-			
-		}catch (IOException e) { }
-	}
+    public void writePreviousDiff(String baseName){
+	File outputfile;
+	//get Agile Ilage thanks to glReadPixels
+	imgAg2d = sample.getBufferedImage();
+	imgG2d = g2dCanvas.getBufferedImage();
+	//Create bufferImage which is the difference of the two images
+	BufferedImage image_dif = batikBuildDiffImage(imgAg2d, imgG2d);
+	try{
+
+		outputfile = new File("diff_"+baseName+".png");
+		ImageIO.write(image_dif, "png", outputfile);
+/*
+		outputfile = new File("ag2d_"+baseName+".png");
+		ImageIO.write(imgAg2d, "png", outputfile);
+
+		outputfile = new File("g2d_"+baseName+".png");
+		ImageIO.write(imgG2d, "png", outputfile);
+*/
+	}catch (IOException e) { }
+     }
 
 public static BufferedImage batikBuildDiffImage(BufferedImage ref, BufferedImage gen) {
         BufferedImage diff = new BufferedImage(ref.getWidth(),

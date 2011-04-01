@@ -47,22 +47,27 @@ class CompareRoutines {
 	}
 
 	public static void drawLine(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
 	        g2d.drawLine(200, 30, 250, 500);
 	}
 
 	public static void drawOval(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
         	g2d.drawOval(200, 200, 100, 100);
 	}
 
 	public static void drawRect(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
 		g2d.drawRect(45, 60, 185, 400);
 	}
 	
 	public static void drawRoundRect(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(100, 100, 350, 50, 50, 100);
 	}
 
 	public static void drawString(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
 		g2d.drawString("DefautSet Float", 40.5f, 50.5f);
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 24));
 		g2d.drawString("DefautSet Int", 40, 80);
@@ -121,6 +126,7 @@ class CompareRoutines {
 
 public static void strokes(Graphics2D g2d) {
 	int w, h, x, y, dist, nb_strokes;
+	g2d.setColor(Color.BLACK);
 	h = w = 440;
 	x = y = 50;
 	dist = 20;

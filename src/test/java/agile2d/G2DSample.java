@@ -30,15 +30,17 @@ import java.io.File;
 public class G2DSample extends Canvas {
     AglTestContext context;
     private int width, height;
+    BufferedImage buf_img;
 
     public void paint(Graphics g) {
 	width = super.getWidth();
 	height = super.getWidth();
-//	BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_USHORT_GRAY);
-//	Graphics2D g2d = (Graphics2D)image.createGraphics();
-        Graphics2D g2d = (Graphics2D) g;
+	Graphics2D g2d_ = (Graphics2D) g;
+	buf_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+	Graphics2D g2d = (Graphics2D)buf_img.createGraphics();
+	
+//      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
 	//Paint sample primitives
 
@@ -49,10 +51,12 @@ public class G2DSample extends Canvas {
 	if(context!=null){
              context.drawStrategy(g2d);	
 	}
-//	Graphics2D g2d_ = (Graphics2D) g;
-//	g2d_.drawImage(image, 0, 0, null);
+	g2d_.drawImage(buf_img, 0, 0, null);
     }
 
+    public BufferedImage getBufferedImage(){
+	return buf_img;	
+   } 
 
     public void setContext(AglTestContext context){
 	this.context = context;

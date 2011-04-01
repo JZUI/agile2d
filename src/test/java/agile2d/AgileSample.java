@@ -16,6 +16,7 @@ import java.awt.RenderingHints;
 import java.awt.event.*;
 import java.awt.Component;
 import java.awt.BasicStroke;
+import java.awt.image.BufferedImage;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -45,6 +46,7 @@ public class AgileSample implements GLEventListener, KeyListener {
     private boolean aglObjectCreated = false;
     private AglTestContext context;
     private int width, height;
+    BufferedImage buf_img;
 
     public void keyTyped(KeyEvent e){}
 
@@ -121,10 +123,41 @@ public class AgileSample implements GLEventListener, KeyListener {
 	else
 		System.out.println("AglTestContext has NOT been created");
 
-//	ByteBuffer buffer = ByteBuffer.allocateDirect(width*height*4);
-//	gl.glReadPixels(0, 0, width, height, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buffer);
+	buf_img = createImageFromBuffer(gl);	
 	
     }
+
+    public BufferedImage getBufferedImage(){
+	return buf_img;	
+   } 
+
+    private BufferedImage createImageFromBuffer(GL2 gl){
+	ByteBuffer buffer = ByteBuffer.allocateDirect(width*height*4);
+	gl.glReadPixels(0, 0, width, height, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buffer);
+	BufferedImage bImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+	int[] pixelInts = new int[ width*height ];
+
+// Points to first byte (red) in each row.
+	int p = width * height * 4; 
+	int q; // Index into ByteBuffer
+	int i = 0; // Index into target int[]
+	int w4 = width * 4; // Number of bytes in each row
+	for(int row=0; row<width; row++){
+		p -= w4;
+		q = p;
+		for(int col=0; col<width; col++){
+			int iR = buffer.get(q++);
+			int iG = buffer.get(q++);
+			int iB = buffer.get(q++);
+			int iA = buffer.get(q++);
+			pixelInts[i++] = 0xFF000000 | ((iR & 0x000000FF) << 16) | ((iG & 0x000000FF) << 8) | (iB & 0x000000FF);
+		}			
+	}
+	bImage.setRGB( 0, 0, width, height, pixelInts, 0, width);
+	return bImage;
+    }
+
+	
 
     public void displayChanged(GLAutoDrawable drawable,boolean modeChanged,boolean deviceChanged) {}
 
