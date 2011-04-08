@@ -40,13 +40,13 @@ public class G2DSample extends Canvas {
 
 	Graphics2D g2d = (Graphics2D)buf_img.createGraphics();
 	
-//      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+ // g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
 	//Paint sample primitives
 
 	g2d.setBackground(Color.WHITE);
 	g2d.clearRect(0, 0, width, height);
-	g2d.setStroke(new BasicStroke(3));
+	
 
 	if(context!=null){
              context.drawStrategy(g2d);	

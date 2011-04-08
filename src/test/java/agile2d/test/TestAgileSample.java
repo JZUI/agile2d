@@ -69,12 +69,17 @@ public class TestAgileSample {
 		win_y=120;
 		glp = GLProfile.getDefault();
 		Assert.assertNotNull(glp);
-		GLCapabilities caps = new GLCapabilities(GLProfile.getDefault());
-
+		GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+		glCaps.setDoubleBuffered(true);// request double buffer display mode
+		glCaps.setSampleBuffers(false);
+		glCaps.setNumSamples(2);	
+		glCaps.setStencilBits(1);
+		
 		frame = new Frame("AgileCanvas Test");
 		Assert.assertNotNull(frame);
 
-		glCanvas = new GLCanvas(caps);
+		glCanvas = new GLCanvas(glCaps);
+		
 		Assert.assertNotNull(glCanvas);
 		frame.add(glCanvas);
 		frame.setLocation(win_x, win_y);
@@ -107,6 +112,7 @@ public class TestAgileSample {
 
 	@AfterClass
 	public static void releaseClass() {
+
 	}
 
 
@@ -150,7 +156,7 @@ public class TestAgileSample {
 	public void testDrawString() throws InterruptedException {
 		writePreviousDiff("oval");
 		AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
-		endUnit(context, true, 1500);
+		endUnit(context, true, 2000);
 	}
 
 	@Test
@@ -185,7 +191,7 @@ public class TestAgileSample {
 	public void testSetGetColor() throws InterruptedException {
 		writePreviousDiff("testStrokes");
 		AglTestContext context = new AglTestContext(new AglTestStrategySetGetColor());
-		endUnit(context, false, 100);
+		endUnit(context, false, 150);
 		Color[] color_tmp = (Color[])context.getObjectsStrategy();
 		Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
 	}
@@ -194,7 +200,7 @@ public class TestAgileSample {
 	@Test
 	public void testSetGetBackground() throws InterruptedException {
 		AglTestContext context = new AglTestContext(new AglTestStrategySetGetBackground());
-		endUnit(context, false, 100);
+		endUnit(context, false, 150);
 		Color[] color_tmp = (Color[])context.getObjectsStrategy();
 		Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
 	}
@@ -202,7 +208,7 @@ public class TestAgileSample {
 	@Test
 	public void testSetGetClipRect() throws InterruptedException {
 		AglTestContext context = new AglTestContext(new AglTestStrategySetGetClipRect());
-		endUnit(context, false, 100);
+		endUnit(context, false, 150);
 		Rectangle[] clip_tmp = (Rectangle[])context.getObjectsStrategy();
 		Assert.assertEquals(clip_tmp[0], clip_tmp[1]);
 	}
@@ -210,7 +216,7 @@ public class TestAgileSample {
 	@Test
 	public void testSetGetFont() throws InterruptedException {
 		AglTestContext context = new AglTestContext(new AglTestStrategySetGetFont());
-		endUnit(context, false, 100);
+		endUnit(context, false, 150);
 		Font[] font_tmp = (Font[])context.getObjectsStrategy();
 		Assert.assertEquals(font_tmp[0], font_tmp[1]);
 	}
@@ -218,7 +224,7 @@ public class TestAgileSample {
 	@Test
 	public void testGetFontMetrics() throws InterruptedException {
 		AglTestContext context = new AglTestContext(new AglTestStrategyGetFontMetrics());
-		endUnit(context, false, 120);
+		endUnit(context, false, 150);
 		FontMetrics[] fontM_tmp = (FontMetrics[])context.getObjectsStrategy();
 		Assert.assertNotNull(fontM_tmp[0]);
 	}
@@ -234,7 +240,7 @@ public class TestAgileSample {
 	@Test
 	public void testSetGetStroke() throws InterruptedException {
 		AglTestContext context = new AglTestContext(new AglTestStrategySetGetStroke());
-		endUnit(context, false, 80);
+		endUnit(context, false, 150);
 		BasicStroke[] strk_tmp = (BasicStroke[])context.getObjectsStrategy();
 		Assert.assertEquals(strk_tmp[0], strk_tmp[1]);
 	}

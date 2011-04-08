@@ -125,8 +125,9 @@ class GradientManager {
     }
     
     public void begin(float alpha) {
-        if (invalid)
+        if (invalid){     	
             return;
+        }
         glState.glEnable(GL2.GL_TEXTURE_1D);
         glState.glEnable(GL2.GL_TEXTURE_GEN_S);
         glState.bindTexture1D(texture);

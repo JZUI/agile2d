@@ -265,19 +265,27 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			this.glu = new GLU();
 			this.glState = AgileState.get(gl);
 //			glState.glSetShadeModel(GL2.GL_FLAT);
-			glState.glSetShadeModel(GL2.GL_SMOOTH);
+			//glState.glSetShadeModel(GL2.GL_SMOOTH);
 			glState.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+			
 			//Antialiasing of lines and points (are they necessary?)
-			glState.glEnable(GL2.GL_POINT_SMOOTH);
-			glState.glEnable(GL2.GL_LINE_SMOOTH);
-			glState.glEnable(GL2.GL_POLYGON_SMOOTH);
+			//glState.glEnable(GL2.GL_POINT_SMOOTH);
+			//glState.glEnable(GL2.GL_LINE_SMOOTH);
+			//glState.glEnable(GL2.GL_POLYGON_SMOOTH);
+			
 			//GL_BLEND should be enablend in order to apply antialiasing on lines and points
 			//but, presently, it's by default disabled in doSetColor() routine
-//			glState.glEnable(GL2.GL_BLEND);
 			gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
+			//Check if the call below works (since it passes by a glState call and shall pass a pointer as argument)
 			this.isGLStencilAvailable = (glState.getState(GL.GL_STENCIL_BITS) >= 1); // Need 1 bit for clip
+				
+			int nb_stencil_bits[] = new int[1];
+			nb_stencil_bits[0] = 500;
+			gl.glGetIntegerv(GL2.GL_STENCIL_BITS, nb_stencil_bits, 0);
+			System.out.println("Gl STENCIL BITS:"+ nb_stencil_bits[0]);
 
+			
             // For images
             maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);
 	    if (maxTexSize > ImageUtils.MAX_TEX_SIZE) { // limit texture size to MAX_TEX_SIZE
@@ -365,6 +373,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			boolean oldAA = antiAliasingHint;
 			antiAliasingHint = (hints.get(RenderingHints.KEY_ANTIALIASING) == RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setRenderingHints(hints);
+			
+			
 			if (oldAA != antiAliasingHint) {
 				if (antiAliasingHint) {
 					doEnableAntialiasing();
@@ -1333,7 +1343,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			GradientPaint gradient = (GradientPaint)paint;
 			this.paint = paint;
-
 			if (engine.isGLStencilAvailable) {
 				// Only use gradients if there is a stencilManager buffer
 				engine.doSetGradient(gradient);

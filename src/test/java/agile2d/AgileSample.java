@@ -41,7 +41,6 @@ import java.nio.ByteBuffer;
 public class AgileSample implements GLEventListener, KeyListener {
 	private AgileGraphics2D jgraphics;
 	private Component root;
-	private boolean interactive_antialias = false;
 	private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 	private boolean aglObjectCreated = false;
 	private AglTestContext context;
@@ -99,18 +98,22 @@ public class AgileSample implements GLEventListener, KeyListener {
 
 		// Call the glClear to clear the background
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
+		
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
-		jgraphics.setStroke(new BasicStroke(2));
 
 		//Find out what is the standard Graphics2d Font setting
 		Component c = (Component)drawable;
 		Graphics2D g2d_sample = (Graphics2D)c.createImage(1, 1).getGraphics();
+
+		//If gl_line_smooth is not enabled, stroke widths on java and opengl are identical
+		//whereas if smooth is activated, opengl is equivalent to javaStroke+1
+		//jgraphics.setStroke(new BasicStroke(1));
+		
+		//get the "default" font configuration (type and metrics)
 		jgraphics.setFont(g2d_sample.getFont());
 
-		if(interactive_antialias==true)
-			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		//jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
 		//Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
@@ -118,12 +121,14 @@ public class AgileSample implements GLEventListener, KeyListener {
 
 		//
 		//call test methods if context has been created		
+		
+		
 		if(context!=null)
 			context.drawStrategy(jgraphics);
 		else
 			System.out.println("AglTestContext has NOT been created");
 
-		buf_img = createImageFromBuffer(gl);	
+		buf_img = createImageFromBuffer(gl);
 
 	}
 
