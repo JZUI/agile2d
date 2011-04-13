@@ -57,7 +57,7 @@ public class TestAgileSample {
 	static G2DSample g2dCanvas;
 	static AgileSample sample; 
 	static int width, height, win_x, win_y;
-	BufferedImage imgG2d, imgAg2d, img_mask, img_masked;
+	//BufferedImage imgG2d, imgAg2d, img_mask, img_masked;
 	final int CAP_OFFSET = 15;
 	
 	@BeforeClass
@@ -70,7 +70,7 @@ public class TestAgileSample {
 			Assert.assertNotNull(glp);
 			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
-				glCaps.setSampleBuffers(false);
+				glCaps.setSampleBuffers(true);
 				glCaps.setNumSamples(2);	
 				glCaps.setStencilBits(1);
 				
@@ -120,76 +120,76 @@ public class TestAgileSample {
 	@Test
 		public void prepareCanvas() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyClearRect());
-			endUnit(context, true, 200);
+			endUnit(context, true, 200, "clearRect");
 		}
 	
 	@Test
 		public void testDrawRect() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawRect());
-			endUnit(context, true, 400);
+			endUnit(context, true, 400, "rect");
 		}
 	
 	@Test
 		public void testDrawRoundRect() throws InterruptedException {
-			writePreviousDiff("rect");
+			//writePreviousDiff("rect");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawRoundRect());
-			endUnit(context, true, 200);
+			endUnit(context, true, 200, "roundRect");
 		}
 	
 	@Test
 		public void testDrawLine() throws InterruptedException {
-			writePreviousDiff("roundRect");
+			//writePreviousDiff("roundRect");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawLine());
-			endUnit(context, true, 200);
+			endUnit(context, true, 200, "line");
 		}
 	
 	@Test
 		public void testDrawOval() throws InterruptedException {
-			writePreviousDiff("line");
+			//writePreviousDiff("line");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawOval());
-			endUnit(context, true, 200);
+			endUnit(context, true, 200, "oval");
 		}
 	
 	@Test
 		public void testDrawString() throws InterruptedException {
-			writePreviousDiff("oval");
+			//writePreviousDiff("oval");
 				AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
-				endUnit(context, true, 4000);
+				endUnit(context, true, 4000, "string");
 		}
 	
 	@Test
 		public void testFillOval() throws InterruptedException {
-			writePreviousDiff("String");
+			//writePreviousDiff("String");
 			AglTestContext context = new AglTestContext(new AglTestStrategyFillOval());
-			endUnit(context, true, 150);
+			endUnit(context, true, 150, "fillOval");
 		}
 	
 	@Test
 		public void testDrawAlpha() throws InterruptedException {
-			writePreviousDiff("FillOval");
+			//writePreviousDiff("FillOval");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawAlpha());
-			endUnit(context, true, 3500);
+			endUnit(context, true, 3500, "alpha");
 		}
 	
 	@Test
 		public void testGradient() throws InterruptedException {
-			writePreviousDiff("drawAlpha");
+			//writePreviousDiff("drawAlpha");
 			AglTestContext context = new AglTestContext(new AglTestStrategyGradient());
-			endUnit(context, true, 800);
+			endUnit(context, true, 800, "gradient");
 		}
 	
 	@Test
 		public void testStrokes() throws InterruptedException {
-			writePreviousDiff("drawGradient");
+			//writePreviousDiff("drawGradient");
 			AglTestContext context = new AglTestContext(new AglTestStrategyStrokes());
-			endUnit(context, true, 1500);
+			endUnit(context, true, 1500, "strokes");
 		}
 	
 	@Test
 		public void testSetGetColor() throws InterruptedException {
-			writePreviousDiff("testStrokes");
+			//writePreviousDiff("testStrokes");
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetColor());
-			endUnit(context, false, 150);
+			endUnit(context, false, 150, "");
 			Color[] color_tmp = (Color[])context.getObjectsStrategy();
 			Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
 		}
@@ -198,7 +198,7 @@ public class TestAgileSample {
 	@Test
 		public void testSetGetBackground() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetBackground());
-			endUnit(context, false, 150);
+			endUnit(context, false, 150, "");
 			Color[] color_tmp = (Color[])context.getObjectsStrategy();
 			Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
 		}
@@ -206,7 +206,7 @@ public class TestAgileSample {
 	@Test
 		public void testSetGetClipRect() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetClipRect());
-			endUnit(context, false, 150);
+			endUnit(context, false, 150, "");
 			Rectangle[] clip_tmp = (Rectangle[])context.getObjectsStrategy();
 			Assert.assertEquals(clip_tmp[0], clip_tmp[1]);
 		}
@@ -214,7 +214,7 @@ public class TestAgileSample {
 	@Test
 		public void testSetGetFont() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetFont());
-			endUnit(context, false, 150);
+			endUnit(context, false, 150, "");
 			Font[] font_tmp = (Font[])context.getObjectsStrategy();
 			Assert.assertEquals(font_tmp[0], font_tmp[1]);
 		}
@@ -222,7 +222,7 @@ public class TestAgileSample {
 	@Test
 		public void testGetFontMetrics() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyGetFontMetrics());
-			endUnit(context, false, 200);
+			endUnit(context, false, 200, "");
 			FontMetrics[] fontM_tmp = (FontMetrics[])context.getObjectsStrategy();
 			Assert.assertNotNull(fontM_tmp[0]);
 		}
@@ -230,7 +230,7 @@ public class TestAgileSample {
 	@Test
 		public void testSetGetTransform() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetTransform());
-			endUnit(context, false, 400);
+			endUnit(context, false, 400, "");
 			AffineTransform[] transf_tmp = (AffineTransform[])context.getObjectsStrategy();
 			Assert.assertEquals(transf_tmp[0], transf_tmp[1]);
 		}
@@ -238,7 +238,7 @@ public class TestAgileSample {
 	@Test
 		public void testSetGetStroke() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetStroke());
-			endUnit(context, false, 150);
+			endUnit(context, false, 150, "");
 			BasicStroke[] strk_tmp = (BasicStroke[])context.getObjectsStrategy();
 			Assert.assertEquals(strk_tmp[0], strk_tmp[1]);
 		}
@@ -255,26 +255,30 @@ public class TestAgileSample {
 			glCanvas=null;
 		}
 	
-	public void endUnit(AglTestContext _context, boolean updateBothContexts, int delay) throws InterruptedException {
+	public void endUnit(AglTestContext _context, boolean updateBothContexts, int delay, String basename) throws InterruptedException {
 		sample.setContext(_context);
 		glCanvas.repaint();
 		
 		//get Agile Ilage thanks to glReadPixels
-		imgAg2d = sample.getBufferedImage();
+//		imgAg2d = sample.getBufferedImage();
 		
 		if(updateBothContexts==true){
 			g2dCanvas.setContext(_context);	
 			g2dCanvas.repaint();
-			imgG2d = g2dCanvas.getBufferedImage();
+//			imgG2d = g2dCanvas.getBufferedImage();
 		}
 		else{
 			g2dCanvas.setContext(null);
 		}
 		try { Thread.sleep(delay);} catch (InterruptedException e) {}
+
+		if(updateBothContexts==true)
+			writePreviousDiff(basename);					
 	}
 	
 	
 	public void writePreviousDiff(String baseName){
+		BufferedImage imgG2d, imgAg2d, img_mask, img_masked;
 		File outputfile;
 		//get Agile Front Buffer thanks to glReadPixels
 		imgAg2d = sample.getBufferedImage();
@@ -284,6 +288,10 @@ public class TestAgileSample {
 		img_mask = buildMask(imgG2d);
 		//apply mask
 		img_masked = applyMask(imgAg2d, img_mask);
+//		if(isAllWhite(img_masked))
+//			System.out.println(baseName+" is all white");
+
+
 		try{
 			
 			//write mask image file
@@ -293,14 +301,18 @@ public class TestAgileSample {
 			outputfile = new File("masked_"+baseName+".png");
 			ImageIO.write(img_masked, "png", outputfile);
 			
-			/*			
-				outputfile = new File("ag2d_"+baseName+".png");
+//			outputfile = new File("masked_"+baseName+".png");
+//			ImageIO.write(img_masked, "png", outputfile);
+
+/*						
+			outputfile = new File("ag2d_"+baseName+".png");
 			ImageIO.write(imgAg2d, "png", outputfile);
 			
 			outputfile = new File("g2d_"+baseName+".png");
 			ImageIO.write(imgG2d, "png", outputfile);
-			*/			 
+*/						 
 		}catch (IOException e) { }
+		Assert.assertTrue(isAllWhite(img_masked));
 		//Flush buffered images
 		imgAg2d.flush();
 		imgG2d.flush();		
@@ -310,9 +322,7 @@ public class TestAgileSample {
 	
 	
 	public static BufferedImage buildMask(BufferedImage ref) {
-		BufferedImage mask = new BufferedImage(ref.getWidth(),
-											   ref.getHeight(),
-											   BufferedImage.TYPE_BYTE_GRAY);
+		BufferedImage mask = new BufferedImage(ref.getWidth(),ref.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
 		int w=ref.getWidth();
 		int h=ref.getHeight();
 		WritableRaster mskWR = mask.getRaster();
@@ -359,5 +369,26 @@ public class TestAgileSample {
 		
 		return masked;
 	}
+
+	//Apply mask pixel per pixel
+	public boolean isAllWhite(BufferedImage masked){
+		WritableRaster maskedWR = masked.getRaster();
+		int w=masked.getWidth();
+		int h=masked.getHeight();
+		int x, y, x_max;
+		int [] maskedPix = null;
+		for(y=0; y<h; y++){
+			maskedPix = maskedWR.getPixels(0, y, w, 1, maskedPix);
+			x_max = maskedPix.length;
+			for(x=0; x < x_max; x++){
+				if(maskedPix[x] != 255){
+//					System.out.println("1st dirty pixel coordinate: <"+(x/4)+", "+y+" >");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	
 }

@@ -40,7 +40,7 @@ public class G2DSample extends Canvas {
 
 	Graphics2D g2d = (Graphics2D)buf_img.createGraphics();
 	
- // g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+	//g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
 	//Paint sample primitives
 

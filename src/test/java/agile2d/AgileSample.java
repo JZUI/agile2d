@@ -113,7 +113,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 		//get the "default" font configuration (type and metrics)
 		jgraphics.setFont(g2d_sample.getFont());
 
-		//jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
 		//Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
