@@ -120,7 +120,7 @@ public class TestAgileSample {
 	@Test
 		public void prepareCanvas() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyClearRect());
-			endUnit(context, true, 200, "clearRect");
+			endUnit(context, false, 200, "");
 		}
 	
 	@Test
@@ -131,63 +131,55 @@ public class TestAgileSample {
 	
 	@Test
 		public void testDrawRoundRect() throws InterruptedException {
-			//writePreviousDiff("rect");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawRoundRect());
 			endUnit(context, true, 200, "roundRect");
 		}
 	
 	@Test
 		public void testDrawLine() throws InterruptedException {
-			//writePreviousDiff("roundRect");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawLine());
 			endUnit(context, true, 200, "line");
 		}
 	
 	@Test
 		public void testDrawOval() throws InterruptedException {
-			//writePreviousDiff("line");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawOval());
 			endUnit(context, true, 200, "oval");
 		}
 	
 	@Test
 		public void testDrawString() throws InterruptedException {
-			//writePreviousDiff("oval");
-				AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
-				endUnit(context, true, 4000, "string");
+			AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
+			endUnit(context, true, 4000, "string");
 		}
 	
 	@Test
 		public void testFillOval() throws InterruptedException {
-			//writePreviousDiff("String");
+
 			AglTestContext context = new AglTestContext(new AglTestStrategyFillOval());
 			endUnit(context, true, 150, "fillOval");
 		}
 	
 	@Test
 		public void testDrawAlpha() throws InterruptedException {
-			//writePreviousDiff("FillOval");
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawAlpha());
 			endUnit(context, true, 3500, "alpha");
 		}
 	
 	@Test
 		public void testGradient() throws InterruptedException {
-			//writePreviousDiff("drawAlpha");
 			AglTestContext context = new AglTestContext(new AglTestStrategyGradient());
 			endUnit(context, true, 800, "gradient");
 		}
 	
 	@Test
 		public void testStrokes() throws InterruptedException {
-			//writePreviousDiff("drawGradient");
 			AglTestContext context = new AglTestContext(new AglTestStrategyStrokes());
 			endUnit(context, true, 1500, "strokes");
 		}
 	
 	@Test
 		public void testSetGetColor() throws InterruptedException {
-			//writePreviousDiff("testStrokes");
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetColor());
 			endUnit(context, false, 150, "");
 			Color[] color_tmp = (Color[])context.getObjectsStrategy();
@@ -259,13 +251,9 @@ public class TestAgileSample {
 		sample.setContext(_context);
 		glCanvas.repaint();
 		
-		//get Agile Ilage thanks to glReadPixels
-//		imgAg2d = sample.getBufferedImage();
-		
 		if(updateBothContexts==true){
 			g2dCanvas.setContext(_context);	
 			g2dCanvas.repaint();
-//			imgG2d = g2dCanvas.getBufferedImage();
 		}
 		else{
 			g2dCanvas.setContext(null);
@@ -273,12 +261,12 @@ public class TestAgileSample {
 		try { Thread.sleep(delay);} catch (InterruptedException e) {}
 
 		if(updateBothContexts==true)
-			writePreviousDiff(basename);					
+			compareRenderings(basename);					
 	}
 	
 	
-	public void writePreviousDiff(String baseName){
-		BufferedImage imgG2d, imgAg2d, img_mask, img_masked;
+	public void compareRenderings(String baseName){
+		BufferedImage imgG2d, imgAg2d, img_mask, jit_mask, img_masked;
 		File outputfile;
 		//get Agile Front Buffer thanks to glReadPixels
 		imgAg2d = sample.getBufferedImage();
@@ -286,41 +274,108 @@ public class TestAgileSample {
 		imgG2d = g2dCanvas.getBufferedImage();
 		//Create mask
 		img_mask = buildMask(imgG2d);
+		jit_mask = jitterMask(img_mask, 1);
 		//apply mask
-		img_masked = applyMask(imgAg2d, img_mask);
-//		if(isAllWhite(img_masked))
-//			System.out.println(baseName+" is all white");
-
-
+		img_masked = applyMask(imgAg2d, jit_mask);
 		try{
 			
-			//write mask image file
-			outputfile = new File("mask_"+baseName+".png");
-			ImageIO.write(img_mask, "png", outputfile);
+			//write jittered mask image
+			outputfile = new File("jit_"+baseName+".png");
+			ImageIO.write(jit_mask, "png", outputfile);
 			
 			outputfile = new File("masked_"+baseName+".png");
-			ImageIO.write(img_masked, "png", outputfile);
-			
-//			outputfile = new File("masked_"+baseName+".png");
-//			ImageIO.write(img_masked, "png", outputfile);
+			ImageIO.write(img_masked, "png", outputfile);			
 
-/*						
+			/*						
+			outputfile = new File("mask_"+baseName+".png");
+			ImageIO.write(img_mask, "png", outputfile);
+
 			outputfile = new File("ag2d_"+baseName+".png");
 			ImageIO.write(imgAg2d, "png", outputfile);
 			
 			outputfile = new File("g2d_"+baseName+".png");
 			ImageIO.write(imgG2d, "png", outputfile);
-*/						 
+			*/						 
 		}catch (IOException e) { }
+
+		//check if result image (after applying the mask) has NO DIRTY PIXELS
 		Assert.assertTrue(isAllWhite(img_masked));
+
 		//Flush buffered images
 		imgAg2d.flush();
 		imgG2d.flush();		
 		img_mask.flush();
+		jit_mask.flush();
 		img_masked.flush();
 	}
 	
-	
+
+	public static BufferedImage buildMask(BufferedImage ref) {
+		int x, y;
+		int w=ref.getWidth();
+		int h=ref.getHeight();
+		BufferedImage mask = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);				
+		
+		for (y=0; y<h; y++) {
+			//get a row of pixels from the reference image
+			for(x=0; x<w; x++){
+				if( (ref.getRGB(x, y) & 0x00ffffff) == 0x00ffffff) 
+					mask.setRGB(x,y, 0x00ffffff);
+				else
+					mask.setRGB(x,y, 0xffffffff);
+			}
+		}
+		return mask;
+	}
+
+	public BufferedImage jitterMask(BufferedImage mask, int jitDist){
+		BufferedImage jitMask = new BufferedImage(mask.getWidth(), mask.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d_ = (Graphics2D)jitMask.createGraphics();
+		int i;
+		//Draw first mask
+		g2d_.drawImage(mask, 0, 0, null);
+		//Jitter drawing other offset masks with a tolerance given by jitDist
+		for(i=-jitDist; i<=jitDist; i++){
+			if(i!=0)			
+				g2d_.drawImage(mask, i, 0, null);
+		}
+		for(i=-jitDist; i<=jitDist; i++){
+			if(i!=0)			
+				g2d_.drawImage(mask, 0, i, null);
+		}
+		return jitMask;
+	}
+				
+
+	public BufferedImage applyMask(BufferedImage gen, BufferedImage mask) {
+		BufferedImage masked = new BufferedImage(gen.getWidth(), gen.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d_ = (Graphics2D)masked.createGraphics();
+		g2d_.drawImage(gen, 0, 0, null);
+		g2d_.drawImage(mask, 0, 0, null);	
+		return masked;
+	}
+
+	//Apply mask pixel per pixel
+	public boolean isAllWhite(BufferedImage masked){
+		WritableRaster maskedWR = masked.getRaster();
+		int w=masked.getWidth();
+		int h=masked.getHeight();
+		int x, y, x_max;
+		int [] maskedPix = null;
+		for(y=0; y<h; y++){
+			maskedPix = maskedWR.getPixels(0, y, w, 1, maskedPix);
+			x_max = maskedPix.length;
+			for(x=0; x < x_max; x++){
+				if(maskedPix[x] != 255){
+					//System.out.println("1st dirty pixel coordinate: <"+(x/4)+", "+y+" >");
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/*
 	public static BufferedImage buildMask(BufferedImage ref) {
 		BufferedImage mask = new BufferedImage(ref.getWidth(),ref.getHeight(),BufferedImage.TYPE_BYTE_GRAY);
 		int w=ref.getWidth();
@@ -342,7 +397,9 @@ public class TestAgileSample {
 		}
 		return mask;
 	}
-	
+	*/
+
+/*
 	//Apply mask pixel per pixel
 	public int getNewPix(int pixel, int mask){
 		if((mask ^ 0xFF) == 0)
@@ -350,7 +407,9 @@ public class TestAgileSample {
 		else
 			return 0xFFFFFFFF;
 	}
-				
+*/
+
+/*
 	public BufferedImage applyMask(BufferedImage gen, BufferedImage mask) {
 		BufferedImage masked = new BufferedImage(gen.getWidth(), gen.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		WritableRaster maskWR = mask.getRaster();
@@ -369,26 +428,6 @@ public class TestAgileSample {
 		
 		return masked;
 	}
-
-	//Apply mask pixel per pixel
-	public boolean isAllWhite(BufferedImage masked){
-		WritableRaster maskedWR = masked.getRaster();
-		int w=masked.getWidth();
-		int h=masked.getHeight();
-		int x, y, x_max;
-		int [] maskedPix = null;
-		for(y=0; y<h; y++){
-			maskedPix = maskedWR.getPixels(0, y, w, 1, maskedPix);
-			x_max = maskedPix.length;
-			for(x=0; x < x_max; x++){
-				if(maskedPix[x] != 255){
-//					System.out.println("1st dirty pixel coordinate: <"+(x/4)+", "+y+" >");
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
+*/
 	
 }
