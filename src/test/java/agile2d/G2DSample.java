@@ -24,7 +24,7 @@ import java.io.File;
 /**
  * <b>G2DSample</b>
  * * @author Rodrigo de Almeida
- * @version $Revision$
+ ** @version $Revision$
  */
 
 public class G2DSample extends Canvas {

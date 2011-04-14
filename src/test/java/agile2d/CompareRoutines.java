@@ -42,7 +42,16 @@ import java.awt.geom.*;
 */
 
 class CompareRoutines {
+
+	public static void drawRect(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
+		g2d.drawRect(45, 60, 185, 400);
+	}
+
 	public static void clearRect(Graphics2D g2d){
+		//draw some stuff and then try to clear it
+		g2d.setColor(Color.RED);
+		g2d.fillRect(160, 160, 330, 330);
 	        g2d.clearRect(150, 150, 300, 300);
 	}
 
@@ -54,11 +63,6 @@ class CompareRoutines {
 	public static void drawOval(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
         	g2d.drawOval(200, 200, 100, 100);
-	}
-
-	public static void drawRect(Graphics2D g2d){
-		g2d.setColor(Color.BLACK);
-		g2d.drawRect(45, 60, 185, 400);
 	}
 	
 	public static void drawRoundRect(Graphics2D g2d){
@@ -155,6 +159,16 @@ public static void strokes(Graphics2D g2d) {
         }
     }
 
-
+	public static void transforms(Graphics2D g2d){
+		double mat[] = {0.8, 0.13, 0.15, 1, 22.287617012502135, 25.73362893827651};
+		g2d.setColor(Color.BLUE);
+		g2d.setTransform(new AffineTransform(mat));
+		g2d.rotate(0.5);
+		g2d.rotate(-0.07, 50.0, -50.0);
+		g2d.translate(-50, -150);
+		g2d.scale(1.7, 1.1);
+		g2d.shear(-0.5, -0.3);
+		g2d.fillRect(200, 200, 100, 90);
+	}
 }
 

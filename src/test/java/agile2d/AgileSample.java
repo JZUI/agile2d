@@ -41,11 +41,10 @@ import java.nio.ByteBuffer;
 public class AgileSample implements GLEventListener, KeyListener {
 	private AgileGraphics2D jgraphics;
 	private Component root;
-	private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 	private boolean aglObjectCreated = false;
 	private AglTestContext context;
 	private int width, height;
-	BufferedImage buf_img;
+	private BufferedImage buf_img;
 
 	public void keyTyped(KeyEvent e){}
 
@@ -113,21 +112,25 @@ public class AgileSample implements GLEventListener, KeyListener {
 		//get the "default" font configuration (type and metrics)
 		jgraphics.setFont(g2d_sample.getFont());
 
-		jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		//ANTIALIASING
+		//By the time this test was written, agile2d antialiasing was difficult to handle in a generic way since: 
+		//1. to work on Linux, we must use GLJpanel instead of GLCanvas and we must set glCaps.setSampleBuffers(true)
+		//2. to work on OSX, we must set glCaps.setSampleBuffers(false) but we can't desactivate it by the HINTS
+		// jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
-		//Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
 		jgraphics.clearRect(0, 0, width, height);
 
 		//
 		//call test methods if context has been created		
-		
-		
-		if(context!=null)
+		if(context!=null){
+			//Paint sample primitives
 			context.drawStrategy(jgraphics);
-		else
+		}
+		else{
 			System.out.println("AglTestContext has NOT been created");
-
+		}
+		//get a bufferedImage reading the window buffer via glReadPixels
 		buf_img = createImageFromBuffer(gl);
 
 	}
