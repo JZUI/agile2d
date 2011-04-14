@@ -17,6 +17,8 @@ import agile2d.AgileSample;
 *//**
 **/
 
+import java.lang.Math;
+
 import java.awt.Graphics2D;
 import java.awt.Frame;
 import java.awt.Canvas;
@@ -264,17 +266,20 @@ public class TestAgileSample {
 		try { Thread.sleep(delay);} catch (InterruptedException e) {}
 
 		if(updateBothContexts==true)
-			compareRenderings(basename);					
+			compareRenderings(basename);
 	}
 	
 	
 	private void compareRenderings(String baseName){
-		BufferedImage imgG2d, imgAg2d, img_mask, jit_mask, img_masked;
+		System.out.println("Comparing "+baseName);
+
+		BufferedImage imgG2d, imgAg2d, img_mask, jit_mask, img_masked, img_diff;
 		File outputfile;
 		//get Agile Front Buffer thanks to glReadPixels
 		imgAg2d = sample.getBufferedImage();
 		//get G2D image drawing directly on a BufferedImage		
 		imgG2d = g2dCanvas.getBufferedImage();
+		img_diff = buildDiff(imgG2d, imgAg2d);
 		//Create mask
 		img_mask = buildMask(imgG2d);
 		//The 2nd argument of jitterMask is the number of tolerance pixels (in each direction) that we want to apply to the mask
@@ -286,11 +291,14 @@ public class TestAgileSample {
 			//write jittered mask image
 			outputfile = new File("jit_"+baseName+".png");
 			ImageIO.write(jit_mask, "png", outputfile);
+
+			outputfile = new File("diff_"+baseName+".png");
+			ImageIO.write(img_diff, "png", outputfile);			
 			
+			/*						
 			outputfile = new File("masked_"+baseName+".png");
 			ImageIO.write(img_masked, "png", outputfile);			
 
-			/*						
 			outputfile = new File("mask_"+baseName+".png");
 			ImageIO.write(img_mask, "png", outputfile);
 
@@ -308,6 +316,7 @@ public class TestAgileSample {
 		//Flush buffered images
 		imgAg2d.flush();
 		imgG2d.flush();		
+		img_diff.flush();	
 		img_mask.flush();
 		jit_mask.flush();
 		img_masked.flush();
@@ -355,6 +364,39 @@ public class TestAgileSample {
 		g2d_.drawImage(gen, 0, 0, null);
 		g2d_.drawImage(mask, 0, 0, null);	
 		return masked;
+	}
+
+
+	private BufferedImage buildDiff(BufferedImage ref, BufferedImage gen) {
+		int w=ref.getWidth();
+		int h=ref.getHeight();
+		BufferedImage diffImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		WritableRaster refWR = ref.getRaster();
+		WritableRaster genWR = gen.getRaster();
+		WritableRaster diffWR = diffImg.getRaster();
+
+		int x, y, x_max;
+		int [] refPix = null;
+		int [] genPix = null;
+		int [] diffPix = new int[w*4];
+		int r,g,b;
+		for(y=0; y<h; y++){
+			refPix = refWR.getPixels(0, y, w, 1, refPix);
+			genPix = genWR.getPixels(0, y, w, 1, genPix);
+			for(x=0; x<refPix.length; x+=4){
+				r= genPix[x  ]-refPix[x  ];
+				g= genPix[x+1]-refPix[x+1];
+				b= genPix[x+2]-refPix[x+2];
+				
+				diffPix[x  ] = r;
+				diffPix[x+1] = g;
+				diffPix[x+2] = b;
+				//Alpha
+				diffPix[x+3] = 0xff;
+			}
+			diffWR.setPixels(0, y, w, 1, diffPix);
+		}
+		return diffImg;
 	}
 
 	//Apply mask pixel per pixel
