@@ -5,6 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <!-- By default, tests are skipped. To run them, use the flag "-DskipTests=false". e.g.: "mvn install -DskipTests=false" -->
     <skipTests>true</skipTests>
   </properties>
   
@@ -152,6 +153,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.8</version>
         <configuration>
+	  <!-- By default, tests are SKIPPED. To run them, use the flag "-DskipTests=false". e.g.: "mvn install -DskipTests=false" -->
           <skipTests>${skipTests}</skipTests>
         </configuration>
   </plugin>
