@@ -5,6 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <skipTests>true</skipTests>
   </properties>
   
   <!-- Repositories -->
@@ -146,6 +147,14 @@
 	  <downloadSources>true</downloadSources>
 	</configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+        </configuration>
+  </plugin>
 	</plugins>
   </build>
 </project>

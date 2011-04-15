@@ -19,6 +19,7 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.BasicStroke;
 import java.awt.geom.*;
+import java.awt.Rectangle;
 
 
 /**
@@ -50,7 +51,7 @@ class CompareRoutines {
 
 	public static void clearRect(Graphics2D g2d){
 		//draw some stuff and then try to clear it
-		g2d.setColor(Color.RED);
+		g2d.setColor(Color.BLACK);
 		g2d.fillRect(160, 160, 330, 330);
 	        g2d.clearRect(150, 150, 300, 300);
 	}
@@ -92,14 +93,15 @@ class CompareRoutines {
 	}
 
 	public static void fillOval(Graphics2D g2d){
-		g2d.setColor(Color.RED);
+		g2d.setColor(Color.BLACK);
 	        g2d.fillOval(100, 100, 200, 100);
 	}
 
 	public static void gradient(Graphics2D g2d) {
 		GradientPaint gradient = new GradientPaint(0, 0, Color.red, 175, 175, Color.yellow,true); // true (last arg) means repeat pattern
 		g2d.setPaint(gradient);
-		g2d.fillOval(200, 200, 80, 280);
+		//g2d.fillOval(200, 200, 80, 280);
+		g2d.fillRect(200, 100, 150, 350);
 	}	
 
 	public static void drawAlpha(Graphics2D g2d) {
@@ -122,10 +124,10 @@ class CompareRoutines {
         	    } else {
         	        g2d.setColor(new Color(0f, 0f, 0f, alpha));
         	    }
-        	    g2d.fill(new Ellipse2D.Float(x,y,ew,eh));
+        	    //g2d.fill(new Ellipse2D.Float(x,y,ew,eh));
+		    g2d.fill(new Rectangle.Float(x,y,ew,eh));
         	}
 	}
-
 
 
 public static void strokes(Graphics2D g2d) {
@@ -161,7 +163,7 @@ public static void strokes(Graphics2D g2d) {
 
 	public static void transforms(Graphics2D g2d){
 		double mat[] = {0.8, 0.13, 0.15, 1, 22.287617012502135, 25.73362893827651};
-		g2d.setColor(Color.BLUE);
+		g2d.setColor(Color.BLACK);
 		g2d.setTransform(new AffineTransform(mat));
 		g2d.rotate(0.5);
 		g2d.rotate(-0.07, 50.0, -50.0);
