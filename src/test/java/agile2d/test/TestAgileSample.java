@@ -287,31 +287,31 @@ public class TestAgileSample {
 		//apply mask
 		img_masked = applyMask(imgAg2d, jit_mask);
 		boolean result = isAllWhite(img_masked);
-		if(!result){
-		try{
-			
-			//write jittered mask image
-//			outputfile = new File("jit_"+baseName+".png");
-//			ImageIO.write(jit_mask, "png", outputfile);
 
-			outputfile = new File("diff_"+baseName+".png");
-			ImageIO.write(img_diff, "png", outputfile);			
-			
-			
-			outputfile = new File("masked_"+baseName+".png");
-			ImageIO.write(img_masked, "png", outputfile);			
+			try{
+		if(!result){					
+				//write jittered mask image
+//				outputfile = new File("jit_"+baseName+".png");
+//				ImageIO.write(jit_mask, "png", outputfile);
+
+				outputfile = new File("masked_"+baseName+".png");
+				ImageIO.write(img_masked, "png", outputfile);			
 /*			
-			outputfile = new File("mask_"+baseName+".png");
-			ImageIO.write(img_mask, "png", outputfile);
+				outputfile = new File("mask_"+baseName+".png");
+				ImageIO.write(img_mask, "png", outputfile);
 */
-			outputfile = new File("ag2d_"+baseName+".png");
-			ImageIO.write(imgAg2d, "png", outputfile);
-			
-			outputfile = new File("g2d_"+baseName+".png");
-			ImageIO.write(imgG2d, "png", outputfile);
-									 
-		}catch (IOException e) { }
+				outputfile = new File("ag2d_"+baseName+".png");
+				ImageIO.write(imgAg2d, "png", outputfile);
+				
+				outputfile = new File("g2d_"+baseName+".png");
+				ImageIO.write(imgG2d, "png", outputfile);
 		}
+		outputfile = new File("diff_"+baseName+".png");
+		ImageIO.write(img_diff, "png", outputfile);
+										 
+			}catch (IOException e) { }
+
+
 		//check if result image (after applying the mask) has NO DIRTY PIXELS
 		Assert.assertTrue(result);
 
@@ -386,11 +386,11 @@ public class TestAgileSample {
 			refPix = refWR.getPixels(0, y, w, 1, refPix);
 			genPix = genWR.getPixels(0, y, w, 1, genPix);
 			for(x=0; x<refPix.length; x+=4){
-				r= genPix[x  ]-refPix[x  ];
-				g= genPix[x+1]-refPix[x+1];
-				b= genPix[x+2]-refPix[x+2];
+				r= Math.abs(genPix[x  ]-refPix[x  ]);
+				g= Math.abs(genPix[x+1]-refPix[x+1]);
+				b= Math.abs(genPix[x+2]-refPix[x+2]);
 				int drgb = distRGB(refPix[x], refPix[x+1], refPix[x+2], genPix[x], genPix[x+1], genPix[x+2]);
-				//if( drgb > 1 && drgb != 441)
+				//if( drgb > 22 && drgb != 441)
 				//	System.out.println("Dist rgb is "+drgb+" and rgb: <"+r+", "+g+", "+b+"> and ref"+refPix[x+1]+" and gen: "+genPix[x+1]);
 				diffPix[x  ] = r;
 				diffPix[x+1] = g;
