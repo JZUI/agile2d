@@ -61,6 +61,7 @@ public class TestAgileSample {
 	static private int width, height, win_x, win_y;
 	//Number of offset pixels (in each direction) while applying the jittering to the mask	
 	final static private int TOLERANCE_PIXELS = 1;
+	final static private String RESULT_IMG_DIR = "testResults";
 
 	@BeforeClass
 		public static void initClass() {
@@ -291,22 +292,22 @@ public class TestAgileSample {
 			try{
 		if(!result){					
 				//write jittered mask image
-//				outputfile = new File("jit_"+baseName+".png");
+//				outputfile = new File(RESULT_IMG_DIR+"/jit_"+baseName+".png");
 //				ImageIO.write(jit_mask, "png", outputfile);
 
-				outputfile = new File("masked_"+baseName+".png");
+				outputfile = new File(RESULT_IMG_DIR+"/masked_"+baseName+".png");
 				ImageIO.write(img_masked, "png", outputfile);			
 /*			
-				outputfile = new File("mask_"+baseName+".png");
+				outputfile = new File(RESULT_IMG_DIR+"/mask_"+baseName+".png");
 				ImageIO.write(img_mask, "png", outputfile);
 */
-				outputfile = new File("ag2d_"+baseName+".png");
+				outputfile = new File(RESULT_IMG_DIR+"/ag2d_"+baseName+".png");
 				ImageIO.write(imgAg2d, "png", outputfile);
 				
-				outputfile = new File("g2d_"+baseName+".png");
+				outputfile = new File(RESULT_IMG_DIR+"/g2d_"+baseName+".png");
 				ImageIO.write(imgG2d, "png", outputfile);
 		}
-		outputfile = new File("diff_"+baseName+".png");
+		outputfile = new File(RESULT_IMG_DIR+"/diff_"+baseName+".png");
 		ImageIO.write(img_diff, "png", outputfile);
 										 
 			}catch (IOException e) { }
