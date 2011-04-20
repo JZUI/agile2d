@@ -122,7 +122,7 @@ public class TestAgileSample {
 	@Test
 		public void testDrawRect() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawRect());
-			endUnit(context, true, 400, "rect", true, false);
+			endUnit(context, true, 600, "rect", true, false);
 		}
 
 	@Test
