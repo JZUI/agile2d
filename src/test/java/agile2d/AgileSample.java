@@ -29,9 +29,6 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import java.nio.ByteBuffer;
-//import com.sun.opengl.utils.BufferUtils;
-
-
 
 /**
  * <b>AgileSample</b>
