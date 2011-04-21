@@ -18,8 +18,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.BasicStroke;
-import java.awt.geom.*;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.*;
 
 
 /**
@@ -172,5 +173,87 @@ public static void strokes(Graphics2D g2d) {
 		g2d.shear(-0.5, -0.3);
 		g2d.fillRect(200, 200, 100, 90);
 	}
+
+    public static void curves(Graphics2D g2) {
+	int w = 512;
+	int h = 512;
+        int y = 0;
+        g2.setColor(Color.black);
+
+
+        g2.setStroke(new BasicStroke(5.0f));
+
+        float yy = 20;
+
+	// draws 3 quad curves and 3 cubic curves.
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                Shape shape = null;
+
+                if (i == 0) {
+                     shape = new QuadCurve2D.Float(w*.1f,yy,w*.5f,50,w*.9f,yy);
+                } else {
+                     shape = new CubicCurve2D.Float(w*.1f,yy,w*.4f,yy-15,
+                                            w*.6f,yy+15,w*.9f,yy);
+                }
+                if (j != 2)
+                    g2.draw(shape);
+
+                if (j == 1 ) {
+
+		    /*
+                     * creates an iterator object to iterate the boundary
+		     * of the curve.
+                     */
+                    PathIterator f = shape.getPathIterator(null);
+
+		    /*
+                     * while iteration of the curve is still in process
+                     * fills rectangles at the endpoints and control
+                     * points of the curve.
+                     */
+                    while ( !f.isDone() ) {
+                        float[] pts = new float[6];
+                        switch ( f.currentSegment(pts) ) {
+                            case PathIterator.SEG_MOVETO:
+                            case PathIterator.SEG_LINETO:
+                                g2.fill(new Rectangle2D.Float(pts[0], pts[1], 5, 5));
+                                break;
+                            case PathIterator.SEG_CUBICTO :
+                            case PathIterator.SEG_QUADTO :
+                                g2.fill(new Rectangle2D.Float(pts[0], pts[1], 5, 5));
+                                if (pts[2] != 0) {
+                                    g2.fill(new Rectangle2D.Float(pts[2], pts[3], 5, 5));
+                                }
+                                if (pts[4] != 0) {
+                                    g2.fill(new Rectangle2D.Float(pts[4], pts[5], 5, 5));
+                                }
+                        }
+                        f.next();
+                    }
+               
+                } else if (j == 2) {
+		    // draws red ellipses along the flattened curve.
+                    PathIterator p = shape.getPathIterator(null);
+                    FlatteningPathIterator f = new FlatteningPathIterator(p,0.1);
+                    while ( !f.isDone() ) {
+                        float[] pts = new float[6];
+                        switch ( f.currentSegment(pts) ) {
+                            case PathIterator.SEG_MOVETO:
+                            case PathIterator.SEG_LINETO:
+                                g2.fill(new Ellipse2D.Float(pts[0], pts[1],3,3));
+                        }
+                        f.next();
+                    }
+                }
+                yy += h/6;
+            }
+            yy = h/2+15;
+        }
+    }
+
+
+
+
 }
 

@@ -104,6 +104,14 @@ class AglTestStrategyTransforms implements TestStrategy {
      public Object[] getObjects() {return null;}
 }
 
+
+class AglTestStrategyCurves implements TestStrategy {
+     public void draw(Graphics2D gSample) {
+	CompareRoutines.curves(gSample);
+    }
+     public Object[] getObjects() {return null;}
+}
+
 class AglTestStrategySetGetClipRect implements TestStrategy {
      private Rectangle clipToSet, clipFound;
      private int x, y, w, h;

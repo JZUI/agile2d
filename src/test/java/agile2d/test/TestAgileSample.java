@@ -186,6 +186,12 @@ public class TestAgileSample {
 		}
 
 	@Test
+		public void testCurves() throws InterruptedException {
+			AglTestContext context = new AglTestContext(new AglTestStrategyCurves());
+			endUnit(context, true, 1500, "curves", true, false);
+		}
+
+	@Test
 		public void testSetGetColor() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategySetGetColor());
 			endUnit(context, false, 150, "", false, false);
