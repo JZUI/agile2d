@@ -57,15 +57,16 @@ cd $JOGL_PACKAGE &&\
 TMP_PATH=`pwd`
 #Copy dynamic library files to maven project directory
 mkdir $PREBUILD_ROOT/lib
-cp -v $TMP_PATH/lib/lib*.$LIB_EXTENSION $PREBUILD_ROOT/lib
+cp -v $TMP_PATH/lib/*.$LIB_EXTENSION $PREBUILD_ROOT/lib
 
-mvn install:install-file -DgroupId=jogl2 -DartifactId=jogl.all -Dversion=2.0 -Dpackaging=jar -Dfile=$TMP_PATH/lib/jogl.all.jar &&\
-mvn install:install-file -DgroupId=jogl2 -DartifactId=nativewindow.all -Dversion=2.0 -Dpackaging=jar -Dfile=$TMP_PATH/lib/nativewindow.all.jar &&\
-mvn install:install-file -DgroupId=jogl2 -DartifactId=gluegen -Dversion=2.0 -Dpackaging=jar -Dfile=$TMP_PATH/lib/gluegen-rt.jar &&\
-mvn install:install-file -DgroupId=jogl2 -DartifactId=newt.all -Dversion=2.0 -Dpackaging=jar -Dfile=$TMP_PATH/lib/newt.all.jar
+cd lib
+mvn install:install-file -DgroupId=jogl2 -DartifactId=jogl.all -Dversion=2.0 -Dpackaging=jar -Dfile=jogl.all.jar &&\
+mvn install:install-file -DgroupId=jogl2 -DartifactId=nativewindow.all -Dversion=2.0 -Dpackaging=jar -Dfile=nativewindow.all.jar &&\
+mvn install:install-file -DgroupId=jogl2 -DartifactId=gluegen -Dversion=2.0 -Dpackaging=jar -Dfile=gluegen-rt.jar &&\
+mvn install:install-file -DgroupId=jogl2 -DartifactId=newt.all -Dversion=2.0 -Dpackaging=jar -Dfile=newt.all.jar
 
 #jar files specific to each platform
 if [ "$PLATFORM" = "lin32" -o "$PLATFORM" = "lin64" ]
  then
-  mvn install:install-file -DgroupId=jogl2 -DartifactId=nativewindow.x11 -Dversion=2.0 -Dpackaging=jar -Dfile=$TMP_PATH/lib/nativewindow.x11.jar
+  mvn install:install-file -DgroupId=jogl2 -DartifactId=nativewindow.x11 -Dversion=2.0 -Dpackaging=jar -Dfile=nativewindow.x11.jar
 fi
