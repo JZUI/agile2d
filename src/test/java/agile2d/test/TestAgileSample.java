@@ -102,7 +102,7 @@ public class TestAgileSample {
 				frameg2d = new Frame("G2DCanvas Test");
 				g2dCanvas = new G2DSample();
 				frameg2d.add(g2dCanvas);
-				frameg2d.setLocation(win_x+width, win_y);
+				frameg2d.setLocation(win_x+width+50, win_y);
 				frameg2d.setSize(width, height);
 				frameg2d.setUndecorated(true);
 				frameg2d.setVisible(true);
@@ -128,25 +128,25 @@ public class TestAgileSample {
 	@Test
 		public void prepareCanvas() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyClearRect());
-			endUnit(context, true, 200, "clearRect", true, false);
+			endUnit(context, true, 600, "clearRect", true, false);
 		}
 	
 	@Test
 		public void testDrawRoundRect() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawRoundRect());
-			endUnit(context, true, 200, "roundRect", true, false);
+			endUnit(context, true, 600, "roundRect", true, false);
 		}
 	
 	@Test
 		public void testDrawLine() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawLine());
-			endUnit(context, true, 200, "line", true, false);
+			endUnit(context, true, 600, "line", true, false);
 		}
 	
 	@Test
 		public void testDrawOval() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawOval());
-			endUnit(context, true, 200, "oval", true, false);
+			endUnit(context, true, 600, "oval", true, false);
 		}
 
 	@Test
@@ -164,7 +164,7 @@ public class TestAgileSample {
 	@Test
 		public void testFillOval() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyFillOval());
-			endUnit(context, true, 150, "fillOval", true, false);
+			endUnit(context, true, 600, "fillOval", true, false);
 		}
 	
 	@Test
@@ -176,7 +176,7 @@ public class TestAgileSample {
 	@Test
 		public void testGradient() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyGradient());
-			endUnit(context, true, 800, "gradient", false, true);
+			endUnit(context, true, 1500, "gradient", false, true);
 		}
 	
 	@Test

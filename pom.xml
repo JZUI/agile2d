@@ -146,7 +146,13 @@
         <configuration>
 	  <!-- By default, tests are SKIPPED. To run them, use the flag "-DskipTests=false". e.g.: "mvn install -DskipTests=false" -->
           <skipTests>${skipTests}</skipTests>
-        </configuration>
+          <systemProperties>
+            <property>
+              <name>java.library.path</name>
+              <value>lib/</value>
+            </property>
+          </systemProperties>
+        </configuration> 		
   </plugin>
 	</plugins>
   </build>
