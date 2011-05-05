@@ -69,6 +69,13 @@ class AglTestStrategyDrawString implements TestStrategy {
      public Object[] getObjects() {return null;}
 }
 
+class AglTestStrategyDrawGlyphVector implements TestStrategy {
+     public void draw(Graphics2D gSample) {
+	CompareRoutines.drawGlyphVector(gSample);
+    }
+     public Object[] getObjects() {return null;}
+}
+
 class AglTestStrategyFillOval implements TestStrategy {
      public void draw(Graphics2D gSample) {
 	CompareRoutines.fillOval(gSample);

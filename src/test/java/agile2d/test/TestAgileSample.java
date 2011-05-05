@@ -160,6 +160,12 @@ public class TestAgileSample {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
 			endUnit(context, true, 4000, "string", true, false);
 		}
+
+	@Test
+		public void testDrawGlyphVector() throws InterruptedException {
+			AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVector());
+			endUnit(context, true, 4000, "glyphVector", true, false);
+		}
 	
 	@Test
 		public void testFillOval() throws InterruptedException {

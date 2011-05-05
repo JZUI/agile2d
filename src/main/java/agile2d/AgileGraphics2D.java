@@ -180,6 +180,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private GradientManager   gradientManager;
 		private TextureFontRenderer textureFont;
 		private OutlineFontRenderer outlineFont;
+		private FontManager fontManager;
 		
 		private Font              font;
 //		private Shape             shapeClip;
@@ -325,6 +326,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			textureFont = new TextureFontRenderer();
 //			TextureFontRenderer.setMaxTextureSize(maxTexSize);
 			outlineFont = new OutlineFontRenderer(tesselator);
+			fontManager = new FontManager(gl, textureFont, outlineFont);
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
 			gradientManager = new GradientManager(gl);
@@ -585,6 +587,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		// FONT AND STROKE
 		void doSetFont(Font font) {
 			this.font = font;
+			//fontManager.setFont(font);
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
@@ -1023,23 +1026,28 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslated(x, y, 0);
 
-			if (useFastShapes &&
-				textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
+				fontManager.updateStates(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
+				fontManager.drawString(string);
+/*
+			if (useFastShapes && textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
 				// Fits in font cache - draw using texture memory
-				textureFont.setIncremental(incrementalFontHint);
+					textureFont.setIncremental(incrementalFontHint);
+					
 				drawTextureString(string);
-//				System.out.println("Draw String on Texture");
+			//	System.out.println("Draw String on Texture");
 			} else {
 				// Too big to fit in a texture - draw from outlines instead
 				drawOutlineString(string);
-//				System.out.println("Draw String as an outline... then tesselate");
+			//	System.out.println("Draw String as an outline... then tesselate");
 			}
+*/
 
 			gl.glPopMatrix();
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
 
+/*
 		private void drawOutlineString(String string) {
 			if (outlineFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
 				outlineFont.render(drawable, string, scale, font);
@@ -1057,6 +1065,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
+*/
 
 		void doDrawGlyphVector(GlyphVector g, float x, float y) {
 			Font font = g.getFont();
@@ -1070,9 +1079,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				// Fits in font cache - draw using texture memory
 				textureFont.setIncremental(incrementalFontHint);
 				drawTextureGlyphVector(g);
+				System.out.println("Draw glyphVector as texture");	
 			} else {
 				// Too big to fit in a texture - draw from outlines instead
 				drawOutlineGlyphVector(g);
+				System.out.println("Draw glyphVector as outline");	
 			}
 
 			gl.glPopMatrix();

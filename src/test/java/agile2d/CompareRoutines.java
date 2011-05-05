@@ -15,12 +15,15 @@ import java.lang.Math;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.BasicStroke;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.*;
+
+import java.awt.Font;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 
 
 /**
@@ -76,7 +79,7 @@ class CompareRoutines {
 		g2d.setColor(Color.BLACK);
 		g2d.drawString("DefautSet Float", 40.5f, 50.5f);
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 24));
-		g2d.drawString("DefautSet Int", 40, 80);
+		g2d.drawString("Sans Serif", 40, 80);
 		g2d.setFont(new Font("Serif", Font.PLAIN, 24));
 		g2d.drawString("Serif, Plain, 24", 40, 110);
 		g2d.setFont(new Font("Monospaced", Font.PLAIN, 24));
@@ -91,7 +94,29 @@ class CompareRoutines {
 		g2d.drawString("SansSerif, Italic, 36", 40, 270);
 		g2d.setFont(new Font("SansSerif", Font.BOLD, 36));
 		g2d.drawString("SansSerif, Bold, 36", 40, 310);
+		g2d.setFont(new Font("SansSerif", Font.PLAIN, 72));
+		g2d.drawString("Big SansSerif, Plain, 108", 40, 400);
 	}
+
+	public static void drawGlyphVector(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
+		//BIG glyph
+		String st = "Big GlyphVector";
+		Font font_ = new Font("SansSerif", Font.BOLD, 36);
+		g2d.setFont(font_);
+		FontRenderContext fontRendContext = g2d.getFontRenderContext();
+	        GlyphVector glyphVectorBig = font_.createGlyphVector(fontRendContext, st);
+		//small glyph
+		st = "Small GlyphVector";
+		font_ = new Font("SansSerif", Font.BOLD, 12);
+		g2d.setFont(font_);
+		fontRendContext = g2d.getFontRenderContext();
+	        GlyphVector glyphVectorSmall = font_.createGlyphVector(fontRendContext, st);
+		//Draw glyphs
+        	g2d.drawGlyphVector(glyphVectorBig, 50, 50);
+        	g2d.drawGlyphVector(glyphVectorSmall, 50, 120);
+	}
+
 
 	public static void fillOval(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
