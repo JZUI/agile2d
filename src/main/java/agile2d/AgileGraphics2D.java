@@ -1026,9 +1026,22 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslated(x, y, 0);
 
-				fontManager.updateStates(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
-				fontManager.drawString(string);
+			fontManager.updateStates(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
+			fontManager.drawString(string);
+
+			gl.glPopMatrix();
+			if (DEBUG_CHECK_GL)
+				checkForErrors();
+		}
+
+
 /*
+		void doDrawString(String string, float x, float y) {
+			if (font == null)
+				return;
+			gl.glPushMatrix();
+			gl.glTranslated(x, y, 0);
+
 			if (useFastShapes && textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
 				// Fits in font cache - draw using texture memory
 					textureFont.setIncremental(incrementalFontHint);
@@ -1040,14 +1053,15 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				drawOutlineString(string);
 			//	System.out.println("Draw String as an outline... then tesselate");
 			}
-*/
+
 
 			gl.glPopMatrix();
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
 
-/*
+
+
 		private void drawOutlineString(String string) {
 			if (outlineFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
 				outlineFont.render(drawable, string, scale, font);

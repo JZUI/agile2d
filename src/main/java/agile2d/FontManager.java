@@ -14,6 +14,7 @@ import javax.media.opengl.GLAutoDrawable;
 
 import java.util.Hashtable;
 import java.awt.Font;
+import java.awt.font.FontRenderContext;
 
 /**
  * Used to manage switching among possible drawString strategies.
@@ -38,11 +39,6 @@ class FontManager {
     private boolean frcAntialiasing;
     private boolean frcUsesFractionalMetrics;
     private boolean useFastShapes;
-
-    Hashtable string_strategies = new Hashtable();
-//    string_strategies.put(STRING_AS_TEXTURE, "String as texture");
-//    string_strategies.put(STRING_AS_OUTLINE, "String as outline");
-
 
     public void updateStates(GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
     	this.drawable = drawable_;
@@ -128,34 +124,6 @@ class FontManager {
 	return string_strategies.get(present_strategy);
     }
 */
-/*
-    // TEXT
-    public void drawString(String string, float x, float y) {
-	if (font == null)
-		return;
-	gl.glPushMatrix();
-	gl.glTranslated(x, y, 0);
-
-	if (useFastShapes &&
-		textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-		// Fits in font cache - draw using texture memory
-		textureFont.setIncremental(incrementalFontHint);
-		_drawTextureString(string);
-//		System.out.println("Draw String on Texture");
-	} else {
-		// Too big to fit in a texture - draw from outlines instead
-		_drawOutlineString(string);
-//		System.out.println("Draw String as an outline... then tesselate");
-	}
-
-	gl.glPopMatrix();
-	if (DEBUG_CHECK_GL)
-		checkForErrors();
-    }
-*/
-
-
-
 
     private void _drawOutlineString(String string) {
 	if (outlineFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
@@ -176,5 +144,51 @@ class FontManager {
 			checkForErrors();
 	}
 
+/*
+		void drawGlyphVector(GlyphVector g, float x, float y) {
+			Font font = g.getFont();
+			FontRenderContext frc = g.getFontRenderContext();
 
+			gl.glPushMatrix();
+			gl.glTranslatef(x, y, 0);
+
+			if (useFastShapes &&
+				textureFont.install(drawable, font, scale, frc.isAntiAliased(), frc.usesFractionalMetrics())) {
+				// Fits in font cache - draw using texture memory
+				//textureFont.setIncremental(incrementalFontHint);
+				drawTextureGlyphVector(g);
+				System.out.println("Draw glyphVector as texture");	
+			} else {
+				// Too big to fit in a texture - draw from outlines instead
+				drawOutlineGlyphVector(g);
+				System.out.println("Draw glyphVector as outline");	
+			}
+
+			gl.glPopMatrix();
+			if (DEBUG_CHECK_GL)
+				checkForErrors();
+
+		}
+
+		private void _drawTextureGlyphVector(GlyphVector g) {
+			doDisableAntialiasing();
+			textureFont.render(drawable, g, scale);
+			doEnableAntialiasing();
+
+			active.setPaint(active.paint);
+			if (DEBUG_CHECK_GL)
+				checkForErrors();
+		}
+
+		private void _drawOutlineGlyphVector(GlyphVector g) {
+			Font font = g.getFont();
+
+			FontRenderContext frc = g.getFontRenderContext();
+			if (outlineFont.install(drawable, font, scale, frc.isAntiAliased(), frc.usesFractionalMetrics())) {
+				outlineFont.render(drawable, g, scale);
+			}
+			if (DEBUG_CHECK_GL)
+				checkForErrors();
+		}
+*/
 }
