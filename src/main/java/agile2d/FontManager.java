@@ -126,7 +126,7 @@ class FontManager {
 */
 
     private void _drawOutlineString(String string) {
-	if (outlineFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
+	if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
 		outlineFont.render(drawable, string, scale, font);
 	}
 	if (DEBUG_CHECK_GL)

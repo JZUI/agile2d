@@ -1117,11 +1117,10 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		private void drawOutlineGlyphVector(GlyphVector g) {
-			Font font = g.getFont();
-
-			FontRenderContext frc = g.getFontRenderContext();
-			if (outlineFont.install(drawable, font, scale, frc.isAntiAliased(), frc.usesFractionalMetrics())) {
-				outlineFont.render(drawable, g, scale);
+//			Font font = g.getFont();
+//			FontRenderContext frc = g.getFontRenderContext();
+			if (outlineFont.prepareGlyphVertices(drawable)) {
+				outlineFont.render(drawable, g);
 			}
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
