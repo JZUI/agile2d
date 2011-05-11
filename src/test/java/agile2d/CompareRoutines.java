@@ -95,36 +95,34 @@ class CompareRoutines {
 		g2d.setFont(new Font("SansSerif", Font.BOLD, 36));
 		g2d.drawString("SansSerif, Bold, 36", 40, 310);
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 72));
-		g2d.drawString("Big SansSerif, Plain, 108", 40, 400);
-		
+		g2d.drawString("Big Text", 40, 400);
 		g2d.setFont(new Font("SansSerif", Font.BOLD, 36));
-		g2d.drawString("Big GlyphVector", 40, 460);
+		g2d.drawString("Sans Serif, 36 (2)", 40, 450);
 	}
 
 	public static void drawGlyphVector(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
-		//BIG glyph
-		String st = "Big GlyphVector";
-		Font font_ = new Font("SansSerif", Font.BOLD, 72);
+		//small glyph
+		String st = "Small GlyphVector";
+		Font font_ = new Font("SansSerif", Font.BOLD, 12);
 		g2d.setFont(font_);
 		FontRenderContext fontRendContext = g2d.getFontRenderContext();
-	        GlyphVector glyphVectorBig = font_.createGlyphVector(fontRendContext, st);
-        	g2d.drawGlyphVector(glyphVectorBig, 50, 90);
-		//small glyph
-		st = "Small GlyphVector";
-		font_ = new Font("SansSerif", Font.BOLD, 12);
-		g2d.setFont(font_);
-		fontRendContext = g2d.getFontRenderContext();
 	        GlyphVector glyphVectorSmall = font_.createGlyphVector(fontRendContext, st);
         	g2d.drawGlyphVector(glyphVectorSmall, 50, 120);
 		//medium glyph
 		st = "Medium";
-		font_ = new Font("Monospaced", Font.PLAIN, 180);
+		font_ = new Font("SansSerif", Font.BOLD, 72);
 		g2d.setFont(font_);
 		fontRendContext = g2d.getFontRenderContext();
 	        GlyphVector glyphVectorMedium = font_.createGlyphVector(fontRendContext, st);
-        	g2d.drawGlyphVector(glyphVectorMedium, 50, 300);
-
+        	g2d.drawGlyphVector(glyphVectorMedium, 50, 90);
+		//big glyph
+		st = "Big";
+		font_ = new Font("Monospaced", Font.PLAIN, 180);
+		g2d.setFont(font_);
+		fontRendContext = g2d.getFontRenderContext();
+	        GlyphVector glyphVectorBig = font_.createGlyphVector(fontRendContext, st);
+        	g2d.drawGlyphVector(glyphVectorBig, 50, 300);
 	}
 
 

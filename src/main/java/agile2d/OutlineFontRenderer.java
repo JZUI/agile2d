@@ -173,15 +173,17 @@ class OutlineFontRenderer extends BasicFontRenderer {
 		if(listBase == 0) {
 	                GL2 gl = drawable.getGL().getGL2();
         	        listBase = gl.glGenLists(256);
-			System.out.println("Creating a displayList for a given font set");
 	        }
 
 	      vertices = new VertexArrayList[256];
+	      for(int i =0; i<256;i++)
+		vertices[i] = null;
               info.vertices = vertices;
 
-//	      for (int i = 0; i < latin1Chars.length; i++) {
-//      	      addTesselation(drawable, latin1Chars[i]);
-//	      }
+	      //tesselate all chars for the requested Font
+	      for (int i = 0; i < latin1Chars.length; i++) {
+	      	      addTesselation(drawable, latin1Chars[i]);
+	      }
         }
 
         installed = true;
@@ -198,9 +200,11 @@ class OutlineFontRenderer extends BasicFontRenderer {
 
 
     protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
+/*
         if (vertices_[c] == null) {
             addTesselation(drawable, latin1Chars[c]);
         }
+*/
         return vertices_[c];
     }
 
@@ -216,8 +220,9 @@ class OutlineFontRenderer extends BasicFontRenderer {
     
     protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
 
-        if (listFont[c] == font)
+        if (listFont[c] == font){
         	return true;
+	}
 
 	VertexArrayList v = getVertices(drawable, c, vList_);
         if (v == null)
@@ -254,7 +259,6 @@ class OutlineFontRenderer extends BasicFontRenderer {
 
         for (i = 0; i < string.length(); i++) {
             int c = string.charAt(i);
-	    System.out.println("Code du char "+c);
             if (c > metrics.length)
                 continue;
             if (installChar(drawable, c, listBase, vertices)) {
@@ -283,8 +287,6 @@ class OutlineFontRenderer extends BasicFontRenderer {
             return;
         int i;
 	
-        System.out.println("After checking whether it is installed");	
-
         GL2 gl = drawable.getGL().getGL2();
 
         for (i = 0; i < g.getNumGlyphs(); i++) {

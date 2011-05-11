@@ -103,13 +103,11 @@ class FontManager {
 	if( (present_strategy == STRING_AS_TEXTURE) && (checkStrategy(STRING_AS_TEXTURE)) ){
 		// Fits in font cache - draw using texture memory
 		_drawTextureString(string_);
-		System.out.println("Draw String on a texture");	
 	}
 	else {
 		setStrategy(STRING_AS_OUTLINE);
 		// Too big to fit in a texture - draw from outlines instead
 		_drawOutlineString(string_);
-		System.out.println("Draw String as an outline... then tesselate and fill it");
 	}
    }
   

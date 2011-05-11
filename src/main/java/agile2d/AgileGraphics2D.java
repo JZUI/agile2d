@@ -1093,11 +1093,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				// Fits in font cache - draw using texture memory
 				textureFont.setIncremental(incrementalFontHint);
 				drawTextureGlyphVector(g);
-				System.out.println("Draw glyphVector as texture");	
+//				System.out.println("Draw glyphVector as texture");	
 			} else {
 				// Too big to fit in a texture - draw from outlines instead
 				drawOutlineGlyphVector(g);
-				System.out.println("Draw glyphVector as outline");	
+//				System.out.println("Draw glyphVector as outline");	
 			}
 
 			gl.glPopMatrix();
@@ -1340,6 +1340,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 *
 	 * @param argb color with 8 bits components for the alpha, red,
 	 * green and blue channels in that order from high bits to low bits.
+
 	 */
 	public void setColor(int argb) {
 		makeCurrent();
