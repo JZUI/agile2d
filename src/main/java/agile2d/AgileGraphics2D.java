@@ -1035,51 +1035,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 
-/*
-		void doDrawString(String string, float x, float y) {
-			if (font == null)
-				return;
-			gl.glPushMatrix();
-			gl.glTranslated(x, y, 0);
-
-			if (useFastShapes && textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-				// Fits in font cache - draw using texture memory
-					textureFont.setIncremental(incrementalFontHint);
-					
-				drawTextureString(string);
-			//	System.out.println("Draw String on Texture");
-			} else {
-				// Too big to fit in a texture - draw from outlines instead
-				drawOutlineString(string);
-			//	System.out.println("Draw String as an outline... then tesselate");
-			}
-
-
-			gl.glPopMatrix();
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
-		}
-
-
-
-		private void drawOutlineString(String string) {
-			if (outlineFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-				outlineFont.render(drawable, string, scale, font);
-			}
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
-		}
-
-		private void drawTextureString(String string) {
-			doDisableAntialiasing();
-			textureFont.render(drawable, string, scale, font);
-			doEnableAntialiasing();
-
-			active.setPaint(active.paint);
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
-		}
-*/
 
 		void doDrawGlyphVector(GlyphVector g, float x, float y) {
 			Font font = g.getFont();
@@ -1088,42 +1043,13 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
 
-			if (useFastShapes &&
-				textureFont.install(drawable, font, scale, frc.isAntiAliased(), frc.usesFractionalMetrics())) {
-				// Fits in font cache - draw using texture memory
-				textureFont.setIncremental(incrementalFontHint);
-				drawTextureGlyphVector(g);
-//				System.out.println("Draw glyphVector as texture");	
-			} else {
-				// Too big to fit in a texture - draw from outlines instead
-				drawOutlineGlyphVector(g);
-//				System.out.println("Draw glyphVector as outline");	
-			}
+			fontManager.updateStates(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
+			fontManager.drawGlyphVector(g);
 
 			gl.glPopMatrix();
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 
-		}
-
-		private void drawTextureGlyphVector(GlyphVector g) {
-			doDisableAntialiasing();
-			textureFont.render(drawable, g, scale);
-			doEnableAntialiasing();
-
-			active.setPaint(active.paint);
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
-		}
-
-		private void drawOutlineGlyphVector(GlyphVector g) {
-//			Font font = g.getFont();
-//			FontRenderContext frc = g.getFontRenderContext();
-			if (outlineFont.prepareGlyphVertices(drawable)) {
-				outlineFont.render(drawable, g);
-			}
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
 		}
 
 		// IMAGES
