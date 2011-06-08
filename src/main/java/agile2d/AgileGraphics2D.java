@@ -1026,7 +1026,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslated(x, y, 0);
 
-			fontManager.updateStates(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
+			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawString(string);
 
 			gl.glPopMatrix();
@@ -1043,7 +1043,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
 
-			fontManager.updateStates(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
+			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawGlyphVector(g);
 
 			gl.glPopMatrix();

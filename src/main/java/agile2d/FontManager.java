@@ -36,21 +36,24 @@ class FontManager {
     GL2  gl;
     AgileState glState;
 
+    private AgileGraphics2D ag2d_active;
     private GLAutoDrawable drawable;
     private Font font;
     private double scale;
     private boolean frcAntialiasing;
     private boolean frcUsesFractionalMetrics;
     private boolean useFastShapes;
-	private boolean incrementalFontHint;    
+    private boolean incrementalFontHint;    
 
-    public void updateStates(GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
+
+    public void updateStates(AgileGraphics2D ag2d_active_, GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
     	this.drawable = drawable_;
 	this.font = font_;
 	this.scale = scale_;
 	this.frcAntialiasing = frcAntialiasing_;
 	this.frcUsesFractionalMetrics = frcUsesFractionalMetrics_;
 	this.useFastShapes = useFastShapes_;
+	this.ag2d_active = ag2d_active_;
     }
 
     public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_) {
@@ -120,12 +123,6 @@ class FontManager {
 	// drawable.getGLContext().gljCheckGL();
    }
     
-  /*
-    public int getStrategyName(){
-	//Return the name (i.e., a string) of the present strategy
-	return string_strategies.get(present_strategy);
-    }
-*/
 
     private void _drawOutlineString(String string) {
 	if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
@@ -141,7 +138,7 @@ class FontManager {
 		textureFont.render(drawable, string, scale, font);
 //		doEnableAntialiasing();
 
-//		active.setPaint(active.paint);
+		ag2d_active.setPaint(ag2d_active.getPaint());
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
 	}
@@ -166,7 +163,7 @@ class FontManager {
 			textureFont.render(drawable, g, scale);
 //			doEnableAntialiasing();
 
-//			active.setPaint(active.paint);
+			ag2d_active.setPaint(ag2d_active.getPaint());
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
