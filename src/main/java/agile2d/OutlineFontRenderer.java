@@ -155,19 +155,24 @@ class OutlineFontRenderer extends BasicFontRenderer {
 	//Check if the requested font has already been installed
         if (this.font != null && this.font.equals(font)) {
             installed = true;
+	    System.out.println("Font already required");
             return true;
         }
         CacheInfo info = findCached(font);
         if (info == null) {
             installed = false;
+	    System.out.println("Font not installed");
             return false;
         }
         this.font = info.font;
         this.frc = new FontRenderContext(null, aa, ufm);
         metrics = info.metrics;
+	vertices = null;
         vertices = info.vertices;
+	System.out.println("Using Font "+font.getFontName());
 
         if (vertices == null) {
+		System.out.println("Vertices = null in Font "+font.getFontName());
         	setup();
 
 		if(listBase == 0) {
@@ -176,14 +181,13 @@ class OutlineFontRenderer extends BasicFontRenderer {
 	        }
 
 	      vertices = new VertexArrayList[256];
-	      for(int i =0; i<256;i++)
-		vertices[i] = null;
               info.vertices = vertices;
 
 	      //tesselate all chars for the requested Font
-	      for (int i = 0; i < latin1Chars.length; i++) {
-	      	      addTesselation(drawable, latin1Chars[i]);
-	      }
+	      //for (int i = 0; i < latin1Chars.length; i++) {
+	      //	      addTesselation(drawable, latin1Chars[i]);
+	      //}
+
         }
 
         installed = true;
@@ -200,11 +204,10 @@ class OutlineFontRenderer extends BasicFontRenderer {
 
 
     protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
-/*
+
         if (vertices_[c] == null) {
             addTesselation(drawable, latin1Chars[c]);
         }
-*/
         return vertices_[c];
     }
 

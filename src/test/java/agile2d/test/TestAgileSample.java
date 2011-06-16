@@ -158,7 +158,7 @@ public class TestAgileSample {
 	@Test
 		public void testDrawString() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
-			endUnit(context, true, 4000, "string", true, false);
+			endUnit(context, true, 5000, "string", true, false);
 		}
 
 	@Test
@@ -328,34 +328,34 @@ public class TestAgileSample {
 		if(testColor && build_diff){
 			color_ok=true;
 			if(maxRGB[0]>RGB_TOLERANCE)
-				color_ok = all_ok = false;							
+				color_ok = all_ok = false;
 		}
 			
 		if(all_ok==false){
 			try{					
-/*
+
 				//write jittered mask image
-				outputfile = new File(RESULT_IMG_DIR+"/jit_"+baseName+".png");
-				ImageIO.write(jit_mask, "png", outputfile);
+//				outputfile = new File(RESULT_IMG_DIR+"/jit_"+baseName+".png");
+//				ImageIO.write(jit_mask, "png", outputfile);
 
-				outputfile = new File(RESULT_IMG_DIR+"/masked_"+baseName+".png");
-				ImageIO.write(img_masked, "png", outputfile);			
+//				outputfile = new File(RESULT_IMG_DIR+"/masked_"+baseName+".png");
+//				ImageIO.write(img_masked, "png", outputfile);			
 			
-				outputfile = new File(RESULT_IMG_DIR+"/mask_"+baseName+".png");
-				ImageIO.write(img_mask, "png", outputfile);
+//				outputfile = new File(RESULT_IMG_DIR+"/mask_"+baseName+".png");
+//				ImageIO.write(img_mask, "png", outputfile);
 
-				outputfile = new File(RESULT_IMG_DIR+"/ag2d_"+baseName+".png");
-				ImageIO.write(imgAg2d, "png", outputfile);
+//				outputfile = new File(RESULT_IMG_DIR+"/ag2d_"+baseName+".png");
+//				ImageIO.write(imgAg2d, "png", outputfile);
 				
-				outputfile = new File(RESULT_IMG_DIR+"/g2d_"+baseName+".png");
-				ImageIO.write(imgG2d, "png", outputfile);
+//				outputfile = new File(RESULT_IMG_DIR+"/g2d_"+baseName+".png");
+//				ImageIO.write(imgG2d, "png", outputfile);
 				
-				outputfile = new File(RESULT_IMG_DIR+"/diff_"+baseName+".png");
-				ImageIO.write(img_diff, "png", outputfile);
+//				outputfile = new File(RESULT_IMG_DIR+"/diff_"+baseName+".png");
+//				ImageIO.write(img_diff, "png", outputfile);
 
-				outputfile = new File(RESULT_IMG_DIR+"/diff_"+baseName+".png");
-				ImageIO.write(img_diff, "png", outputfile);
-*/
+//				outputfile = new File(RESULT_IMG_DIR+"/diff_"+baseName+".png");
+//				ImageIO.write(img_diff, "png", outputfile);
+
 
 				if(testShape==false)
 					img_report = buildReport(baseName, imgG2d, imgAg2d, img_diff, null, testShape);					
