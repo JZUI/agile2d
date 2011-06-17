@@ -38,6 +38,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
     int listBase;    
     int listBaseGlyphs;
     Font listFont[] = new Font[256]; // character font currently in display list
+    char charsList[256]; // character font currently in display list
 
 	/** 
 	 * Tesselates a shape and stores the result in a VertexArrayList
@@ -152,6 +153,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
     }
 
     public boolean installFont(GLAutoDrawable drawable, Font font, double scale, boolean aa, boolean ufm) {
+	System.out.println("Size of cache "+ cache.size());
 	//Check if the requested font has already been installed
         if (this.font != null && this.font.equals(font)) {
             installed = true;
@@ -166,22 +168,25 @@ class OutlineFontRenderer extends BasicFontRenderer {
         }
         this.font = info.font;
         this.frc = new FontRenderContext(null, aa, ufm);
-        metrics = info.metrics;
-	vertices = null;
-        vertices = info.vertices;
+        this.metrics = info.metrics;
+//	this.vertices = null;
+        this.vertices = info.vertices;
 	System.out.println("Using Font "+font.getFontName());
 
-        if (vertices == null) {
+        if (this.vertices == null) {
 		System.out.println("Vertices = null in Font "+font.getFontName());
         	setup();
 
 		if(listBase == 0) {
 	                GL2 gl = drawable.getGL().getGL2();
         	        listBase = gl.glGenLists(256);
+			System.out.println("glGenList = "+listBase);
 	        }
 
-	      vertices = new VertexArrayList[256];
-              info.vertices = vertices;
+	      this.vertices = new VertexArrayList[256];
+              info.vertices = this.vertices;
+	      for(int i=0; i<256; i++)
+	      	info.vertices[i]=null;
 
 	      //tesselate all chars for the requested Font
 	      //for (int i = 0; i < latin1Chars.length; i++) {
@@ -204,7 +209,6 @@ class OutlineFontRenderer extends BasicFontRenderer {
 
 
     protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
-
         if (vertices_[c] == null) {
             addTesselation(drawable, latin1Chars[c]);
         }
@@ -224,6 +228,8 @@ class OutlineFontRenderer extends BasicFontRenderer {
     protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
 
         if (listFont[c] == font){
+//        if (charsList[c] != font){	
+		System.out.println("ListFont=font. Font = "+listFont[c].getFontName());
         	return true;
 	}
 
@@ -262,13 +268,16 @@ class OutlineFontRenderer extends BasicFontRenderer {
 
         for (i = 0; i < string.length(); i++) {
             int c = string.charAt(i);
+	    System.out.println("Printing "+string.charAt(i)+" at index "+i+" number: "+c);
             if (c > metrics.length)
                 continue;
             if (installChar(drawable, c, listBase, vertices)) {
                 GlyphMetrics m = metrics[c];
                 gl.glCallList(listBase + c);
-                gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0);
+                gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
             }
+	    else
+		System.out.println("InstallChar didnt work");
         }
         installed = false;
     }
