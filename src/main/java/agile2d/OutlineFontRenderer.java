@@ -38,8 +38,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
     int listBase;    
     int listBaseGlyphs;
     Font listFont[] = new Font[256]; // character font currently in display list
-    char charsList[256]; // character font currently in display list
-
+    
 	/** 
 	 * Tesselates a shape and stores the result in a VertexArrayList
 	 */
@@ -153,38 +152,31 @@ class OutlineFontRenderer extends BasicFontRenderer {
     }
 
     public boolean installFont(GLAutoDrawable drawable, Font font, double scale, boolean aa, boolean ufm) {
-	System.out.println("Size of cache "+ cache.size());
 	//Check if the requested font has already been installed
         if (this.font != null && this.font.equals(font)) {
             installed = true;
-	    System.out.println("Font already required");
             return true;
         }
         CacheInfo info = findCached(font);
         if (info == null) {
             installed = false;
-	    System.out.println("Font not installed");
             return false;
         }
         this.font = info.font;
         this.frc = new FontRenderContext(null, aa, ufm);
         this.metrics = info.metrics;
-//	this.vertices = null;
         this.vertices = info.vertices;
-	System.out.println("Using Font "+font.getFontName());
 
         if (this.vertices == null) {
-		System.out.println("Vertices = null in Font "+font.getFontName());
         	setup();
 
-		if(listBase == 0) {
+			if(listBase == 0) {
 	                GL2 gl = drawable.getGL().getGL2();
         	        listBase = gl.glGenLists(256);
-			System.out.println("glGenList = "+listBase);
-	        }
+		    }
 
 	      this.vertices = new VertexArrayList[256];
-              info.vertices = this.vertices;
+          info.vertices = this.vertices;
 	      for(int i=0; i<256; i++)
 	      	info.vertices[i]=null;
 
@@ -194,7 +186,11 @@ class OutlineFontRenderer extends BasicFontRenderer {
 	      //}
 
         }
-
+        //Check wether it is the same font of that used to create the present glyphvector
+        //and if not, create a new glyphvector with the present font
+        else if(glyphs.getFont() != font){
+			setup();
+		}
         installed = true;
         return true;
     }
@@ -228,18 +224,16 @@ class OutlineFontRenderer extends BasicFontRenderer {
     protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
 
         if (listFont[c] == font){
-//        if (charsList[c] != font){	
-		System.out.println("ListFont=font. Font = "+listFont[c].getFontName());
         	return true;
-	}
+		}
 
-	VertexArrayList v = getVertices(drawable, c, vList_);
+		VertexArrayList v = getVertices(drawable, c, vList_);
         if (v == null)
-		return false;
+			return false;
         GL2 gl = drawable.getGL().getGL2();
         gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
-	for (int i = 0; i < v.size(); i++)
-		ShapeManager.render(gl, v.getVertexArrayAt(i), null);
+		for (int i = 0; i < v.size(); i++)
+			ShapeManager.render(gl, v.getVertexArrayAt(i), null);
         gl.glEndList();
         listFont[c] = font;
         return true;
@@ -268,7 +262,6 @@ class OutlineFontRenderer extends BasicFontRenderer {
 
         for (i = 0; i < string.length(); i++) {
             int c = string.charAt(i);
-	    System.out.println("Printing "+string.charAt(i)+" at index "+i+" number: "+c);
             if (c > metrics.length)
                 continue;
             if (installChar(drawable, c, listBase, vertices)) {
@@ -276,8 +269,6 @@ class OutlineFontRenderer extends BasicFontRenderer {
                 gl.glCallList(listBase + c);
                 gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
             }
-	    else
-		System.out.println("InstallChar didnt work");
         }
         installed = false;
     }
