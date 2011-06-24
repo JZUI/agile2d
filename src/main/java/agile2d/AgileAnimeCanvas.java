@@ -24,7 +24,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.GraphicsEnvironment;
 
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
@@ -55,7 +54,7 @@ import javax.media.opengl.GLProfile;
  * @author Jean-Daniel Fekete
  * @version $Revision$
  */
-public class AgileCanvas implements GLEventListener, KeyListener {
+public class AgileAnimeCanvas implements GLEventListener, KeyListener {
     private AgileGraphics2D jgraphics;
     private Component       root;
     private BufferedImage img_buff = null;
@@ -65,9 +64,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
     private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
     private double rTheta = 1.0;
     private double zFactor = 1.00;
-    private int fontIndex;
-    private Font[] allFonts;
-    private int previousFontSize;
 
     /**
      * Creates an Agile canvas from a Component.
@@ -75,7 +71,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
      * @param root
      *            the root component
      */
-    public AgileCanvas(Component root) {
+    public AgileAnimeCanvas(Component root) {
         this.root = root;
 
     }
@@ -105,11 +101,8 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 
 	try {
 		img_buff = ImageIO.read(new File("world.jpg"));
+//		img_buff = ImageIO.read(new File("DukeWave.gif"));
 	} catch (IOException e) {}
-
-	GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	allFonts = ge.getAllFonts();
-	fontIndex = 0;
     }
 
     /**
@@ -180,19 +173,12 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		drawRotateArc(100, 100, rTheta, jgraphics);
 		break;
 
-		//switch font and drawBigText just after that
-		case 10:
-		switchFont(fontIndex, jgraphics);
-
 		case 7:
 		drawBigText(400, 300, zFactor, jgraphics);
 		break;
 
 		case 8:
 		drawBigImage(5, 5, jgraphics);
-		break;
-
-		case 9:
 		break;
 
 		default:
@@ -254,14 +240,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		exampleNb=8;break;
 	case KeyEvent.VK_F9:
 		exampleNb=9;break;
-	//Switch fonts
-	case KeyEvent.VK_F:
-		if(fontIndex < allFonts.length)
-			fontIndex++;
-		else
-			fontIndex=0;
-		exampleNb=10;
-	break;
 
 	//Other events
 	case KeyEvent.VK_A:
@@ -284,6 +262,8 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		zFactor -= 0.1;
 	break;
 
+
+
 	}
 		root.repaint();	
 }
@@ -305,7 +285,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		System.exit(0);
 	}
         Frame frame = new Frame("Agile2D Demo");
-	final AgileCanvas agile = new AgileCanvas(null);
+	final AgileAnimeCanvas agile = new AgileAnimeCanvas(null);
 
 	GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 	glCaps.setDoubleBuffered(true);// request double buffer display mode
@@ -362,11 +342,11 @@ System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampl
 //Sample display to test text rendering performance during zooming
 	void drawBigText(int x, int y, double zoomFactor, AgileGraphics2D glGraphics){
 		glGraphics.scale(zoomFactor, zoomFactor);
-		glGraphics.drawString("Test drawString", 0, 30);
-		glGraphics.setColor(Color.GREEN);
-//		glGraphics.drawRect(4, 4, 120, 120);
-		glGraphics.setColor(Color.RED);
-		glGraphics.drawLine(3, 3, 130, 130);
+		jgraphics.drawString("Test drawString", 0, 30);
+		jgraphics.setColor(Color.GREEN);
+		jgraphics.drawRect(4, 4, 120, 120);
+		jgraphics.setColor(Color.RED);
+		jgraphics.drawLine(3, 3, 130, 130);
 	}
 
 
@@ -387,14 +367,6 @@ System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampl
 private static Color colors[] = { Color.blue, Color.green, Color.red };
 
 
-public void switchFont(int fontIndex_, AgileGraphics2D glGraphics) {
-	float previousFontSize_ = (float)(glGraphics.getFont()).getSize();
-	System.out.println("Previous font size: "+(glGraphics.getFont()).getSize());
-	Font nextFont_ = allFonts[fontIndex_].deriveFont(previousFontSize_);
-	glGraphics.setFont(nextFont_);
-		
-	System.out.println("Present font name: "+(glGraphics.getFont()).getFontName());
-}
 
 
 public void drawDemoCurves(int w, int h, AgileGraphics2D glGraphics) {
