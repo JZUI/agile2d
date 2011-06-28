@@ -107,6 +107,10 @@ class FontManager {
    }
 
    public void drawString(String string_){
+	//by default, agile always try to use the texture strategy	
+	if(!setStrategy(STRING_AS_TEXTURE))
+		setStrategy(STRING_AS_OUTLINE);
+	//than check again which strategy is on
 	if( (present_strategy == STRING_AS_TEXTURE) && (checkStrategy(STRING_AS_TEXTURE)) ){
 		// Fits in font cache - draw using texture memory
 		_drawTextureString(string_);
