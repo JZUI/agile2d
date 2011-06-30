@@ -30,6 +30,43 @@ import agile2d.geom.VertexArrayList;
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.3 $
  */
+
+class FontKey implements Comparable<FontKey>  
+ {  
+     private String _key;
+       
+     FontKey(String string1, String string2)  
+     {  
+         _key = string1 + string2;  
+     }  
+       
+     @Override  
+     public int compareTo(FontKey other)  
+     {  
+         return _key.compareTo(other._key);  
+     }  
+       
+     @Override  
+     public boolean equals(Object other)  
+     {  
+         return (other != null) && (getClass() == other.getClass()) &&   
+             _key.equals(((FontKey)other)._key);  
+     }  
+       
+     @Override  
+     public int hashCode()  
+     {  
+         return _key.hashCode();  
+     }  
+       
+     @Override  
+     public String toString()  
+     {  
+         return _key;  
+     }  
+ }  
+
+
 class FontPreRenderer extends BasicFontRenderer {
     GlyphMetrics metrics[];
     VertexArrayList vertices[];
