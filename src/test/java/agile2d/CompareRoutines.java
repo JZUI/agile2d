@@ -100,6 +100,28 @@ class CompareRoutines {
 		g2d.drawString("Sans Serif, 36 (2)", 40, 450);
 	}
 
+
+	public static void drawStringSize(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
+		final int SIZE_INIT = 10;
+		final int SIZE_MAX = 300;
+		int x_ = 2;
+		int y_ = 40;
+		for(int size_=SIZE_INIT; size_<SIZE_MAX; size_+=2){
+			if( (x_+size_) > 512 ){
+				x_ = 2;
+				y_ += size_;
+				if( y_ > 512 )
+					return;
+			}
+			else
+				x_ += (int)(size_/2);
+			g2d.setFont(new Font("SansSerif", Font.PLAIN, size_));
+			g2d.drawString("a", x_, y_);
+		}
+	}
+
+
 	public static void drawGlyphVector(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
 		//small glyph
@@ -123,6 +145,30 @@ class CompareRoutines {
 		fontRendContext = g2d.getFontRenderContext();
 	        GlyphVector glyphVectorBig = font_.createGlyphVector(fontRendContext, st);
         	g2d.drawGlyphVector(glyphVectorBig, 50, 300);
+	}
+
+	public static void drawGlyphVectorSize(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
+		final int SIZE_INIT = 10;
+		final int SIZE_MAX = 300;
+		final String SAMPLE_STRING = "g";
+		int x_ = 2;
+		int y_ = 40;
+		for(int size_=SIZE_INIT; size_<SIZE_MAX; size_+=2){
+			if( (x_+size_) > 512 ){
+				x_ = 2;
+				y_ += size_;
+				if( y_ > 512 )
+					return;
+			}
+			else
+				x_ += (int)(size_/2);
+			Font font_ = new Font("SansSerif", Font.PLAIN, size_);
+			g2d.setFont(font_);
+			FontRenderContext fontRendContext = g2d.getFontRenderContext();
+		        GlyphVector glyphVector_ = font_.createGlyphVector(fontRendContext, SAMPLE_STRING);
+        		g2d.drawGlyphVector(glyphVector_, x_, y_);
+		}
 	}
 
 

@@ -162,9 +162,21 @@ public class TestAgileSample {
 		}
 
 	@Test
+		public void testDrawStringSize() throws InterruptedException {
+			AglTestContext context = new AglTestContext(new AglTestStrategyDrawStringSize());
+			endUnit(context, true, 5000, "stringSize", true, false);
+		}
+
+	@Test
 		public void testDrawGlyphVector() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVector());
 			endUnit(context, true, 4000, "glyphVector", true, false);
+		}
+
+	@Test
+		public void testDrawGlyphVectorSize() throws InterruptedException {
+			AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVectorSize());
+			endUnit(context, true, 4000, "glyphVectorSize", true, false);
 		}
 	
 	@Test
