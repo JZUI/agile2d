@@ -78,24 +78,35 @@ class CompareRoutines {
 	public static void drawString(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
 		g2d.drawString("DefautSet Float", 40.5f, 50.5f);
+
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 24));
+//		g2d.setFont(new Font("Garuda", Font.BOLD, 24));
 		g2d.drawString("Sans Serif", 40, 80);
+
 		g2d.setFont(new Font("Serif", Font.PLAIN, 24));
 		g2d.drawString("Serif, Plain, 24", 40, 110);
+
 		g2d.setFont(new Font("Monospaced", Font.PLAIN, 24));
 		g2d.drawString("Monospaced, Plain, 24", 40, 140);
+
 		g2d.setFont(new Font("Dialog", Font.PLAIN, 24));
 		g2d.drawString("Dialog, Plain, 24", 40, 170);
+
 		g2d.setFont(new Font("DialogInput", Font.PLAIN, 24));
 		g2d.drawString("DialogInput, Plain, 24", 40, 200);
+
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 24));
 		g2d.drawString("SansSerif, Plain, 24", 40, 230);
+
 		g2d.setFont(new Font("SansSerif", Font.ITALIC, 36));
 		g2d.drawString("SansSerif, Italic, 36", 40, 270);
+
 		g2d.setFont(new Font("SansSerif", Font.BOLD, 36));
 		g2d.drawString("SansSerif, Bold, 36", 40, 310);
+
 		g2d.setFont(new Font("SansSerif", Font.PLAIN, 72));
 		g2d.drawString("Big Text", 40, 400);
+
 		g2d.setFont(new Font("SansSerif", Font.BOLD, 36));
 		g2d.drawString("Sans Serif, 36 (2)", 40, 450);
 	}
@@ -116,6 +127,7 @@ class CompareRoutines {
 			}
 			else
 				x_ += (int)(size_/2);
+			System.out.println(size_);
 			g2d.setFont(new Font("SansSerif", Font.PLAIN, size_));
 			g2d.drawString("a", x_, y_);
 		}

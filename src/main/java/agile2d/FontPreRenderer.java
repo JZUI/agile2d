@@ -76,6 +76,35 @@ class FontPreRenderer extends BasicFontRenderer {
     int listBaseGlyphs;
     Font listFont[] = new Font[256]; // character font currently in display list
     
+    static int listFontSizes[];
+    static int MAX_FONT_SIZE = 1024;
+    static int minFontSize = 24;
+
+    static int getCharKey(char c_, Font f_){
+	String charKeyString_ = Character.toString(c_)+f_.getFontName()+f_.getSize();
+	return charKeyString_.hashCode();
+    }
+    
+    void generateListFontSizes(int start_size_, int max_size_){
+	int i=0;
+	float size_=(float)start_size_;
+	do{
+		listFontSizes[i]=(int)Math.round(size_*1.1);
+	}while( size_ < max_size_ );
+
+    }
+
+    int getNextUpperSize(int reqSize_){
+	int length_ = listFontSizes.length;
+	for(int i=0; i<length_; i++){
+		if( listFontSizes[i] >= reqSize_ )
+			return listFontSizes[i];
+	}
+	System.err.println("Can't find any size larger than the required size (which is "+reqSize_+"). Max size is "+listFontSizes[length_-1]);
+	return listFontSizes[length_-1];
+    }
+    
+
 	/** 
 	 * Tesselates a shape and stores the result in a VertexArrayList
 	 */
@@ -186,6 +215,7 @@ class FontPreRenderer extends BasicFontRenderer {
 
     public FontPreRenderer(Tesselator tesselator) {
         this.tesselator = tesselator;
+//	generateListofSizes();
     }
 
     public boolean installFont(GLAutoDrawable drawable, Font font, double scale, boolean aa, boolean ufm) {
