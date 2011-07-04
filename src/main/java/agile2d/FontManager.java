@@ -25,7 +25,7 @@ class FontManager {
     public static final int STRING_AS_TEXTURE = 0;
     public static final int STRING_AS_OUTLINE = 1;
     public static final int GLYPH_AS_TEXTURE = 2;
-	public static final int GLYPH_AS_OUTLINE = 3;
+    public static final int GLYPH_AS_OUTLINE = 3;
 
     private TextureFontRenderer textureFont;
     private OutlineFontRenderer outlineFont;
@@ -43,8 +43,7 @@ class FontManager {
     private boolean frcAntialiasing;
     private boolean frcUsesFractionalMetrics;
     private boolean useFastShapes;
-    private boolean incrementalFontHint;    
-
+    private boolean incrementalFontHint;
 
     public void updateStates(AgileGraphics2D ag2d_active_, GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
     	this.drawable = drawable_;

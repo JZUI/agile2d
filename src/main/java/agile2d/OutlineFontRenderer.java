@@ -97,8 +97,8 @@ class OutlineFontRenderer extends BasicFontRenderer {
         GlyphMetrics metrics[];
         VertexArrayList vertices[];
 
-        CacheInfo(Font font) {
-            this.font = font;
+        CacheInfo(Font font_) {
+            this.font = font_;
             metrics = new GlyphMetrics[256];
         }
     }
@@ -106,12 +106,12 @@ class OutlineFontRenderer extends BasicFontRenderer {
     LinkedList cache = new LinkedList();
     int maxCacheLength = 20;
 
-    public CacheInfo findCached(Font font) {
+    public CacheInfo findCached(Font font_) {
         CacheInfo info = null;
         boolean first = true;
         for (Iterator it = cache.iterator(); it.hasNext();) {
             info = (CacheInfo) it.next();
-            if (info.font.equals(font)) {
+            if (info.font.equals(font_)) {
                 if (!first) {
                     it.remove();
                     cache.addFirst(info);
@@ -120,7 +120,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
             }
             first = false;
         }
-        info = new CacheInfo(font);
+        info = new CacheInfo(font_);
         cache.addFirst(info);
         setMaxCacheLength(maxCacheLength);
 
@@ -151,13 +151,13 @@ class OutlineFontRenderer extends BasicFontRenderer {
         this.tesselator = tesselator;
     }
 
-    public boolean installFont(GLAutoDrawable drawable, Font font, double scale, boolean aa, boolean ufm) {
+    public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm) {
 	//Check if the requested font has already been installed
-        if (this.font != null && this.font.equals(font)) {
+        if (this.font != null && this.font.equals(font_)) {
             installed = true;
             return true;
         }
-        CacheInfo info = findCached(font);
+        CacheInfo info = findCached(font_);
         if (info == null) {
             installed = false;
             return false;
@@ -188,7 +188,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
         }
         //Check wether it is the same font of that used to create the present glyphvector
         //and if not, create a new glyphvector with the present font
-        else if(glyphs.getFont() != font){
+        else if(glyphs.getFont() != font_){
 			setup();
 		}
         installed = true;
@@ -223,11 +223,14 @@ class OutlineFontRenderer extends BasicFontRenderer {
     
     protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
 
-        if (listFont[c] == font){
+    	/*
+        if (listFont[c] == this.font){
         	return true;
-		}
+		}*/
 
 		VertexArrayList v = getVertices(drawable, c, vList_);
+		
+		//vertices for this character havent't been generated
         if (v == null)
 			return false;
         GL2 gl = drawable.getGL().getGL2();
@@ -235,7 +238,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
 		for (int i = 0; i < v.size(); i++)
 			ShapeManager.render(gl, v.getVertexArrayAt(i), null);
         gl.glEndList();
-        listFont[c] = font;
+        //listFont[c] = this.font;
         return true;
     }
 
@@ -253,7 +256,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
     }
 
 
-    public void render(GLAutoDrawable drawable, String string, double scale, Font font) {
+    public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {
         if (!installed)
             return;
         int i;

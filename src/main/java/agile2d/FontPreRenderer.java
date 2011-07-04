@@ -31,80 +31,65 @@ import agile2d.geom.VertexArrayList;
  * @version $Revision: 1.3 $
  */
 
-class FontKey implements Comparable<FontKey>  
- {  
-     private String _key;
-       
-     FontKey(String string1, String string2)  
-     {  
-         _key = string1 + string2;  
-     }  
-       
-     @Override  
-     public int compareTo(FontKey other)  
-     {  
-         return _key.compareTo(other._key);  
-     }  
-       
-     @Override  
-     public boolean equals(Object other)  
-     {  
-         return (other != null) && (getClass() == other.getClass()) &&   
-             _key.equals(((FontKey)other)._key);  
-     }  
-       
-     @Override  
-     public int hashCode()  
-     {  
-         return _key.hashCode();  
-     }  
-       
-     @Override  
-     public String toString()  
-     {  
-         return _key;  
-     }  
- }  
+class CharKey implements Comparable<CharKey>  
+{  
+	private String _key;
+	private int _size;
+
+	CharKey(char c_, Font f_)  
+	{  
+		_size = f_.getSize();
+		_key = Character.toString(c_)+f_.getFontName()+_size;
+
+	}  
+
+	@Override  
+	public int compareTo(CharKey other)  
+	{  
+		return _key.compareTo(other._key);  
+	}  
+
+	@Override  
+	public boolean equals(Object other)  
+	{  
+		return (other != null) && (getClass() == other.getClass()) &&   
+		_key.equals(((CharKey)other)._key);  
+	}  
+
+	@Override  
+	public int hashCode()  
+	{  
+		return _key.hashCode();  
+	}  
+
+	@Override  
+	public String toString()  
+	{  
+		return _key;  
+	}  
+
+	public int size()  
+	{  
+		return _size;  
+	}
+
+}  
 
 
 class FontPreRenderer extends BasicFontRenderer {
-    GlyphMetrics metrics[];
-    VertexArrayList vertices[];
-    VertexArrayList verticesGlyphs[];
-    Tesselator tesselator;
-    int listBase;    
-    int listBaseGlyphs;
-    Font listFont[] = new Font[256]; // character font currently in display list
-    
-    static int listFontSizes[];
-    static int MAX_FONT_SIZE = 1024;
-    static int minFontSize = 24;
+	GlyphMetrics metrics[];
+	VertexArrayList vertices[];
+	VertexArrayList verticesGlyphs[];
+	Tesselator tesselator;
+	int listBase;    
+	int listBaseGlyphs;
+	Font listFont[] = new Font[256]; // character font currently in display list
 
-    static int getCharKey(char c_, Font f_){
-	String charKeyString_ = Character.toString(c_)+f_.getFontName()+f_.getSize();
-	return charKeyString_.hashCode();
-    }
-    
-    void generateListFontSizes(int start_size_, int max_size_){
-	int i=0;
-	float size_=(float)start_size_;
-	do{
-		listFontSizes[i]=(int)Math.round(size_*1.1);
-	}while( size_ < max_size_ );
+	private static int MIN_PRE_RENDER_FONT_SIZE = 24;
+	private static int MAX_PRE_RENDER_FONT_SIZE = 1024;
+	private int listFontSizes[];
 
-    }
-
-    int getNextUpperSize(int reqSize_){
-	int length_ = listFontSizes.length;
-	for(int i=0; i<length_; i++){
-		if( listFontSizes[i] >= reqSize_ )
-			return listFontSizes[i];
-	}
-	System.err.println("Can't find any size larger than the required size (which is "+reqSize_+"). Max size is "+listFontSizes[length_-1]);
-	return listFontSizes[length_-1];
-    }
-    
-
+	
 	/** 
 	 * Tesselates a shape and stores the result in a VertexArrayList
 	 */
@@ -115,7 +100,7 @@ class FontPreRenderer extends BasicFontRenderer {
 		VATesselatorVisitor(VertexArrayList list) {
 			this.list = list;
 		}
-    
+
 		/**
 		 * @see agile2d.TesselatorVisitor#begin(int)
 		 */
@@ -156,207 +141,229 @@ class FontPreRenderer extends BasicFontRenderer {
 			Tesselator.defaultError(errorCode);
 		}   
 	}
-	
-	
+
 	static class CacheInfo {
-        Font font;
-        GlyphMetrics metrics[];
-        VertexArrayList vertices[];
+		Font font;
+		GlyphMetrics metrics[];
+		VertexArrayList vertices[];
 
-        CacheInfo(Font font) {
-            this.font = font;
-            metrics = new GlyphMetrics[256];
-        }
-    }
-
-    LinkedList cache = new LinkedList();
-    int maxCacheLength = 20;
-
-    public CacheInfo findCached(Font font) {
-        CacheInfo info = null;
-        boolean first = true;
-        for (Iterator it = cache.iterator(); it.hasNext();) {
-            info = (CacheInfo) it.next();
-            if (info.font.equals(font)) {
-                if (!first) {
-                    it.remove();
-                    cache.addFirst(info);
-                }
-                return info;
-            }
-            first = false;
-        }
-        info = new CacheInfo(font);
-        cache.addFirst(info);
-        setMaxCacheLength(maxCacheLength);
-
-        return info;
-    }
-
-    /**
-     * Returns the maxCacheLength.
-     * @return int
-     */
-    public int getMaxCacheLength() {
-        return maxCacheLength;
-    }
-
-    /**
-     * Sets the maxCacheLength.
-     * @param maxCacheLength The maxCacheLength to set
-     */
-    public void setMaxCacheLength(int maxCacheLength) {
-        if (maxCacheLength < 0)
-            maxCacheLength = 0;
-        this.maxCacheLength = maxCacheLength;
-        while (cache.size() > maxCacheLength)
-            cache.removeLast();
-    }
-
-    public FontPreRenderer(Tesselator tesselator) {
-        this.tesselator = tesselator;
-//	generateListofSizes();
-    }
-
-    public boolean installFont(GLAutoDrawable drawable, Font font, double scale, boolean aa, boolean ufm) {
-	//Check if the requested font has already been installed
-        if (this.font != null && this.font.equals(font)) {
-            installed = true;
-            return true;
-        }
-        CacheInfo info = findCached(font);
-        if (info == null) {
-            installed = false;
-            return false;
-        }
-        this.font = info.font;
-        this.frc = new FontRenderContext(null, aa, ufm);
-        this.metrics = info.metrics;
-        this.vertices = info.vertices;
-
-        if (this.vertices == null) {
-        	setup();
-
-			if(listBase == 0) {
-	                GL2 gl = drawable.getGL().getGL2();
-        	        listBase = gl.glGenLists(256);
-		    }
-
-	      this.vertices = new VertexArrayList[256];
-          info.vertices = this.vertices;
-	      for(int i=0; i<256; i++)
-	      	info.vertices[i]=null;
-
-	      //tesselate all chars for the requested Font
-	      //for (int i = 0; i < latin1Chars.length; i++) {
-	      //	      addTesselation(drawable, latin1Chars[i]);
-	      //}
-
-        }
-        //Check wether it is the same font of that used to create the present glyphvector
-        //and if not, create a new glyphvector with the present font
-        else if(glyphs.getFont() != font){
-			setup();
+		CacheInfo(Font font_) {
+			this.font = font_;
+			metrics = new GlyphMetrics[256];
 		}
-        installed = true;
-        return true;
-    }
+	}	
+	
+	private void generateSizesList(int start_size_, int max_size_){
+		int i=0;
+		float size_=(float)start_size_;
+		do{
+			listFontSizes[i]=(int)Math.round(size_*1.1);
+		}while( size_ < max_size_ );
+	}    
 
-
-    public boolean prepareGlyphVertices(GLAutoDrawable drawable) {
-        verticesGlyphs = new VertexArrayList[256];  
-        GL2 gl = drawable.getGL().getGL2();
-	listBaseGlyphs = gl.glGenLists(256);
-        return true;
-    }
-
-
-    protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
-        if (vertices_[c] == null) {
-            addTesselation(drawable, latin1Chars[c]);
-        }
-        return vertices_[c];
-    }
-
-
-    protected VertexArrayList getGlyphVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[], GlyphVector g) {
-        if (vertices_[c] == null) {
-            addTesselation(drawable, c, g);
-        }
-        return vertices_[c];
-    }
-
-
-    
-    protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
-
-        if (listFont[c] == font){
-        	return true;
+	private int getNextUpperSize(int reqSize_){
+		int length_ = listFontSizes.length;
+		for(int i=0; i<length_; i++){
+			if( listFontSizes[i] >= reqSize_ )
+				return listFontSizes[i];
 		}
-
-		VertexArrayList v = getVertices(drawable, c, vList_);
-        if (v == null)
-			return false;
-        GL2 gl = drawable.getGL().getGL2();
-        gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
-		for (int i = 0; i < v.size(); i++)
-			ShapeManager.render(gl, v.getVertexArrayAt(i), null);
-        gl.glEndList();
-        listFont[c] = font;
-        return true;
-    }
+		System.err.println("Warning: Can't find any size larger than the required size (which is "+reqSize_+").\n Using Max size, which is "+listFontSizes[length_-1]);
+		return listFontSizes[length_-1];
+	}
 
 
-    protected boolean installGlyph(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[], GlyphVector g) {
-	VertexArrayList v = getGlyphVertices(drawable, c, vList_, g);
-        if (v == null)
-	 	return false;
-        GL2 gl = drawable.getGL().getGL2();
-        gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
-	for (int i = 0; i < v.size(); i++)
-		ShapeManager.render(gl, v.getVertexArrayAt(i), null);
-        gl.glEndList();
-        return true;
-    }
+	LinkedList cache = new LinkedList();
+	int maxCacheLength = 20;
+
+	public CacheInfo findCached(Font font_) {
+		CacheInfo info = null;
+		boolean first = true;
+		for (Iterator it = cache.iterator(); it.hasNext();) {
+			info = (CacheInfo) it.next();
+			if (info.font.equals(font_)) {
+				if (!first) {
+					it.remove();
+					cache.addFirst(info);
+				}
+				return info;
+			}
+			first = false;
+		}
+		info = new CacheInfo(font_);
+		cache.addFirst(info);
+		setMaxCacheLength(maxCacheLength);
+
+		return info;
+	}
+
+	/**
+	 * Returns the maxCacheLength.
+	 * @return int
+	 */
+	 public int getMaxCacheLength() {
+		return maxCacheLength;
+	}
+
+	/**
+	 * Sets the maxCacheLength.
+	 * @param maxCacheLength The maxCacheLength to set
+	 */
+	 public void setMaxCacheLength(int maxCacheLength) {
+		 if (maxCacheLength < 0)
+			 maxCacheLength = 0;
+		 this.maxCacheLength = maxCacheLength;
+		 while (cache.size() > maxCacheLength)
+			 cache.removeLast();
+	 }
+
+	 public FontPreRenderer(Tesselator tesselator) {
+		 this.tesselator = tesselator;
+		 generateSizesList(MIN_PRE_RENDER_FONT_SIZE, MAX_PRE_RENDER_FONT_SIZE);	
+	 }
+
+	 public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm) {
+		 //Check if the requested font has already been installed
+		 if (this.font != null && this.font.equals(font_)) {
+			 installed = true;
+			 return true;
+		 }
+		 CacheInfo info = findCached(font_);
+		 if (info == null) {
+			 installed = false;
+			 return false;
+		 }
+		 this.font = info.font;
+		 this.frc = new FontRenderContext(null, aa, ufm);
+		 this.metrics = info.metrics;
+		 this.vertices = info.vertices;
+
+		 //if the vertices array associated to this font is null...
+		 if (this.vertices == null) {
+			 //Create a glyphVector from all characters of the present font
+			 setup();
+
+			 if(listBase == 0) {
+				 GL2 gl = drawable.getGL().getGL2();
+				 listBase = gl.glGenLists(256);
+			 }
+
+			 this.vertices = new VertexArrayList[256];
+			 info.vertices = this.vertices;
+			 for(int i=0; i<256; i++)
+				 info.vertices[i]=null;
+
+			 //tesselate all chars for the requested Font
+			 //for (int i = 0; i < latin1Chars.length; i++) {
+			 //	      addTesselation(drawable, latin1Chars[i]);
+			 //}
+
+		 }
+		 //Check wether it is the same font that was used to to create the present glyphvector
+		 //If it's not, create a new glyphvector from the present font
+		 else if(glyphs.getFont() != font_){
+			 setup();
+		 }
+		 installed = true;
+		 return true;
+	 }
 
 
-    public void render(GLAutoDrawable drawable, String string, double scale, Font font) {
-        if (!installed)
-            return;
-        int i;
-
-        GL2 gl = drawable.getGL().getGL2();
-
-        for (i = 0; i < string.length(); i++) {
-            int c = string.charAt(i);
-            if (c > metrics.length)
-                continue;
-            if (installChar(drawable, c, listBase, vertices)) {
-                GlyphMetrics m = metrics[c];
-                gl.glCallList(listBase + c);
-                gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
-            }
-        }
-        installed = false;
-    }
+	 public boolean prepareGlyphVertices(GLAutoDrawable drawable) {
+		 verticesGlyphs = new VertexArrayList[256];  
+		 GL2 gl = drawable.getGL().getGL2();
+		 listBaseGlyphs = gl.glGenLists(256);
+		 return true;
+	 }
 
 
-    public void render(GLAutoDrawable drawable, GlyphVector g) {
-        int i;
-        GL2 gl = drawable.getGL().getGL2();
-        for (i = 0; i < g.getNumGlyphs(); i++) {
-           if (installGlyph(drawable, i, listBaseGlyphs, verticesGlyphs, g) ) {
-           	gl.glCallList(listBaseGlyphs + i);
-           }
-        }
-    }
-    
-/*
+	 protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
+		 if (vertices_[c] == null) {
+			 addTesselation(drawable, latin1Chars[c]);
+		 }
+		 return vertices_[c];
+	 }
+
+
+	 protected VertexArrayList getGlyphVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[], GlyphVector g) {
+		 if (vertices_[c] == null) {
+			 addTesselation(drawable, c, g);
+		 }
+		 return vertices_[c];
+	 }
+
+
+
+	 protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
+		 /*
+		if (listFont[c] == this.font){
+			 return true;
+		 }
+		 */
+		 
+		 //get vertex array list of the character c
+		 VertexArrayList v = getVertices(drawable, c, vList_);
+		 if (v == null)
+			 return false;
+		 
+		 GL2 gl = drawable.getGL().getGL2();
+		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
+		 for (int i = 0; i < v.size(); i++)
+			 ShapeManager.render(gl, v.getVertexArrayAt(i), null);
+		 gl.glEndList();
+		 //listFont[c] = this.font;
+		 return true;
+	 }
+
+
+	 protected boolean installGlyph(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[], GlyphVector g) {
+		 VertexArrayList v = getGlyphVertices(drawable, c, vList_, g);
+		 if (v == null)
+			 return false;
+		 GL2 gl = drawable.getGL().getGL2();
+		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
+		 for (int i = 0; i < v.size(); i++)
+			 ShapeManager.render(gl, v.getVertexArrayAt(i), null);
+		 gl.glEndList();
+		 return true;
+	 }
+
+
+	 public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {
+		 if (!installed)
+			 return;
+		 GL2 gl = drawable.getGL().getGL2();
+
+		 int i;
+		 for (i = 0; i < string.length(); i++) {
+			 int c = string.charAt(i);
+			 if (c > metrics.length)
+				 continue;
+			 if (installChar(drawable, c, listBase, vertices)) {
+				 GlyphMetrics m = metrics[c];
+				 gl.glCallList(listBase + c);
+				 gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
+			 }
+		 }
+		 installed = false;
+	 }
+
+
+	 public void render(GLAutoDrawable drawable, GlyphVector g) {
+		 int i;
+		 GL2 gl = drawable.getGL().getGL2();
+		 for (i = 0; i < g.getNumGlyphs(); i++) {
+			 if (installGlyph(drawable, i, listBaseGlyphs, verticesGlyphs, g) ) {
+				 gl.glCallList(listBaseGlyphs + i);
+			 }
+		 }
+	 }
+
+	 /*
     public void render(GLAutoDrawable drawable, GlyphVector g, double scale) {
         if (!installed)
             return;
         int i;
-	
+
         GL2 gl = drawable.getGL().getGL2();
 
         for (i = 0; i < g.getNumGlyphs(); i++) {
@@ -375,31 +382,31 @@ class FontPreRenderer extends BasicFontRenderer {
         }
         installed = false;
     }
-*/
+	  */
 
-    public void release(GLAutoDrawable drawable) {
-        installed = false;
-    }
+	 public void release(GLAutoDrawable drawable) {
+		 installed = false;
+	 }
 
-    public boolean addTesselation(GLAutoDrawable drawable, int charIndex) {
-        Shape s = glyphs.getGlyphOutline(charIndex);
-        if (s == null)
-            return false;
-        metrics[charIndex] = glyphs.getGlyphMetrics(charIndex);
-        VertexArrayList v = new VertexArrayList();
-		VATesselatorVisitor visitor = new VATesselatorVisitor(v);
-        tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
-        vertices[charIndex] = v;
-        return true;
-    }
+	 public boolean addTesselation(GLAutoDrawable drawable, int charIndex) {
+		 Shape s = glyphs.getGlyphOutline(charIndex);
+		 if (s == null)
+			 return false;
+		 metrics[charIndex] = glyphs.getGlyphMetrics(charIndex);
+		 VertexArrayList v = new VertexArrayList();
+		 VATesselatorVisitor visitor = new VATesselatorVisitor(v);
+		 tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
+		 vertices[charIndex] = v;
+		 return true;
+	 }
 
-    public boolean addTesselation(GLAutoDrawable drawable, int glyphIndex, GlyphVector g) {
-        Shape s = g.getGlyphOutline(glyphIndex);
-        VertexArrayList v = new VertexArrayList();
-	VATesselatorVisitor visitor = new VATesselatorVisitor(v);
-        tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
-        verticesGlyphs[glyphIndex] = v;
-        return true;
-    }
+	 public boolean addTesselation(GLAutoDrawable drawable, int glyphIndex, GlyphVector g) {
+		 Shape s = g.getGlyphOutline(glyphIndex);
+		 VertexArrayList v = new VertexArrayList();
+		 VATesselatorVisitor visitor = new VATesselatorVisitor(v);
+		 tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
+		 verticesGlyphs[glyphIndex] = v;
+		 return true;
+	 }
 } 
 
