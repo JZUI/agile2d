@@ -47,40 +47,40 @@ class FontManager {
 
     public void updateStates(AgileGraphics2D ag2d_active_, GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
     	this.drawable = drawable_;
-	this.font = font_;
-	this.scale = scale_;
-	this.frcAntialiasing = frcAntialiasing_;
-	this.frcUsesFractionalMetrics = frcUsesFractionalMetrics_;
-	this.useFastShapes = useFastShapes_;
-	this.ag2d_active = ag2d_active_;
+		this.font = font_;
+		this.scale = scale_;
+		this.frcAntialiasing = frcAntialiasing_;
+		this.frcUsesFractionalMetrics = frcUsesFractionalMetrics_;
+		this.useFastShapes = useFastShapes_;
+		this.ag2d_active = ag2d_active_;
     }
 
     public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_) {
         this.gl = gl;
         this.glState = AgileState.get(gl);
-	if(!setStrategy(STRING_AS_TEXTURE))
-		setStrategy(STRING_AS_OUTLINE);
-	//get pointers to different rendering strategies
-	textureFont = textureFont_;
-	outlineFont = outlineFont_;
+		if(!setStrategy(STRING_AS_TEXTURE))
+			setStrategy(STRING_AS_OUTLINE);
+		//get pointers to different rendering strategies
+		textureFont = textureFont_;
+		outlineFont = outlineFont_;
     }
     
     public boolean setStrategy(int strategyType){
-	if(strategyType == present_strategy)
-		return true;
-	else{	
-		present_strategy = strategyType;
-		return true;
-	}
+		if(strategyType == present_strategy)
+			return true;
+		else{	
+			present_strategy = strategyType;
+			return true;
+		}
     }
 
     public int getStrategy(){
-	return present_strategy;
+		return present_strategy;
     }
 
-    public void setFont(Font _font){
-	font = _font;	
-   }
+	public void setFont(Font _font){
+		font = _font;	
+	}
 
     public Font getFont(){
 	return font;	

@@ -76,7 +76,7 @@ class CharKey implements Comparable<CharKey>
 }  
 
 
-class FontPreRenderer extends BasicFontRenderer {
+class OutlineRoughFontRenderer extends BasicFontRenderer {
 	GlyphMetrics metrics[];
 	VertexArrayList vertices[];
 	VertexArrayList verticesGlyphs[];
@@ -216,7 +216,7 @@ class FontPreRenderer extends BasicFontRenderer {
 			 cache.removeLast();
 	 }
 
-	 public FontPreRenderer(Tesselator tesselator) {
+	 public OutlineRoughFontRenderer(Tesselator tesselator) {
 		 this.tesselator = tesselator;
 		 generateSizesList(MIN_PRE_RENDER_FONT_SIZE, MAX_PRE_RENDER_FONT_SIZE);	
 	 }
@@ -252,11 +252,6 @@ class FontPreRenderer extends BasicFontRenderer {
 			 for(int i=0; i<256; i++)
 				 info.vertices[i]=null;
 
-			 //tesselate all chars for the requested Font
-			 //for (int i = 0; i < latin1Chars.length; i++) {
-			 //	      addTesselation(drawable, latin1Chars[i]);
-			 //}
-
 		 }
 		 //Check wether it is the same font that was used to to create the present glyphvector
 		 //If it's not, create a new glyphvector from the present font
@@ -267,15 +262,6 @@ class FontPreRenderer extends BasicFontRenderer {
 		 return true;
 	 }
 
-
-	 public boolean prepareGlyphVertices(GLAutoDrawable drawable) {
-		 verticesGlyphs = new VertexArrayList[256];  
-		 GL2 gl = drawable.getGL().getGL2();
-		 listBaseGlyphs = gl.glGenLists(256);
-		 return true;
-	 }
-
-
 	 protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
 		 if (vertices_[c] == null) {
 			 addTesselation(drawable, latin1Chars[c]);
@@ -283,22 +269,7 @@ class FontPreRenderer extends BasicFontRenderer {
 		 return vertices_[c];
 	 }
 
-
-	 protected VertexArrayList getGlyphVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[], GlyphVector g) {
-		 if (vertices_[c] == null) {
-			 addTesselation(drawable, c, g);
-		 }
-		 return vertices_[c];
-	 }
-
-
-
 	 protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
-		 /*
-		if (listFont[c] == this.font){
-			 return true;
-		 }
-		 */
 		 
 		 //get vertex array list of the character c
 		 VertexArrayList v = getVertices(drawable, c, vList_);
@@ -306,27 +277,15 @@ class FontPreRenderer extends BasicFontRenderer {
 			 return false;
 		 
 		 GL2 gl = drawable.getGL().getGL2();
-		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
+//		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
+
 		 for (int i = 0; i < v.size(); i++)
 			 ShapeManager.render(gl, v.getVertexArrayAt(i), null);
-		 gl.glEndList();
-		 //listFont[c] = this.font;
+
+//		 gl.glEndList();
+
 		 return true;
 	 }
-
-
-	 protected boolean installGlyph(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[], GlyphVector g) {
-		 VertexArrayList v = getGlyphVertices(drawable, c, vList_, g);
-		 if (v == null)
-			 return false;
-		 GL2 gl = drawable.getGL().getGL2();
-		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
-		 for (int i = 0; i < v.size(); i++)
-			 ShapeManager.render(gl, v.getVertexArrayAt(i), null);
-		 gl.glEndList();
-		 return true;
-	 }
-
 
 	 public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {
 		 if (!installed)
@@ -340,51 +299,15 @@ class FontPreRenderer extends BasicFontRenderer {
 				 continue;
 			 if (installChar(drawable, c, listBase, vertices)) {
 				 GlyphMetrics m = metrics[c];
-				 gl.glCallList(listBase + c);
+				 
+				 //The OutlineFontRenderer used displayLists
+				 //this strategy will only use vertex arrays and
+				 //soon, VBO (vertex buffer objects)
+				 //gl.glCallList(listBase + c);
+				 
 				 gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
 			 }
 		 }
-		 installed = false;
-	 }
-
-
-	 public void render(GLAutoDrawable drawable, GlyphVector g) {
-		 int i;
-		 GL2 gl = drawable.getGL().getGL2();
-		 for (i = 0; i < g.getNumGlyphs(); i++) {
-			 if (installGlyph(drawable, i, listBaseGlyphs, verticesGlyphs, g) ) {
-				 gl.glCallList(listBaseGlyphs + i);
-			 }
-		 }
-	 }
-
-	 /*
-    public void render(GLAutoDrawable drawable, GlyphVector g, double scale) {
-        if (!installed)
-            return;
-        int i;
-
-        GL2 gl = drawable.getGL().getGL2();
-
-        for (i = 0; i < g.getNumGlyphs(); i++) {
-            int c = g.getGlyphCode(i);
-
-	    System.out.println("Code in renderGlyph: "+c);
-            if (c > metrics.length)
-                continue;
-            if (installChar(drawable, c, listBaseGlyphs, verticesGlyphs)) {
-   	        System.out.println("Dans installChar of renderGlyph");
-                GlyphMetrics m = metrics[c];
-                gl.glCallList(listBaseGlyphs + c);
-//              gl.glCallList(listBase+c);
-                gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0);
-            }
-        }
-        installed = false;
-    }
-	  */
-
-	 public void release(GLAutoDrawable drawable) {
 		 installed = false;
 	 }
 
@@ -400,6 +323,43 @@ class FontPreRenderer extends BasicFontRenderer {
 		 return true;
 	 }
 
+	 public void release(GLAutoDrawable drawable) {
+		 installed = false;
+	 }
+} 
+
+
+
+
+
+/*
+	 public boolean prepareGlyphVertices(GLAutoDrawable drawable) {
+		 verticesGlyphs = new VertexArrayList[256];  
+		 GL2 gl = drawable.getGL().getGL2();
+		 listBaseGlyphs = gl.glGenLists(256);
+		 return true;
+	 }
+
+	 protected VertexArrayList getGlyphVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[], GlyphVector g) {
+		 if (vertices_[c] == null) {
+			 addTesselation(drawable, c, g);
+		 }
+		 return vertices_[c];
+	 }
+	 
+	 
+	 protected boolean installGlyph(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[], GlyphVector g) {
+		 VertexArrayList v = getGlyphVertices(drawable, c, vList_, g);
+		 if (v == null)
+			 return false;
+		 GL2 gl = drawable.getGL().getGL2();
+		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
+		 for (int i = 0; i < v.size(); i++)
+			 ShapeManager.render(gl, v.getVertexArrayAt(i), null);
+		 gl.glEndList();
+		 return true;
+	 }
+	 
 	 public boolean addTesselation(GLAutoDrawable drawable, int glyphIndex, GlyphVector g) {
 		 Shape s = g.getGlyphOutline(glyphIndex);
 		 VertexArrayList v = new VertexArrayList();
@@ -408,5 +368,14 @@ class FontPreRenderer extends BasicFontRenderer {
 		 verticesGlyphs[glyphIndex] = v;
 		 return true;
 	 }
-} 
+	 public void render(GLAutoDrawable drawable, GlyphVector g) {
+		 int i;
+		 GL2 gl = drawable.getGL().getGL2();
+		 for (i = 0; i < g.getNumGlyphs(); i++) {
+			 if (installGlyph(drawable, i, listBaseGlyphs, verticesGlyphs, g) ) {
+				 gl.glCallList(listBaseGlyphs + i);
+			 }
+		 }
+	 }
+*/
 
