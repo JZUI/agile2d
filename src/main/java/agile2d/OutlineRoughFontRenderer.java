@@ -79,16 +79,21 @@ class CharKey implements Comparable<CharKey>
 class OutlineRoughFontRenderer extends BasicFontRenderer {
 	GlyphMetrics metrics[];
 	VertexArrayList vertices[];
-	VertexArrayList verticesGlyphs[];
+//	VertexArrayList verticesGlyphs[];
 	Tesselator tesselator;
 	int listBase;    
-	int listBaseGlyphs;
+//	int listBaseGlyphs;
 	Font listFont[] = new Font[256]; // character font currently in display list
 
-	private static int MIN_PRE_RENDER_FONT_SIZE = 24;
-	private static int MAX_PRE_RENDER_FONT_SIZE = 1024;
-	private int listFontSizes[];
+	private static final int MIN_PRE_RENDER_FONT_SIZE = 24;
+	private static final int MAX_PRE_RENDER_FONT_SIZE = 1024;
+	private static final int INIT_FONT_SIZE_LENGTH = 64;
+	private static final float FONT_SIZE_INTERVAL_FACTOR = 1.075f;
+	
+	private static int font_size_length;
+	private static int listFontSizes[];
 
+	private SoftHashMap charSoftHashMap;
 	
 	/** 
 	 * Tesselates a shape and stores the result in a VertexArrayList
@@ -153,24 +158,6 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 		}
 	}	
 	
-	private void generateSizesList(int start_size_, int max_size_){
-		int i=0;
-		float size_=(float)start_size_;
-		do{
-			listFontSizes[i]=(int)Math.round(size_*1.1);
-		}while( size_ < max_size_ );
-	}    
-
-	private int getNextUpperSize(int reqSize_){
-		int length_ = listFontSizes.length;
-		for(int i=0; i<length_; i++){
-			if( listFontSizes[i] >= reqSize_ )
-				return listFontSizes[i];
-		}
-		System.err.println("Warning: Can't find any size larger than the required size (which is "+reqSize_+").\n Using Max size, which is "+listFontSizes[length_-1]);
-		return listFontSizes[length_-1];
-	}
-
 
 	LinkedList cache = new LinkedList();
 	int maxCacheLength = 20;
@@ -216,9 +203,38 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 			 cache.removeLast();
 	 }
 
+	private void generateSizesList(int start_size_, int max_size_){
+		int i=0;
+		listFontSizes = new int[INIT_FONT_SIZE_LENGTH];
+		float size_=(float)start_size_;
+		do{
+			size_ *= FONT_SIZE_INTERVAL_FACTOR;
+			listFontSizes[i]=(int)Math.round(size_);
+			i++;
+		}while( (i<INIT_FONT_SIZE_LENGTH) && (size_ < max_size_) );
+		font_size_length = i;
+		System.out.print("Sizes: ");
+		int j;
+		for(j=0; j<font_size_length; j++)
+			System.out.print(listFontSizes[j]+", ");
+		System.out.println("End");
+	}    
+
+	private int getNextUpperSize(int reqSize_){
+		int length_ = listFontSizes.length;
+		for(int i=0; i<length_; i++){
+			if( listFontSizes[i] >= reqSize_ )
+				return listFontSizes[i];
+		}
+		System.err.println("Warning: Can't find any size larger than the required size (which is "+reqSize_+").\n Using Max size, which is "+listFontSizes[length_-1]);
+		return listFontSizes[length_-1];
+	}
+
+
 	 public OutlineRoughFontRenderer(Tesselator tesselator) {
 		 this.tesselator = tesselator;
-		 generateSizesList(MIN_PRE_RENDER_FONT_SIZE, MAX_PRE_RENDER_FONT_SIZE);	
+		 generateSizesList(MIN_PRE_RENDER_FONT_SIZE, MAX_PRE_RENDER_FONT_SIZE);
+		 charSoftHashMap = new SoftHashMap(256);
 	 }
 
 	 public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm) {
@@ -262,30 +278,6 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 		 return true;
 	 }
 
-	 protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
-		 if (vertices_[c] == null) {
-			 addTesselation(drawable, latin1Chars[c]);
-		 }
-		 return vertices_[c];
-	 }
-
-	 protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
-		 
-		 //get vertex array list of the character c
-		 VertexArrayList v = getVertices(drawable, c, vList_);
-		 if (v == null)
-			 return false;
-		 
-		 GL2 gl = drawable.getGL().getGL2();
-//		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
-
-		 for (int i = 0; i < v.size(); i++)
-			 ShapeManager.render(gl, v.getVertexArrayAt(i), null);
-
-//		 gl.glEndList();
-
-		 return true;
-	 }
 
 	 public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {
 		 if (!installed)
@@ -297,12 +289,22 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 			 int c = string.charAt(i);
 			 if (c > metrics.length)
 				 continue;
-			 if (installChar(drawable, c, listBase, vertices)) {
+			 if (installChar(drawable, c, listBase, this.vertices)) {
 				 GlyphMetrics m = metrics[c];
-				 
+//					for (int j = 0; j < this.vertices[c].size(); j++)
+//				 	ShapeManager.render(gl, this.vertices[c].getVertexArrayAt(j), null);
+					CharKey tempKey_ = new CharKey( (char) c, this.font);
+					VertexArrayList v_ = (VertexArrayList)charSoftHashMap.get(tempKey_);
+					if(v_ == null){
+						System.out.println("No array ready for this font");
+						return;
+					}
+					System.out.println("Number of vertexArrays: "+v_.size());
+					for (int j = 0; j < v_.size(); j++)
+				 		ShapeManager.render(gl, v_.getVertexArrayAt(j), null);
 				 //The OutlineFontRenderer used displayLists
 				 //this strategy will only use vertex arrays and
-				 //soon, VBO (vertex buffer objects)
+				 //later, VBO (vertex buffer objects)
 				 //gl.glCallList(listBase + c);
 				 
 				 gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
@@ -311,15 +313,60 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 		 installed = false;
 	 }
 
-	 public boolean addTesselation(GLAutoDrawable drawable, int charIndex) {
-		 Shape s = glyphs.getGlyphOutline(charIndex);
+	 protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
+		 
+		 //get vertex array list of the character c
+/*
+		 VertexArrayList v = getVertices(drawable, c, vList_);
+
+		 if (v == null)
+			 return false;
+*/
+		CharKey tempKey_ = new CharKey( (char) c, this.font);
+		VertexArrayList v_ = (VertexArrayList)charSoftHashMap.get(tempKey_);
+
+		
+		 GL2 gl = drawable.getGL().getGL2();
+
+		if (v_ == null)
+			addTesselation(drawable, latin1Chars[c], c);
+
+
+//		 gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
+
+		 //DRAW A CHARACTER
+		 //i.e.: each VertexArrayList (many VertexArrays) corresponds to
+		 //a character and each vertexArray corresponds to
+		 //a convex polygon composing the character
+
+//		 for (int i = 0; i < v.size(); i++)
+//			 ShapeManager.render(gl, v.getVertexArrayAt(i), null);
+
+//		 gl.glEndList();
+
+		 return true;
+	 }
+
+	 protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
+		 if (vertices_[c] == null) {
+			 addTesselation(drawable, latin1Chars[c], c);
+		 }
+		 return vertices_[c];
+	 }
+
+	 public boolean addTesselation(GLAutoDrawable drawable, int charIndex, int c) {
+		 Shape s = this.glyphs.getGlyphOutline(charIndex);
 		 if (s == null)
 			 return false;
 		 metrics[charIndex] = glyphs.getGlyphMetrics(charIndex);
 		 VertexArrayList v = new VertexArrayList();
 		 VATesselatorVisitor visitor = new VATesselatorVisitor(v);
 		 tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
-		 vertices[charIndex] = v;
+
+		 //this.vertices[charIndex] = v;
+
+		 CharKey tempCharKey_ = new CharKey((char)charIndex, this.font);
+		 charSoftHashMap.put((Object)tempCharKey_, (Object)v);
 		 return true;
 	 }
 

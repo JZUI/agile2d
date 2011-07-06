@@ -29,6 +29,7 @@ class FontManager {
 
     private TextureFontRenderer textureFont;
     private OutlineFontRenderer outlineFont;
+	private OutlineRoughFontRenderer outlineRoughFont;
     private int present_strategy;
 
     private static final boolean DEBUG_CHECK_GL = true;
@@ -55,7 +56,7 @@ class FontManager {
 		this.ag2d_active = ag2d_active_;
     }
 
-    public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_) {
+    public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_, OutlineRoughFontRenderer outlineRoughFont_) {
         this.gl = gl;
         this.glState = AgileState.get(gl);
 		if(!setStrategy(STRING_AS_TEXTURE))
@@ -63,6 +64,7 @@ class FontManager {
 		//get pointers to different rendering strategies
 		textureFont = textureFont_;
 		outlineFont = outlineFont_;
+		outlineRoughFont = outlineRoughFont_;
     }
     
     public boolean setStrategy(int strategyType){
@@ -130,8 +132,11 @@ class FontManager {
     
 
     private void _drawOutlineString(String string) {
-	if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-		outlineFont.render(drawable, string, scale, font);
+//	if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
+//		outlineFont.render(drawable, string, scale, font);
+	if (outlineRoughFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
+		outlineRoughFont.render(drawable, string, scale, font);
+
 	}
 	if (DEBUG_CHECK_GL)
 		checkForErrors();

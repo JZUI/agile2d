@@ -180,6 +180,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private GradientManager   gradientManager;
 		private TextureFontRenderer textureFont;
 		private OutlineFontRenderer outlineFont;
+		private OutlineRoughFontRenderer outlineRoughFont;
 		private FontManager fontManager;
 		
 		private Font              font;
@@ -326,7 +327,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			textureFont = new TextureFontRenderer();
 //			TextureFontRenderer.setMaxTextureSize(maxTexSize);
 			outlineFont = new OutlineFontRenderer(tesselator);
-			fontManager = new FontManager(gl, textureFont, outlineFont);
+			outlineRoughFont = new OutlineRoughFontRenderer(tesselator);
+			fontManager = new FontManager(gl, textureFont, outlineFont, outlineRoughFont);
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
 			gradientManager = new GradientManager(gl);

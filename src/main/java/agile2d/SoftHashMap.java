@@ -1,4 +1,7 @@
 //SoftHashMap.java (By Dr. Heinz Kabutz in http://archive.devx.com/java/free/articles/Kabutz01/Kabutz01-1.asp)
+
+package agile2d;
+
   import java.util.*;
   import java.lang.ref.*;
 
