@@ -39,7 +39,7 @@ class CharKey implements Comparable<CharKey>
 	CharKey(char c_, Font f_)  
 	{  
 		_size = f_.getSize();
-		_key = Character.toString(c_)+f_.getFontName()+_size;
+		_key = Character.toString(c_)+"_"+f_.getFontName()+"_"+f_.getStyle()+"_"+_size;
 
 	}  
 
@@ -84,12 +84,12 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 	Tesselator tesselator;
 	int listBase;    
 	//	int listBaseGlyphs;
-	Font listFont[] = new Font[256]; // character font currently in display list
 
+	Font listFont[] = new Font[256]; // character font currently in display list
 	private static final int MIN_PRE_RENDER_FONT_SIZE = 24;
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 1024;
 	private static final int INIT_FONT_SIZE_LENGTH = 64;
-	private static final float FONT_SIZE_INTERVAL_FACTOR = 1.075f;
+	private static final float FONT_SIZE_INTERVAL_FACTOR = 1.08f;
 
 	private static int font_size_length;
 	private static int listFontSizes[];
@@ -205,9 +205,12 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 	}
 
 	private void generateSizesList(int start_size_, int max_size_){
-		int i=0;
+		
 		listFontSizes = new int[INIT_FONT_SIZE_LENGTH];
 		float size_=(float)start_size_;
+		//The firt accepted size is the "starting size"
+		listFontSizes[0] = (int)start_size_;
+		int i=1;
 		do{
 			size_ *= FONT_SIZE_INTERVAL_FACTOR;
 			listFontSizes[i]=(int)Math.round(size_);
@@ -221,7 +224,7 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 		System.out.println("End");
 	}    
 
-	private int getNextUpperSize(int reqSize_){
+	public int getNextUpperSize(int reqSize_){
 		int length_ = listFontSizes.length;
 		for(int i=0; i<length_; i++){
 			if( listFontSizes[i] >= reqSize_ )
@@ -240,6 +243,7 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 
 	public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm) {
 		//Check if the requested font has already been installed
+		System.out.println("Scale :"+scale);
 		if (this.font != null && this.font.equals(font_)) {
 			installed = true;
 			return true;
@@ -293,6 +297,7 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 			//VertexArrayList _vAL = new VertexArrayList();
 			presentVAL = null;
 			if (installChar(drawable, c)) {
+				//Get the metrics for each character
 				GlyphMetrics m = metrics[c];
 //				CharKey tempKey_ = new CharKey( (char) c, this.font);
 //				VertexArrayList v_ = (VertexArrayList)charSoftHashMap.get(tempKey_);
@@ -305,15 +310,16 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 				//i.e.: each VertexArrayList (many VertexArrays) corresponds to
 				//a character (many polygons) and each vertexArray corresponds to
 				//a convex polygon composing the character
-				System.out.println("Taille de la liste de vertexArrays: "+presentVAL.size());
-				for (int j = 0; j < presentVAL.size(); j++)
+				gl.glPushMatrix();
+				gl.glScaled(scale, scale, 1.0);
+				for (int j = 0; j < presentVAL.size(); j++){
+					//The OutlineFontRenderer used displayLists
+					//this strategy will only use vertex arrays and
+					//later, hopefully, VBO (vertex buffer objects)
 					ShapeManager.render(gl, presentVAL.getVertexArrayAt(j), null);
-				//The OutlineFontRenderer used displayLists
-				//this strategy will only use vertex arrays and
-				//later, VBO (vertex buffer objects)
-				//gl.glCallList(listBase + c);
-
-				gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
+				}
+				gl.glPopMatrix();
+				gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
 			}
 		}
 		installed = false;
@@ -324,26 +330,31 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 
 		GL2 gl = drawable.getGL().getGL2();
 
+		//int roughSize_ = this.getNextUpperSize(font.getSize());
+		
+		
 		//get VertexArray list of the character c
 		CharKey tempKey_ = new CharKey( (char) c, this.font);
 		presentVAL = (VertexArrayList)charSoftHashMap.get(tempKey_);
 
 		//If data doesn't exist (still / anymore), make it;
 		if (presentVAL == null){
-			System.out.println("No vertexArray for character: "+Character.toString((char)c)+". Building vertexArray.");
+			
 			//addTesselation(drawable, latin1Chars[c], c);
-			addTesselation(drawable, c, c);
+			addTesselation(drawable, c);
+			System.out.println("No vertexArray for character: "+tempKey_.toString());
 		}
 		else
-			System.out.println("Found VertexArray for character: "+Character.toString((char)c));
+			System.out.println("Found VertexArray for character: "+tempKey_.toString());
 
 		//System.out.println("Number of vertexArrays: "+vAL_.size());
 		return true;
 	}
 
-	public boolean addTesselation(GLAutoDrawable drawable, int charIndex, int c) {
+	public boolean addTesselation(GLAutoDrawable drawable, int c) {
+		int charIndex = latin1Chars[c];
 		Shape s = this.glyphs.getGlyphOutline(charIndex);
-		System.out.println("Inside addTesselation()");
+	//	System.out.println("Inside addTesselation()");
 		if (s == null){
 			System.out.println("There are no glyphs");
 			return false;
@@ -354,14 +365,14 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 		VATesselatorVisitor visitor = new VATesselatorVisitor(presentVAL);
 		tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
 
-		System.out.println("After tesselate() call");
+//		System.out.println("After tesselate() call");
 		
 		CharKey tempCharKey_ = new CharKey((char)charIndex, this.font);
 		charSoftHashMap.put((Object)tempCharKey_, (Object)presentVAL);
 		
-		System.out.println("Number of vertexArrays: "+presentVAL.size());
+		//System.out.println("Number of vertexArrays: "+presentVAL.size());
 		
-		System.out.println("After charSoftHashMap.put() call");
+	//	System.out.println("After charSoftHashMap.put() call");
 		
 		return true;
 	}
@@ -370,12 +381,13 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 		installed = false;
 	}
 
+	/*
 	protected VertexArrayList getCharVertices(GLAutoDrawable drawable, int c) {
 		CharKey tempKey_ = new CharKey( (char) c, this.font);
 		VertexArrayList vAL_ = (VertexArrayList)charSoftHashMap.get(tempKey_);
 		return vAL_;
 	}
-	
+	*/
 } 
 
 /*	 

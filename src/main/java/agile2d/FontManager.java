@@ -22,131 +22,149 @@ import java.awt.font.GlyphVector;
  * 
  */
 class FontManager {
-    public static final int STRING_AS_TEXTURE = 0;
-    public static final int STRING_AS_OUTLINE = 1;
-    public static final int GLYPH_AS_TEXTURE = 2;
-    public static final int GLYPH_AS_OUTLINE = 3;
-
-    private TextureFontRenderer textureFont;
-    private OutlineFontRenderer outlineFont;
+	public static final int TEXTURE_STRATEGY = 0;
+	public static final int OUTLINE_STRATEGY = 1;
+	public static final int ROUGH_OUTLINE_STRATEGY = 2;
+	
+	private TextureFontRenderer textureFont;
+	private OutlineFontRenderer outlineFont;
 	private OutlineRoughFontRenderer outlineRoughFont;
-    private int present_strategy;
+	private int present_strategy;
 
-    private static final boolean DEBUG_CHECK_GL = true;
+	private static final boolean DEBUG_CHECK_GL = true;
 
-    GL2  gl;
-    AgileState glState;
+	GL2  gl;
+	AgileState glState;
 
-    private AgileGraphics2D ag2d_active;
-    private GLAutoDrawable drawable;
-    private Font font;
-    private double scale;
-    private boolean frcAntialiasing;
-    private boolean frcUsesFractionalMetrics;
-    private boolean useFastShapes;
-    private boolean incrementalFontHint;
+	private AgileGraphics2D ag2d_active;
+	private GLAutoDrawable drawable;
+	private Font font;
+	private double scale;
+	private boolean frcAntialiasing;
+	private boolean frcUsesFractionalMetrics;
+	private boolean useFastShapes;
+	private boolean incrementalFontHint;
 
-    public void updateStates(AgileGraphics2D ag2d_active_, GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
-    	this.drawable = drawable_;
+	public void updateStates(AgileGraphics2D ag2d_active_, GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
+		this.drawable = drawable_;
 		this.font = font_;
 		this.scale = scale_;
 		this.frcAntialiasing = frcAntialiasing_;
 		this.frcUsesFractionalMetrics = frcUsesFractionalMetrics_;
 		this.useFastShapes = useFastShapes_;
 		this.ag2d_active = ag2d_active_;
-    }
+	}
 
-    public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_, OutlineRoughFontRenderer outlineRoughFont_) {
-        this.gl = gl;
-        this.glState = AgileState.get(gl);
-		if(!setStrategy(STRING_AS_TEXTURE))
-			setStrategy(STRING_AS_OUTLINE);
+	public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_, OutlineRoughFontRenderer outlineRoughFont_) {
+		this.gl = gl;
+		this.glState = AgileState.get(gl);
+		if(!setStrategy(TEXTURE_STRATEGY))
+			setStrategy(OUTLINE_STRATEGY);
 		//get pointers to different rendering strategies
 		textureFont = textureFont_;
 		outlineFont = outlineFont_;
 		outlineRoughFont = outlineRoughFont_;
-    }
-    
-    public boolean setStrategy(int strategyType){
-		if(strategyType == present_strategy)
-			return true;
-		else{	
-			present_strategy = strategyType;
-			return true;
-		}
-    }
+	}
 
-    public int getStrategy(){
+	public void setStrategy(int strategyType){
+			present_strategy = strategyType;
+	}
+
+	public int getStrategy(){
 		return present_strategy;
-    }
+	}
 
 	public void setFont(Font _font){
 		font = _font;	
 	}
 
-    public Font getFont(){
-	return font;	
-   }
+	public Font getFont(){
+		return font;	
+	}
 
 
-   //check if a given strategy is working in a given state (in the context of a given set of state variables)
-   //update state must be called juste before calling this function
-   private boolean checkStrategy(int strategy_type_){
-	switch(strategy_type_){
-		case STRING_AS_TEXTURE:
+	//check if a given strategy is working in a given state (in the context of a given set of state variables)
+	//update state must be called juste before calling this function
+	private boolean checkStrategy(int strategy_type_){
+		switch(strategy_type_){
+		case TEXTURE_STRATEGY:
 			if (useFastShapes && textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics))
 				return true;
 			else
 				return false;
-		case STRING_AS_OUTLINE:
+		case OUTLINE_STRATEGY:
+			//Nothing to check
+			return true;
+		case ROUGH_OUTLINE_STRATEGY:
 			//Nothing to check
 			return true;
 		default:
 			System.err.println("Unknow strategy.\n Can't switch strategy.");
 			return false;
+		}
 	}
-   }
 
-   public void drawString(String string_){
-	//by default, agile always try to use the texture strategy	
-	if(!setStrategy(STRING_AS_TEXTURE))
-		setStrategy(STRING_AS_OUTLINE);
-	//than check again which strategy is on
-	if( (present_strategy == STRING_AS_TEXTURE) && (checkStrategy(STRING_AS_TEXTURE)) ){
-		// Fits in font cache - draw using texture memory
-		_drawTextureString(string_);
-		System.out.println("Draw string as texture");
+	public void drawString(String string_){
+		//check if the current strategy is a valid one
+		if(!checkStrategy(present_strategy)){
+			//by default, agile always try to use the texture strategy	
+			if(checkStrategy(TEXTURE_STRATEGY))
+				setStrategy(TEXTURE_STRATEGY);
+			else
+				setStrategy(OUTLINE_STRATEGY);
+		}
+		//than check again which strategy is on
+		switch(present_strategy){
+			case TEXTURE_STRATEGY:
+				System.out.println("\nDrawing new string with texture strategy");
+				_drawTextureString(string_);				
+			break;
+			case OUTLINE_STRATEGY:			
+				System.out.println("\nDrawing new string with outline strategy");
+				//Too big to fit in a texture - draw from outlines instead				
+				_drawOutlineString(string_);
+			break;
+			case ROUGH_OUTLINE_STRATEGY:			
+				System.out.println("\nDrawing new string with a rough outline strategy");
+				//Too big to fit in a texture - draw from outlines instead				
+				_drawOutlineString(string_);
+			break;
+			default:
+		}
 	}
-	else {
-		setStrategy(STRING_AS_OUTLINE);
-		// Too big to fit in a texture - draw from outlines instead
-		_drawOutlineString(string_);
-		System.out.println("Draw string as outline");
+
+	private void checkForErrors() {
+		// No error checking in JOGL - use a DebugGL instead
+		// drawable.getGLContext().gljCheckGL();
 	}
-   }
-  
-   private void checkForErrors() {
-	// No error checking in JOGL - use a DebugGL instead
-	// drawable.getGLContext().gljCheckGL();
-   }
-    
 
-    private void _drawOutlineString(String string) {
-//	if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-//		outlineFont.render(drawable, string, scale, font);
-	if (outlineRoughFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-		outlineRoughFont.render(drawable, string, scale, font);
 
+	private void _drawOutlineString(String string) {
+		{//check if the fontSize required is different than that of the font object
+			int previousSize = font.getSize();
+			int newRoughSize = outlineRoughFont.getNextUpperSize(previousSize);
+			if(newRoughSize != previousSize){
+				double roughScale = (double)previousSize/newRoughSize;
+				//if there's a size increase, insert this scale difference in the scale variable
+				scale *= roughScale;
+				//get a new font instance with a size corresponding to the rough sizes
+				Font previousFont_ = font;
+				font = null;
+				font = previousFont_.deriveFont((float)newRoughSize);
+			}
+		}
+		if (outlineRoughFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
+			outlineRoughFont.render(drawable, string, scale, font);
+		}
+		if (DEBUG_CHECK_GL)
+			checkForErrors();
 	}
-	if (DEBUG_CHECK_GL)
-		checkForErrors();
-    }
 
-    private void _drawTextureString(String string) {
+	private void _drawTextureString(String string) {
 		textureFont.setIncremental(incrementalFontHint);			
-//		doDisableAntialiasing();
+		//		doDisableAntialiasing();
 		textureFont.render(drawable, string, scale, font);
-//		doEnableAntialiasing();
+		//		doEnableAntialiasing();
 
 		ag2d_active.setPaint(ag2d_active.getPaint());
 		if (DEBUG_CHECK_GL)
@@ -154,37 +172,37 @@ class FontManager {
 	}
 
 
-   public void drawGlyphVector(GlyphVector g_){
-	if( (present_strategy == GLYPH_AS_TEXTURE) && (checkStrategy(GLYPH_AS_TEXTURE)) ){
-		// Fits in font cache - draw using texture memory
-		_drawTextureGlyphVector(g_);
-	}
-	else {
-		setStrategy(GLYPH_AS_OUTLINE);
-		// Too big to fit in a texture - draw from outlines instead
-		_drawOutlineGlyphVector(g_);
-	}
-   }
-
-		private void _drawTextureGlyphVector(GlyphVector g) {
-			textureFont.setIncremental(incrementalFontHint);
-		
-//			doDisableAntialiasing();
-			textureFont.render(drawable, g, scale);
-//			doEnableAntialiasing();
-
-			ag2d_active.setPaint(ag2d_active.getPaint());
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
+	public void drawGlyphVector(GlyphVector g_){
+		if( (present_strategy == TEXTURE_STRATEGY) && (checkStrategy(TEXTURE_STRATEGY)) ){
+			// Fits in font cache - draw using texture memory
+			_drawTextureGlyphVector(g_);
 		}
-
-		private void _drawOutlineGlyphVector(GlyphVector g) {
-			if (outlineFont.prepareGlyphVertices(drawable)) {
-				outlineFont.render(drawable, g);
-			}
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
+		else {
+			setStrategy(OUTLINE_STRATEGY);
+			// Too big to fit in a texture - draw from outlines instead
+			_drawOutlineGlyphVector(g_);
 		}
+	}
+
+	private void _drawTextureGlyphVector(GlyphVector g) {
+		textureFont.setIncremental(incrementalFontHint);
+
+		//			doDisableAntialiasing();
+		textureFont.render(drawable, g, scale);
+		//			doEnableAntialiasing();
+
+		ag2d_active.setPaint(ag2d_active.getPaint());
+		if (DEBUG_CHECK_GL)
+			checkForErrors();
+	}
+
+	private void _drawOutlineGlyphVector(GlyphVector g) {
+		if (outlineFont.prepareGlyphVertices(drawable)) {
+			outlineFont.render(drawable, g);
+		}
+		if (DEBUG_CHECK_GL)
+			checkForErrors();
+	}
 
 }
 
@@ -201,7 +219,7 @@ class FontManager {
 			if (useFastShapes && textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
 				// Fits in font cache - draw using texture memory
 					textureFont.setIncremental(incrementalFontHint);
-					
+
 				drawTextureString(string);
 			//	System.out.println("Draw String on Texture");
 			} else {
@@ -239,4 +257,4 @@ class FontManager {
 				checkForErrors();
 
 		}
-*/
+ */

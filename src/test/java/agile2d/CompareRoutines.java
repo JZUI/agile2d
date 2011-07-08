@@ -127,7 +127,6 @@ class CompareRoutines {
 			}
 			else
 				x_ += (int)(size_/2);
-			System.out.println(size_);
 			g2d.setFont(new Font("SansSerif", Font.PLAIN, size_));
 			g2d.drawString("a", x_, y_);
 		}
