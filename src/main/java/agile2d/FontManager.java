@@ -25,11 +25,16 @@ class FontManager {
 	public static final int TEXTURE_STRATEGY = 0;
 	public static final int OUTLINE_STRATEGY = 1;
 	public static final int ROUGH_OUTLINE_STRATEGY = 2;
+
+	public static final int MIN_QUALITY = 0;
+	public static final int MEDIUM_QUALITY = 1;
+	public static final int MAX_QUALITY = 2;
 	
 	private TextureFontRenderer textureFont;
 	private OutlineFontRenderer outlineFont;
-	private OutlineRoughFontRenderer outlineRoughFont;
+	private OutlineRoughFontRenderer roughOutlineFont;
 	private int present_strategy;
+	private int roughOutlineQuality;
 
 	private static final boolean DEBUG_CHECK_GL = true;
 
@@ -55,15 +60,15 @@ class FontManager {
 		this.ag2d_active = ag2d_active_;
 	}
 
-	public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_, OutlineRoughFontRenderer outlineRoughFont_) {
+	public FontManager(GL2 gl, TextureFontRenderer textureFont_, OutlineFontRenderer outlineFont_, OutlineRoughFontRenderer roughOutlineFont_) {
 		this.gl = gl;
 		this.glState = AgileState.get(gl);
-		if(!setStrategy(TEXTURE_STRATEGY))
-			setStrategy(OUTLINE_STRATEGY);
+		if(checkStrategy(TEXTURE_STRATEGY))
+			setStrategy(TEXTURE_STRATEGY);
 		//get pointers to different rendering strategies
 		textureFont = textureFont_;
 		outlineFont = outlineFont_;
-		outlineRoughFont = outlineRoughFont_;
+		roughOutlineFont = roughOutlineFont_;
 	}
 
 	public void setStrategy(int strategyType){
@@ -82,6 +87,14 @@ class FontManager {
 		return font;	
 	}
 
+	public void setRoughOutlineQuality(int qualityHint_){
+		System.out.println("Setting new hint to the quality of the roughOutlineRenderer");
+		roughOutlineQuality = qualityHint_;	
+	}
+
+	public int getRoughOutlineuality(){
+		return roughOutlineQuality;	
+	}
 
 	//check if a given strategy is working in a given state (in the context of a given set of state variables)
 	//update state must be called juste before calling this function
@@ -105,15 +118,15 @@ class FontManager {
 	}
 
 	public void drawString(String string_){
-		//check if the current strategy is a valid one
-		if(!checkStrategy(present_strategy)){
-			//by default, agile always try to use the texture strategy	
-			if(checkStrategy(TEXTURE_STRATEGY))
-				setStrategy(TEXTURE_STRATEGY);
-			else
-				setStrategy(OUTLINE_STRATEGY);
+		//By default, agile always try to use the texture strategy	
+		if(checkStrategy(TEXTURE_STRATEGY))
+			setStrategy(TEXTURE_STRATEGY);
+		//if not, check if the current strategy(required) is valid
+		else if(!checkStrategy(present_strategy)){
+			System.err.println("Warning. Cannot call drawString since current drawString strategy cannot be supported.");
+			return;
 		}
-		//than check again which strategy is on
+		//then, check which strategy is on and call it
 		switch(present_strategy){
 			case TEXTURE_STRATEGY:
 				System.out.println("\nDrawing new string with texture strategy");
@@ -126,8 +139,8 @@ class FontManager {
 			break;
 			case ROUGH_OUTLINE_STRATEGY:			
 				System.out.println("\nDrawing new string with a rough outline strategy");
-				//Too big to fit in a texture - draw from outlines instead				
-				_drawOutlineString(string_);
+				//Too big to fit in a texture - draw from ROUGH outline of the shapes
+				_drawRoughOutlineString(string_);
 			break;
 			default:
 		}
@@ -139,11 +152,13 @@ class FontManager {
 	}
 
 
-	private void _drawOutlineString(String string) {
-		{//check if the fontSize required is different than that of the font object
+	private void _drawRoughOutlineString(String string) {
+		//check if the fontSize required is different than that of the font object
+		{
 			int previousSize = font.getSize();
-			int newRoughSize = outlineRoughFont.getNextUpperSize(previousSize);
+			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
 			if(newRoughSize != previousSize){
+				System.out.println("Font size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
 				double roughScale = (double)previousSize/newRoughSize;
 				//if there's a size increase, insert this scale difference in the scale variable
 				scale *= roughScale;
@@ -153,8 +168,16 @@ class FontManager {
 				font = previousFont_.deriveFont((float)newRoughSize);
 			}
 		}
-		if (outlineRoughFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-			outlineRoughFont.render(drawable, string, scale, font);
+		if (roughOutlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
+			roughOutlineFont.render(drawable, string, scale, font);
+		}
+		if (DEBUG_CHECK_GL)
+			checkForErrors();
+	}
+
+	private void _drawOutlineString(String string) {
+		if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
+			outlineFont.render(drawable, string, scale, font);
 		}
 		if (DEBUG_CHECK_GL)
 			checkForErrors();

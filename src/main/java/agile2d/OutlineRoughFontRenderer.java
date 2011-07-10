@@ -89,6 +89,10 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 	private static final int MIN_PRE_RENDER_FONT_SIZE = 24;
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 1024;
 	private static final int INIT_FONT_SIZE_LENGTH = 64;
+
+	//This is the "by default" value of this parameter
+	//the user may though control it through a render quality hint
+	//That's the role of method FontManager.setRoughOutlineQuality(hint_)
 	private static final float FONT_SIZE_INTERVAL_FACTOR = 1.08f;
 
 	private static int font_size_length;
@@ -294,30 +298,18 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 			int c = string.charAt(i);
 			if (c > metrics.length)
 				continue;
-			//VertexArrayList _vAL = new VertexArrayList();
 			presentVAL = null;
 			if (installChar(drawable, c)) {
 				//Get the metrics for each character
-				GlyphMetrics m = metrics[c];
-//				CharKey tempKey_ = new CharKey( (char) c, this.font);
-//				VertexArrayList v_ = (VertexArrayList)charSoftHashMap.get(tempKey_);
-//				if(v_ == null){
-//					System.out.println("No array ready for this font");
-//					return;
-//				}
-				
+				GlyphMetrics m = metrics[c];				
 				//DRAW A CHARACTER
 				//i.e.: each VertexArrayList (many VertexArrays) corresponds to
 				//a character (many polygons) and each vertexArray corresponds to
 				//a convex polygon composing the character
 				gl.glPushMatrix();
 				gl.glScaled(scale, scale, 1.0);
-				for (int j = 0; j < presentVAL.size(); j++){
-					//The OutlineFontRenderer used displayLists
-					//this strategy will only use vertex arrays and
-					//later, hopefully, VBO (vertex buffer objects)
+				for (int j = 0; j < presentVAL.size(); j++)
 					ShapeManager.render(gl, presentVAL.getVertexArrayAt(j), null);
-				}
 				gl.glPopMatrix();
 				gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
 			}
@@ -354,9 +346,8 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 	public boolean addTesselation(GLAutoDrawable drawable, int c) {
 		int charIndex = latin1Chars[c];
 		Shape s = this.glyphs.getGlyphOutline(charIndex);
-	//	System.out.println("Inside addTesselation()");
 		if (s == null){
-			System.out.println("There are no glyphs");
+			System.out.println("Warning: There are no glyphs for this font");
 			return false;
 		}	
 		metrics[charIndex] = glyphs.getGlyphMetrics(charIndex);
@@ -364,15 +355,9 @@ class OutlineRoughFontRenderer extends BasicFontRenderer {
 		presentVAL = new VertexArrayList();
 		VATesselatorVisitor visitor = new VATesselatorVisitor(presentVAL);
 		tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
-
-//		System.out.println("After tesselate() call");
 		
 		CharKey tempCharKey_ = new CharKey((char)charIndex, this.font);
-		charSoftHashMap.put((Object)tempCharKey_, (Object)presentVAL);
-		
-		//System.out.println("Number of vertexArrays: "+presentVAL.size());
-		
-	//	System.out.println("After charSoftHashMap.put() call");
+		charSoftHashMap.put((Object)tempCharKey_, (Object)presentVAL);		
 		
 		return true;
 	}
