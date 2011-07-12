@@ -30,7 +30,7 @@ import agile2d.geom.VertexArrayList;
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.3 $
  */
-class OutlineFontRenderer extends BasicFontRenderer {
+class OutlineFontRenderer extends BasicFontRenderer implements BasicOutlineFontRenderer {
     GlyphMetrics metrics[];
     VertexArrayList vertices[];
     VertexArrayList verticesGlyphs[];
@@ -39,58 +39,6 @@ class OutlineFontRenderer extends BasicFontRenderer {
     int listBaseGlyphs;
     Font listFont[] = new Font[256]; // character font currently in display list
     
-	/** 
-	 * Tesselates a shape and stores the result in a VertexArrayList
-	 */
-	static class VATesselatorVisitor implements TesselatorVisitor {	
-		VertexArrayList list;
-		VertexArray last;
-
-		VATesselatorVisitor(VertexArrayList list) {
-			this.list = list;
-		}
-    
-		/**
-		 * @see agile2d.TesselatorVisitor#begin(int)
-		 */
-		public void begin(int mode) {
-			VertexArray v = new VertexArray();
-			v.setMode(mode);
-			list.add(v);
-			last = v;
-		}
-
-		/**
-		 * @see agile2d.TesselatorVisitor#addVertex(double[])
-		 */
-		public void addVertex(double[] coords) {
-			last.addVertex(coords);
-		}
-
-		/**
-		 * @see agile2d.TesselatorVisitor#addVertex(double, double)
-		 */
-		public void addVertex(double x, double y) {
-			last.addVertex(x, y);
-		}
-
-		/**
-		 * @see agile2d.TesselatorVisitor#end()
-		 */
-		public void end() {
-			last = null;
-		}
-
-		// TesselatorVisitor
-		public void combine(double coords[/*3*/], Object data[/*4xn*/],  float weight[/*4*/], Object[/*3*/] dataOut) {
-			Tesselator.defaultCombine(coords, data, weight, dataOut);
-		}
-
-		public void error(int errorCode) {
-			Tesselator.defaultError(errorCode);
-		}   
-	}
-	
 	
 	static class CacheInfo {
         Font font;
@@ -206,7 +154,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
 
     protected VertexArrayList getVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[]) {
         if (vertices_[c] == null) {
-            addTesselation(drawable, latin1Chars[c]);
+            addTesselation(drawable, c);
         }
         return vertices_[c];
     }
@@ -313,17 +261,15 @@ class OutlineFontRenderer extends BasicFontRenderer {
     }
 */
 
-    public void release(GLAutoDrawable drawable) {
-        installed = false;
-    }
 
-    public boolean addTesselation(GLAutoDrawable drawable, int charIndex) {
+    public boolean addTesselation(GLAutoDrawable drawable, int c) {
+		int charIndex = latin1Chars[c];
         Shape s = glyphs.getGlyphOutline(charIndex);
         if (s == null)
             return false;
         metrics[charIndex] = glyphs.getGlyphMetrics(charIndex);
         VertexArrayList v = new VertexArrayList();
-		VATesselatorVisitor visitor = new VATesselatorVisitor(v);
+		VertexArrayTesselatorVisitor visitor = new VertexArrayTesselatorVisitor(v);
         tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
         vertices[charIndex] = v;
         return true;
@@ -332,7 +278,7 @@ class OutlineFontRenderer extends BasicFontRenderer {
     public boolean addTesselation(GLAutoDrawable drawable, int glyphIndex, GlyphVector g) {
         Shape s = g.getGlyphOutline(glyphIndex);
         VertexArrayList v = new VertexArrayList();
-	VATesselatorVisitor visitor = new VATesselatorVisitor(v);
+	VertexArrayTesselatorVisitor visitor = new VertexArrayTesselatorVisitor(v);
         tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
         verticesGlyphs[glyphIndex] = v;
         return true;
