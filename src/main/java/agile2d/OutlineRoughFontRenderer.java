@@ -27,8 +27,8 @@ import agile2d.geom.VertexArrayList;
 /**
  * Render Fonts from their outlines
  *
- * @author Jean-Daniel Fekete
- * @version $Revision: 1.3 $
+ * @author 
+ * @version $Revision: 1.4 $
  */
 
 class CharKey implements Comparable<CharKey>  
@@ -76,10 +76,8 @@ class CharKey implements Comparable<CharKey>
 }  
 
 
-class OutlineRoughFontRenderer extends BasicFontRenderer implements BasicOutlineFontRenderer {
-	private GlyphMetrics metrics[];
-	private Tesselator tesselator;
-	
+class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
+
 	private VertexArrayList presentVAL;	
 	private SoftHashMap charSoftHashMap;
 
@@ -114,60 +112,6 @@ class OutlineRoughFontRenderer extends BasicFontRenderer implements BasicOutline
 			System.out.print(listFontSizes[j]+", ");
 	}
 	
-	static class CacheInfo {
-		Font font;
-		GlyphMetrics metrics[];
-	
-		CacheInfo(Font font_) {
-			this.font = font_;
-			metrics = new GlyphMetrics[256];
-		}
-	}	
-
-
-	private LinkedList cache = new LinkedList();
-	private int maxCacheLength = 20;
-
-	public CacheInfo findCached(Font font_) {
-		CacheInfo info = null;
-		boolean first = true;
-		for (Iterator it = cache.iterator(); it.hasNext();) {
-			info = (CacheInfo) it.next();
-			if (info.font.equals(font_)) {
-				if (!first) {
-					it.remove();
-					cache.addFirst(info);
-				}
-				return info;
-			}
-			first = false;
-		}
-		info = new CacheInfo(font_);
-		cache.addFirst(info);
-		setMaxCacheLength(maxCacheLength);
-		return info;
-	}
-
-	/**
-	 * Returns the maxCacheLength.
-	 * @return int
-	 */
-	public int getMaxCacheLength() {
-		return maxCacheLength;
-	}
-
-	/**
-	 * Sets the maxCacheLength.
-	 * @param maxCacheLength The maxCacheLength to set
-	 */
-	public void setMaxCacheLength(int maxCacheLength) {
-		if (maxCacheLength < 0)
-			maxCacheLength = 0;
-		this.maxCacheLength = maxCacheLength;
-		while (cache.size() > maxCacheLength)
-			cache.removeLast();
-	}
-
 	public int getNextUpperSize(int reqSize_){
 		int length_ = listFontSizes.length;
 		for(int i=0; i<length_; i++){
@@ -258,7 +202,7 @@ class OutlineRoughFontRenderer extends BasicFontRenderer implements BasicOutline
 		return true;
 	}
 
-	public boolean addTesselation(GLAutoDrawable drawable, int c) {
+	protected boolean addTesselation(GLAutoDrawable drawable, int c) {
 		int charIndex = latin1Chars[c];
 		Shape s = this.glyphs.getGlyphOutline(charIndex);
 		if (s == null){

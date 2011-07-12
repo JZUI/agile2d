@@ -7,19 +7,89 @@
  *****************************************************************************/
 package agile2d;
 
+
 import java.awt.Font;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphMetrics;
+import java.awt.font.GlyphVector;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
+import agile2d.geom.VertexArray;
+import agile2d.geom.VertexArrayList;
+
+
 /**
- * Interface to render Fonts from their outlines
- * @author
+ * Render Fonts from their outlines
+ *
+ * @author 
  * @version $Revision: 1.4 $
  */
 
-public interface BasicOutlineFontRenderer {
-	public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm);
-	public boolean addTesselation(GLAutoDrawable drawable, int c);
-}
+public abstract class BasicOutlineFontRenderer extends BasicFontRenderer {
+
+	protected GlyphMetrics metrics[];
+	protected Tesselator tesselator;
+
+	static class CacheInfo {
+		Font font;
+		GlyphMetrics metrics[];
+		VertexArrayList vertices[];
+	
+		CacheInfo(Font font_) {
+			this.font = font_;
+			metrics = new GlyphMetrics[256];
+		}
+	}
+
+	private LinkedList cache = new LinkedList();
+	private int maxCacheLength = 20;
+
+	public CacheInfo findCached(Font font_) {
+		CacheInfo info = null;
+		boolean first = true;
+		for (Iterator it = cache.iterator(); it.hasNext();) {
+			info = (CacheInfo) it.next();
+			if (info.font.equals(font_)) {
+				if (!first) {
+					it.remove();
+					cache.addFirst(info);
+				}
+				return info;
+			}
+			first = false;
+		}
+		info = new CacheInfo(font_);
+		cache.addFirst(info);
+		setMaxCacheLength(maxCacheLength);
+		return info;
+	}
+
+	/**
+	 * Returns the maxCacheLength.
+	 * @return int
+	 */
+	public int getMaxCacheLength() {
+		return maxCacheLength;
+	}
+
+	/**
+	 * Sets the maxCacheLength.
+	 * @param maxCacheLength The maxCacheLength to set
+	 */
+	public void setMaxCacheLength(int maxCacheLength) {
+		if (maxCacheLength < 0)
+			maxCacheLength = 0;
+		this.maxCacheLength = maxCacheLength;
+		while (cache.size() > maxCacheLength)
+			cache.removeLast();
+	}
+
+	public abstract boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm);
+	protected abstract boolean addTesselation(GLAutoDrawable drawable, int c);
+} 
