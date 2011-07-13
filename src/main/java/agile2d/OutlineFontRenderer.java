@@ -34,8 +34,9 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 	private VertexArrayList vertices[];
 	private VertexArrayList verticesGlyphs[];
 	private Font listFont[] = new Font[256]; // character font currently in display list
-	private int listBase;    
+	private int listBaseFont;  
 	private int listBaseGlyphs;
+	private static int GLYPHVECTOR_MAX_LENGTH = 256; 
 
 	public OutlineFontRenderer(Tesselator tesselator) {
 		this.tesselator = tesselator;
@@ -60,9 +61,9 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 		if (this.vertices == null) {
 			setup();
 
-			if(listBase == 0) {
+			if(listBaseFont == 0) {
 				GL2 gl = drawable.getGL().getGL2();
-				listBase = gl.glGenLists(256);
+				listBaseFont = gl.glGenLists(256);
 			}
 
 			this.vertices = new VertexArrayList[256];
@@ -77,9 +78,15 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 		return true;
 	}
 
-
+    /*
+     * Prepare Vertex Array Lists for a GlyphVector 
+     * 
+     */
 	public boolean prepareGlyphVertices(GLAutoDrawable drawable) {
-		verticesGlyphs = new VertexArrayList[256];  
+		//Each vertexArray stores vertex coordinates for a polygon,
+		//each vertexArrayList stores the vertexArrays for a glyph,
+		//and an ARRAY of vertexArrayList stores a GlyphVector
+		verticesGlyphs = new VertexArrayList[256];
 		GL2 gl = drawable.getGL().getGL2();
 		listBaseGlyphs = gl.glGenLists(256);
 		return true;
@@ -94,11 +101,11 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 	}
 
 
-	protected VertexArrayList getGlyphVertices(GLAutoDrawable drawable, int c, VertexArrayList vertices_[], GlyphVector g) {
-		if (vertices_[c] == null) {
-			addTesselation(drawable, c, g);
+	protected VertexArrayList getGlyphVertices(GLAutoDrawable drawable, int g, VertexArrayList vertices_[], GlyphVector gv) {
+		if (vertices_[g] == null) {
+			addTesselation(drawable, g, gv);
 		}
-		return vertices_[c];
+		return vertices_[g];
 	}
 
 	protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
@@ -124,12 +131,12 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 	}
 
 
-	protected boolean installGlyph(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[], GlyphVector g) {
-		VertexArrayList v = getGlyphVertices(drawable, c, vList_, g);
+	protected boolean installGlyph(GLAutoDrawable drawable, int g, int listBase_, VertexArrayList vList_[], GlyphVector gv) {
+		VertexArrayList v = getGlyphVertices(drawable, g, vList_, gv);
 		if (v == null)
 			return false;
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glNewList(listBase_ + c, GL2.GL_COMPILE);
+		gl.glNewList(listBase_ + g, GL2.GL_COMPILE);
 		for (int i = 0; i < v.size(); i++)
 			ShapeManager.render(gl, v.getVertexArrayAt(i), null);
 		gl.glEndList();
@@ -148,9 +155,9 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 			int c = string.charAt(i);
 			if (c > metrics.length)
 				continue;
-			if (installChar(drawable, c, listBase, vertices)) {
+			if (installChar(drawable, c, listBaseFont, vertices)) {
 				GlyphMetrics m = metrics[c];
-				gl.glCallList(listBase + c);
+				gl.glCallList(listBaseFont + c);
 				gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
 			}
 		}
@@ -158,11 +165,11 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 	}
 
 
-	public void render(GLAutoDrawable drawable, GlyphVector g) {
+	public void render(GLAutoDrawable drawable, GlyphVector gv) {
 		int i;
 		GL2 gl = drawable.getGL().getGL2();
-		for (i = 0; i < g.getNumGlyphs(); i++) {
-			if (installGlyph(drawable, i, listBaseGlyphs, verticesGlyphs, g) ) {
+		for (i = 0; i < gv.getNumGlyphs(); i++) {
+			if (installGlyph(drawable, i, listBaseGlyphs, verticesGlyphs, gv) ) {
 				gl.glCallList(listBaseGlyphs + i);
 			}
 		}
@@ -208,8 +215,8 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 		return true;
 	}
 
-	public boolean addTesselation(GLAutoDrawable drawable, int glyphIndex, GlyphVector g) {
-		Shape s = g.getGlyphOutline(glyphIndex);
+	public boolean addTesselation(GLAutoDrawable drawable, int glyphIndex, GlyphVector gv) {
+		Shape s = gv.getGlyphOutline(glyphIndex);
 		VertexArrayList v = new VertexArrayList();
 		VertexArrayTesselatorVisitor visitor = new VertexArrayTesselatorVisitor(v);
 		tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);

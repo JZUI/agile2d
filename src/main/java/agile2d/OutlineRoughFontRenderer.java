@@ -43,44 +43,48 @@ class CharKey implements Comparable<CharKey>
 
 	}  
 
-	//@Override  
+	CharKey(GlyphVector gV_)  
+	{  
+		_key = Integer.toString(gV_.toString().hashCode());
+
+	}
+	
+	@Override  
 	public int compareTo(CharKey other)  
 	{  
 		return _key.compareTo(other._key);  
 	}  
 
-	//@Override  
+	@Override  
 	public boolean equals(Object other)  
 	{  
 		return (other != null) && (getClass() == other.getClass()) &&   
 		_key.equals(((CharKey)other)._key);  
 	}  
 
-	//@Override  
+	@Override  
 	public int hashCode()  
 	{  
 		return _key.hashCode();  
 	}  
 
-	//@Override  
+	@Override  
 	public String toString()  
 	{  
 		return _key;  
 	}  
-
-	public int size()  
-	{  
-		return _size;  
-	}
 
 }  
 
 
 class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
-	private VertexArrayList presentVAL;	
+	private VertexArrayList currentCharVAL;	
 	private SoftHashMap charSoftHashMap;
-
+	
+	private VertexArrayList currentGlyphVecVAL;
+	private SoftHashMap glyphVecSoftHashMap;
+	
 	//This is the "by default" value of this parameter
 	//the user may though control it through a render quality hint
 	//That's the role of method FontManager.setRoughOutlineQuality(hint_)
@@ -88,8 +92,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	private static final int MIN_PRE_RENDER_FONT_SIZE = 18;
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 2048;
 	private static final int INIT_FONT_SIZE_LENGTH = 64;
+	
 	private static final int CHARS_HASHMAP_SIZE = 256;
-
+	private static final int GLYPHVECTORS_HASHMAP_SIZE = 64;
+	
 	private static int font_size_length;
 	private static int listFontSizes[];
 
@@ -126,6 +132,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	public OutlineRoughFontRenderer(Tesselator tesselator) {
 		this.tesselator = tesselator;
 		charSoftHashMap = new SoftHashMap(CHARS_HASHMAP_SIZE);
+		glyphVecSoftHashMap = new SoftHashMap(GLYPHVECTORS_HASHMAP_SIZE);
 	}
 
 	public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm) {
@@ -164,7 +171,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 			int c = string.charAt(i);
 			if (c > metrics.length)
 				continue;
-			presentVAL = null;
+			currentCharVAL = null;
 			if (installChar(drawable, c)) {
 				//Get the metrics for each character
 				GlyphMetrics m = metrics[c];				
@@ -174,8 +181,8 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 				//a convex polygon composing the character
 				gl.glPushMatrix();
 				gl.glScaled(scale, scale, 1.0);
-				for (int j = 0; j < presentVAL.size(); j++)
-					ShapeManager.render(gl, presentVAL.getVertexArrayAt(j), null);
+				for (int j = 0; j < currentCharVAL.size(); j++)
+					ShapeManager.render(gl, currentCharVAL.getVertexArrayAt(j), null);
 				gl.glPopMatrix();
 				gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
 			}
@@ -190,18 +197,60 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
 		//get VertexArray list of the character c
 		CharKey tempKey_ = new CharKey( (char) c, this.font);
-		presentVAL = (VertexArrayList)charSoftHashMap.get(tempKey_);
+		currentCharVAL = (VertexArrayList)charSoftHashMap.get(tempKey_);
 
 		//If data doesn't exist (still / anymore), make it;
-		if (presentVAL == null){
+		if (currentCharVAL == null){
 			addTesselation(drawable, c);
-			System.out.println("No vertexArray for character: "+tempKey_.toString());
+			System.out.println("No vertexArrayList for character: "+tempKey_.toString());
 		}
 		else
-			System.out.println("Found VertexArray for character: "+tempKey_.toString());
+			System.out.println("Found VertexArrayList for character: "+tempKey_.toString());
 		return true;
 	}
 
+	protected boolean installGlyphVector(GLAutoDrawable drawable, GlyphVector gV) {
+
+		GL2 gl = drawable.getGL().getGL2();
+
+		//get VertexArray list of the character c
+		CharKey tempKey_ = new CharKey( gV );
+		currentGlyphVecVAL = (VertexArrayList)glyphVecSoftHashMap.get(tempKey_);
+		
+		//If data doesn't exist (still / anymore), make it;
+		if (currentGlyphVecVAL == null){
+			addTesselation(drawable, gV);
+			System.out.println("No VertexArrayList for glyphVector: "+gV.toString()+" with hashCode: "+tempKey_.toString());
+		}
+		else
+			System.out.println("Found VertexArrayList for glyphVector: "+gV.toString()+" with hashCode: "+tempKey_.toString());
+		return true;
+	}
+
+	
+	public void render(GLAutoDrawable drawable, GlyphVector gV) {
+		int i;
+		GL2 gl = drawable.getGL().getGL2();
+		//for (i = 0; i < gV.getNumGlyphs(); i++) {
+			if (installGlyphVector(drawable, gV) ) {
+				//Get the metrics for each character
+				//GlyphMetrics m = metrics[c];				
+				//DRAW A CHARACTER
+				//i.e.: each VertexArrayList (many VertexArrays) corresponds to
+				//a GlyphVector (many glyphs) and each vertexArray corresponds to
+				//a polygon composing one glyph of part of one glyph
+				double scale = 1.0d;
+				gl.glPushMatrix();
+				gl.glScaled(scale, scale, 1.0);
+				for (int j = 0; j < currentGlyphVecVAL.size(); j++)
+					ShapeManager.render(gl, currentGlyphVecVAL.getVertexArrayAt(j), null);
+				gl.glPopMatrix();
+				//gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
+			}
+		//}
+	}
+	
+	
 	protected boolean addTesselation(GLAutoDrawable drawable, int c) {
 		int charIndex = latin1Chars[c];
 		Shape s = this.glyphs.getGlyphOutline(charIndex);
@@ -211,11 +260,24 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		}
 		//get the metrics of this font that should be in the cache
 		metrics[charIndex] = glyphs.getGlyphMetrics(charIndex);
-		presentVAL = new VertexArrayList();
-		VertexArrayTesselatorVisitor visitor = new VertexArrayTesselatorVisitor(presentVAL);
+		currentCharVAL = new VertexArrayList();
+		VertexArrayTesselatorVisitor visitor = new VertexArrayTesselatorVisitor(currentCharVAL);
 		tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
 		CharKey tempCharKey_ = new CharKey((char)charIndex, this.font);
-		charSoftHashMap.put((Object)tempCharKey_, (Object)presentVAL);
+		charSoftHashMap.put((Object)tempCharKey_, (Object)currentCharVAL);
+		return true;
+	}
+	
+	//We try to store all the glyphVector in a VertexArrayList
+	public boolean addTesselation(GLAutoDrawable drawable, GlyphVector gV) {
+		Shape s = gV.getOutline();
+		currentGlyphVecVAL = new VertexArrayList();
+		VertexArrayTesselatorVisitor visitor = new VertexArrayTesselatorVisitor(currentGlyphVecVAL);
+		tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
+
+		CharKey tempKey_ = new CharKey(gV);
+		glyphVecSoftHashMap.put((Object)tempKey_, (Object)currentGlyphVecVAL);	
+		
 		return true;
 	}
 

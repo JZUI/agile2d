@@ -1048,6 +1048,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
 
+			fontManager.setStrategy(FontManager.ROUGH_OUTLINE_STRATEGY);
 			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawGlyphVector(g);
 

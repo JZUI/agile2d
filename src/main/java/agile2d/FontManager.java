@@ -194,7 +194,7 @@ class FontManager {
 			checkForErrors();
 	}
 
-
+/*
 	public void drawGlyphVector(GlyphVector g_){
 		if( (present_strategy == TEXTURE_STRATEGY) && (checkStrategy(TEXTURE_STRATEGY)) ){
 			// Fits in font cache - draw using texture memory
@@ -206,7 +206,38 @@ class FontManager {
 			_drawOutlineGlyphVector(g_);
 		}
 	}
-
+*/
+		public void drawGlyphVector(GlyphVector gV){
+		//By default, agile always try to use the texture strategy	
+		if(checkStrategy(TEXTURE_STRATEGY))
+			setStrategy(TEXTURE_STRATEGY);
+		//if not, check if the current strategy(required) is valid
+		else if(!checkStrategy(present_strategy)){
+			System.err.println("Warning. Cannot call drawGlyphVector since current drawGlyphVector strategy cannot be supported.");
+			return;
+		}
+		//then, check which strategy is on and call it
+		switch(present_strategy){
+			case TEXTURE_STRATEGY:
+				System.out.println("\nDrawing new glyphVector with texture strategy");
+				_drawTextureGlyphVector(gV);				
+			break;
+			case OUTLINE_STRATEGY:			
+				System.out.println("\nDrawing new glyphVector with outline strategy");
+				//Too big to fit in a texture - draw from outlines instead				
+				_drawOutlineGlyphVector(gV);
+			break;
+			case ROUGH_OUTLINE_STRATEGY:			
+				System.out.println("\nDrawing new glyphVector with a rough outline strategy");
+				//Too big to fit in a texture - draw from ROUGH outline of the shapes
+				_drawRoughOutlineGlyphVector(gV);
+			break;
+			default:
+		}
+	}
+	
+	
+	
 	private void _drawTextureGlyphVector(GlyphVector g) {
 		textureFont.setIncremental(incrementalFontHint);
 
@@ -227,6 +258,27 @@ class FontManager {
 			checkForErrors();
 	}
 
+	private void _drawRoughOutlineGlyphVector(GlyphVector gV) {
+		//check if the fontSize required is different than that of the font object
+		{
+			int previousSize = gV.getFont.getSize();
+			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
+			if(newRoughSize != previousSize){
+				System.out.println("Glyph size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
+				double roughScale = (double)previousSize/newRoughSize;
+				//if there's a size increase, insert this scale difference in the scale variable
+				scale *= roughScale;
+				//get a new font instance with a size corresponding to the rough sizes
+				Font previousFont_ = font;
+				font = null;
+				font = previousFont_.deriveFont((float)newRoughSize);
+			}
+		}
+		roughOutlineFont.render(drawable, gV);
+		if (DEBUG_CHECK_GL)
+			checkForErrors();
+	}
+	
 }
 
 /*
