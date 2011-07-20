@@ -261,7 +261,7 @@ class FontManager {
 	private void _drawRoughOutlineGlyphVector(GlyphVector gV) {
 		//check if the fontSize required is different than that of the font object
 		{
-			int previousSize = gV.getFont.getSize();
+			int previousSize = gV.getFont().getSize();
 			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
 			if(newRoughSize != previousSize){
 				System.out.println("Glyph size required: "+previousSize+". Size found and shrinked: "+newRoughSize);

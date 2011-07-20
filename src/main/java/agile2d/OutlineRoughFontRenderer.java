@@ -86,8 +86,8 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	private SoftHashMap glyphVecSoftHashMap;
 	
 	//This is the "by default" value of this parameter
-	//the user may though control it through a render quality hint
-	//That's the role of method FontManager.setRoughOutlineQuality(hint_)
+	//the user may though control it by setting a render quality HINT
+	//That's the role of method FontManager.setRoughOutlineQuality(int hint_)
 	private static final float FONT_SIZE_INTERVAL_FACTOR = 1.2f;
 	private static final int MIN_PRE_RENDER_FONT_SIZE = 18;
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 2048;
@@ -153,41 +153,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
 		System.out.println("Scale :"+scale);	
 		
-		//TODO: Should a glyphvector for all the font char be created or only for the required char / strings ?
 		//Create a new glyphvector from the current font
 		setup();
 		installed = true;
 		return true;
-	}
-
-
-	public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {
-		if (!installed)
-			return;
-		GL2 gl = drawable.getGL().getGL2();
-
-		int i;
-		for (i = 0; i < string.length(); i++) {
-			int c = string.charAt(i);
-			if (c > metrics.length)
-				continue;
-			currentCharVAL = null;
-			if (installChar(drawable, c)) {
-				//Get the metrics for each character
-				GlyphMetrics m = metrics[c];				
-				//DRAW A CHARACTER
-				//i.e.: each VertexArrayList (many VertexArrays) corresponds to
-				//a character (many polygons) and each vertexArray corresponds to
-				//a convex polygon composing the character
-				gl.glPushMatrix();
-				gl.glScaled(scale, scale, 1.0);
-				for (int j = 0; j < currentCharVAL.size(); j++)
-					ShapeManager.render(gl, currentCharVAL.getVertexArrayAt(j), null);
-				gl.glPopMatrix();
-				gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
-			}
-		}
-		installed = false;
 	}
 
 
@@ -217,16 +186,46 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		CharKey tempKey_ = new CharKey( gV );
 		currentGlyphVecVAL = (VertexArrayList)glyphVecSoftHashMap.get(tempKey_);
 		
-		//If data doesn't exist (still / anymore), make it;
+		//If data doesn't exist (still / anymore), make it
 		if (currentGlyphVecVAL == null){
 			addTesselation(drawable, gV);
 			System.out.println("No VertexArrayList for glyphVector: "+gV.toString()+" with hashCode: "+tempKey_.toString());
+			System.out.println("Character index of 1st glyph: "+Character.toString((char)latin1Chars[gV.getGlyphCode(0)]));
 		}
 		else
 			System.out.println("Found VertexArrayList for glyphVector: "+gV.toString()+" with hashCode: "+tempKey_.toString());
 		return true;
 	}
 
+	public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {
+		if (!installed)
+			return;
+		GL2 gl = drawable.getGL().getGL2();
+
+		int i;
+		for (i = 0; i < string.length(); i++) {
+			int c = string.charAt(i);
+			if (c > metrics.length)
+				continue;
+			currentCharVAL = null;
+			if (installChar(drawable, c)) {
+				//Get the metrics for each character
+				GlyphMetrics m = metrics[c];				
+				//DRAW A CHARACTER
+				//i.e.: each VertexArrayList (many VertexArrays) corresponds to
+				//a character (many polygons) and each vertexArray corresponds to
+				//a convex polygon composing the character
+				gl.glPushMatrix();
+				gl.glScaled(scale, scale, 1.0);
+				for (int j = 0; j < currentCharVAL.size(); j++)
+					ShapeManager.render(gl, currentCharVAL.getVertexArrayAt(j), null);
+				gl.glPopMatrix();
+				gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
+			}
+		}
+		installed = false;
+	}	
+	
 	
 	public void render(GLAutoDrawable drawable, GlyphVector gV) {
 		int i;
@@ -249,6 +248,8 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 			}
 		//}
 	}
+	
+
 	
 	
 	protected boolean addTesselation(GLAutoDrawable drawable, int c) {
