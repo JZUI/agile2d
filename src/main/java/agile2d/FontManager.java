@@ -88,7 +88,7 @@ class FontManager {
 	}
 
 	public void setRoughOutlineQuality(int qualityHint_){
-		System.out.println("Setting new hint to the quality of the roughOutlineRenderer");
+		//System.out.println("Setting new hint to the quality of the roughOutlineRenderer");
 		roughOutlineQuality = qualityHint_;	
 	}
 
@@ -129,16 +129,16 @@ class FontManager {
 		//then, check which strategy is on and call it
 		switch(present_strategy){
 			case TEXTURE_STRATEGY:
-				System.out.println("\nDrawing new string with texture strategy");
+				//System.out.println("\nDrawing new string with texture strategy");
 				_drawTextureString(string_);				
 			break;
 			case OUTLINE_STRATEGY:			
-				System.out.println("\nDrawing new string with outline strategy");
+				//System.out.println("\nDrawing new string with outline strategy");
 				//Too big to fit in a texture - draw from outlines instead				
 				_drawOutlineString(string_);
 			break;
 			case ROUGH_OUTLINE_STRATEGY:			
-				System.out.println("\nDrawing new string with a rough outline strategy");
+				//System.out.println("\nDrawing new string with a rough outline strategy");
 				//Too big to fit in a texture - draw from ROUGH outline of the shapes
 				_drawRoughOutlineString(string_);
 			break;
@@ -153,23 +153,24 @@ class FontManager {
 
 
 	private void _drawRoughOutlineString(String string) {
+		double roughScale=1.0;
 		//check if the fontSize required is different than that of the font object
 		{
 			int previousSize = font.getSize();
 			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
 			if(newRoughSize != previousSize){
-				System.out.println("Font size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
-				double roughScale = (double)previousSize/newRoughSize;
+				//System.out.println("Font size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
+				roughScale = (double)previousSize/newRoughSize;
 				//if there's a size increase, insert this scale difference in the scale variable
-				scale *= roughScale;
+				//scale *= roughScale;
 				//get a new font instance with a size corresponding to the rough sizes
 				Font previousFont_ = font;
 				font = null;
 				font = previousFont_.deriveFont((float)newRoughSize);
 			}
 		}
-		if (roughOutlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-			roughOutlineFont.render(drawable, string, scale, font);
+		if (roughOutlineFont.installFont(drawable, font, roughScale, frcAntialiasing, frcUsesFractionalMetrics)) {
+			roughOutlineFont.render(drawable, string, roughScale, font);
 		}
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
@@ -219,16 +220,16 @@ class FontManager {
 		//then, check which strategy is on and call it
 		switch(present_strategy){
 			case TEXTURE_STRATEGY:
-				System.out.println("\nDrawing new glyphVector with texture strategy");
+				//System.out.println("\nDrawing new glyphVector with texture strategy");
 				_drawTextureGlyphVector(gV);				
 			break;
 			case OUTLINE_STRATEGY:			
-				System.out.println("\nDrawing new glyphVector with outline strategy");
+				//System.out.println("\nDrawing new glyphVector with outline strategy");
 				//Too big to fit in a texture - draw from outlines instead				
 				_drawOutlineGlyphVector(gV);
 			break;
 			case ROUGH_OUTLINE_STRATEGY:			
-				System.out.println("\nDrawing new glyphVector with a rough outline strategy");
+				//System.out.println("\nDrawing new glyphVector with a rough outline strategy");
 				//Too big to fit in a texture - draw from ROUGH outline of the shapes
 				_drawRoughOutlineGlyphVector(gV);
 			break;
@@ -264,7 +265,7 @@ class FontManager {
 			int previousSize = gV.getFont().getSize();
 			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
 			if(newRoughSize != previousSize){
-				System.out.println("Glyph size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
+				//System.out.println("Glyph size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
 				double roughScale = (double)previousSize/newRoughSize;
 				//if there's a size increase, insert this scale difference in the scale variable
 				scale *= roughScale;

@@ -112,10 +112,12 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 			i++;
 		}while( (i<INIT_FONT_SIZE_LENGTH) && (size_ < MAX_PRE_RENDER_FONT_SIZE) );
 		font_size_length = i;
+		/*
 		System.out.print("Sizes: ");
 		int j;
 		for(j=0; j<font_size_length; j++)
 			System.out.print(listFontSizes[j]+", ");
+		*/
 	}
 	
 	public int getNextUpperSize(int reqSize_){
@@ -151,7 +153,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		this.frc = new FontRenderContext(null, aa, ufm);
 		this.metrics = info.metrics;
 
-		System.out.println("Scale :"+scale);	
+		//System.out.println("Scale :"+scale);	
 		
 		//Create a new glyphvector from the current font
 		setup();
@@ -171,10 +173,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		//If data doesn't exist (still / anymore), make it;
 		if (currentCharVAL == null){
 			addTesselation(drawable, c);
-			System.out.println("No vertexArrayList for character: "+tempKey_.toString());
+		//	System.out.println("No vertexArrayList for character: "+tempKey_.toString());
 		}
-		else
-			System.out.println("Found VertexArrayList for character: "+tempKey_.toString());
+		//else
+			//System.out.println("Found VertexArrayList for character: "+tempKey_.toString());
 		return true;
 	}
 
@@ -189,11 +191,15 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		//If data doesn't exist (still / anymore), make it
 		if (currentGlyphVecVAL == null){
 			addTesselation(drawable, gV);
+			/*
 			System.out.println("No VertexArrayList for glyphVector: "+gV.toString()+" with hashCode: "+tempKey_.toString());
-			System.out.println("Character index of 1st glyph: "+Character.toString((char)latin1Chars[gV.getGlyphCode(0)]));
+			for(int j=0; j<gV.getNumGlyphs(); j++)
+					System.out.println("Character index of 1st glyph: "+gV.getGlyphCode(j));
+			*/
 		}
-		else
-			System.out.println("Found VertexArrayList for glyphVector: "+gV.toString()+" with hashCode: "+tempKey_.toString());
+		//else
+		//	System.out.println("Found VertexArrayList for glyphVector: "+gV.toString()+" with hashCode: "+tempKey_.toString());
+			
 		return true;
 	}
 
@@ -249,8 +255,27 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		//}
 	}
 	
+	//find what glyphs compose this char (with the current font)
+	//and store the hascode of each glyph in an array hashmap
+	protected void getGlyphsFromChar(char c_){
+	}
 
-	
+	protected void drawChar(char c_){
+		//Check if we already know what glyphs compose this character
+		
+		//if(charHashMap.get(charHashCode)==null)
+			//getGlyphsFromChar(c_)
+		
+		//Fetch the array containing the hashcode of the characterGlyphs and print each of then
+		
+		//for(int i=0; i< charGlyphs.length; i++)
+			//drawGlyph(charGlyphs(i));
+		
+	}
+
+	protected void drawGlyph(int gliphHashCode){
+		//call opengl drawArray operations for this gliph
+	}	
 	
 	protected boolean addTesselation(GLAutoDrawable drawable, int c) {
 		int charIndex = latin1Chars[c];
