@@ -129,16 +129,16 @@ class FontManager {
 		//then, check which strategy is on and call it
 		switch(present_strategy){
 			case TEXTURE_STRATEGY:
-				System.out.println("\nDrawing new string with texture strategy");
+			//	System.out.println("\nDrawing new string with texture strategy");
 				_drawTextureString(string_);				
 			break;
 			case OUTLINE_STRATEGY:			
-				System.out.println("\nDrawing new string with outline strategy");
+			//	System.out.println("\nDrawing new string with outline strategy");
 				//Too big to fit in a texture - draw from outlines instead				
 				_drawOutlineString(string_);
 			break;
 			case ROUGH_OUTLINE_STRATEGY:			
-				System.out.println("\nDrawing new string with a rough outline strategy");
+			//	System.out.println("\nDrawing new string with a rough outline strategy");
 				//Too big to fit in a texture - draw from ROUGH outline of the shapes
 				_drawRoughOutlineString(string_);
 			break;

@@ -283,7 +283,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			this.isGLStencilAvailable = (glState.getState(GL.GL_STENCIL_BITS) >= 1); // Need 1 bit for clip
 				
 			int nb_stencil_bits[] = new int[1];
-			nb_stencil_bits[0] = 50;
+			nb_stencil_bits[0] = 500;
 			gl.glGetIntegerv(GL2.GL_STENCIL_BITS, nb_stencil_bits, 0);
 			System.out.println("Gl STENCIL BITS:"+ nb_stencil_bits[0]);
 
