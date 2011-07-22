@@ -89,7 +89,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	//the user may though control it by setting a render quality HINT
 	//That's the role of method FontManager.setRoughOutlineQuality(int hint_)
 	private static final float FONT_SIZE_INTERVAL_FACTOR = 1.2f;
-	private static final int MIN_PRE_RENDER_FONT_SIZE = 18;
+	private static final int MIN_PRE_RENDER_FONT_SIZE = 8;
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 2048;
 	private static final int INIT_FONT_SIZE_LENGTH = 64;
 	
