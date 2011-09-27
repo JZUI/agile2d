@@ -223,6 +223,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 				//a convex polygon composing the character
 				gl.glPushMatrix();
 				gl.glScaled(scale, scale, 1.0);
+				System.out.println("RoughOutline. In drawString, font size:"+font_.getSize()+" and scale: "+scale+" and transform: "+font_.getTransform().getScaleX());
 				for (int j = 0; j < currentCharVAL.size(); j++)
 					ShapeManager.render(gl, currentCharVAL.getVertexArrayAt(j), null);
 				gl.glPopMatrix();
@@ -273,8 +274,8 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		
 	}
 
-	protected void drawGlyph(int gliphHashCode){
-		//call opengl drawArray operations for this gliph
+	protected void drawGlyph(int glyphHashCode){
+		//call opengl drawArray operations for this glyph
 	}	
 	
 	protected boolean addTesselation(GLAutoDrawable drawable, int c) {
