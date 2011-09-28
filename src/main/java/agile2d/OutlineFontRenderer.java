@@ -34,9 +34,9 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 	private VertexArrayList vertices[];
 	private VertexArrayList verticesGlyphs[];
 	private Font listFont[] = new Font[256]; // character font currently in display list
-	private int listBaseFont;  
+	private int listBaseFont;
 	private int listBaseGlyphs;
-	private static int GLYPHVECTOR_MAX_LENGTH = 256; 
+	private static int GLYPHVECTOR_MAX_LENGTH = 256;
 
 	public OutlineFontRenderer(Tesselator tesselator) {
 		this.tesselator = tesselator;
@@ -79,8 +79,8 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 	}
 
     /*
-     * Prepare Vertex Array Lists for a GlyphVector 
-     * 
+     * Prepare Vertex Array Lists for a GlyphVector
+     *
      */
 	public boolean prepareGlyphVertices(GLAutoDrawable drawable) {
 		//Each vertexArray stores vertex coordinates for a polygon,
@@ -110,7 +110,7 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 
 	protected boolean installChar(GLAutoDrawable drawable, int c, int listBase_, VertexArrayList vList_[]) {
 
-		//WHAT listFont[] array SERVES TO ?!		
+		//WHAT listFont[] array SERVES TO ?!
 		/*
         if (listFont[c] == this.font){
         	return true;
@@ -155,7 +155,12 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 			int c = string.charAt(i);
 			if (c > metrics.length)
 				continue;
-			System.out.println("NormalOutline. In drawString, font size:"+font_.getSize()+" and scale: "+scale+" and transform: "+font_.getTransform().getScaleX());			
+			System.out.println("NormalOutline. In drawString, font size:"+font_.getSize()+" and size2D: "+font_.getSize2D()+"and scale: "+scale+" and transform: "+font_.getTransform().getScaleX());
+			if(font_.isTransformed())
+				System.out.println("Transformed");
+			else
+				System.out.println("Not Transformed");
+
 			if (installChar(drawable, c, listBaseFont, vertices)) {
 				GlyphMetrics m = metrics[c];
 				gl.glCallList(listBaseFont + c);
@@ -224,5 +229,5 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 		verticesGlyphs[glyphIndex] = v;
 		return true;
 	}
-} 
+}
 

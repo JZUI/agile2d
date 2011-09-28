@@ -19,7 +19,7 @@ import java.awt.font.GlyphVector;
 
 /**
  * Used to manage switching among possible drawString strategies.
- * 
+ *
  */
 class FontManager {
 	public static final int TEXTURE_STRATEGY = 0;
@@ -29,7 +29,7 @@ class FontManager {
 	public static final int MIN_QUALITY = 0;
 	public static final int MEDIUM_QUALITY = 1;
 	public static final int MAX_QUALITY = 2;
-	
+
 	private TextureFontRenderer textureFont;
 	private OutlineFontRenderer outlineFont;
 	private OutlineRoughFontRenderer roughOutlineFont;
@@ -80,20 +80,20 @@ class FontManager {
 	}
 
 	public void setFont(Font _font){
-		font = _font;	
+		font = _font;
 	}
 
 	public Font getFont(){
-		return font;	
+		return font;
 	}
 
 	public void setRoughOutlineQuality(int qualityHint_){
 		//System.out.println("Setting new hint to the quality of the roughOutlineRenderer");
-		roughOutlineQuality = qualityHint_;	
+		roughOutlineQuality = qualityHint_;
 	}
 
 	public int getRoughOutlineuality(){
-		return roughOutlineQuality;	
+		return roughOutlineQuality;
 	}
 
 	//check if a given strategy is working in a given state (in the context of a given set of state variables)
@@ -118,7 +118,7 @@ class FontManager {
 	}
 
 	public void drawString(String string_){
-		//By default, agile always try to use the texture strategy	
+		//By default, agile always try to use the texture strategy
 		if(checkStrategy(TEXTURE_STRATEGY))
 			setStrategy(TEXTURE_STRATEGY);
 		//if not, check if the current strategy(required) is valid
@@ -129,16 +129,16 @@ class FontManager {
 		//then, check which strategy is on and call it
 		switch(present_strategy){
 			case TEXTURE_STRATEGY:
-			//	System.out.println("\nDrawing new string with texture strategy");
-				_drawTextureString(string_);				
+				System.out.println("\nDrawing new string with texture strategy");
+				_drawTextureString(string_);
 			break;
-			case OUTLINE_STRATEGY:			
-			//	System.out.println("\nDrawing new string with outline strategy");
-				//Too big to fit in a texture - draw from outlines instead				
+			case OUTLINE_STRATEGY:
+				System.out.println("\nDrawing new string with outline strategy");
+				//Too big to fit in a texture - draw from outlines instead
 				_drawOutlineString(string_);
 			break;
-			case ROUGH_OUTLINE_STRATEGY:			
-			//	System.out.println("\nDrawing new string with a rough outline strategy");
+			case ROUGH_OUTLINE_STRATEGY:
+				System.out.println("\nDrawing new string with a rough outline strategy");
 				//Too big to fit in a texture - draw from ROUGH outline of the shapes
 				_drawRoughOutlineString(string_);
 			break;
@@ -157,12 +157,15 @@ class FontManager {
 		//check if the fontSize required is different than that of the font object
 		{
 			int previousSize = font.getSize();
+			previousSize *= scale;
 			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
-			if(newRoughSize != previousSize){
-				//System.out.println("Font size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
+			if( (newRoughSize != previousSize) || scale != 1.0d){
+				System.out.println("Font size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
 				roughScale = (double)previousSize/newRoughSize;
 				//if there's a size increase, insert this scale difference in the scale variable
 				//scale *= roughScale;
+				System.out.println("Scale: "+scale+" and rough scale: "+roughScale);
+				roughScale *= scale;
 				//get a new font instance with a size corresponding to the rough sizes
 				Font previousFont_ = font;
 				font = null;
@@ -185,7 +188,7 @@ class FontManager {
 	}
 
 	private void _drawTextureString(String string) {
-		textureFont.setIncremental(incrementalFontHint);			
+		textureFont.setIncremental(incrementalFontHint);
 		//		doDisableAntialiasing();
 		textureFont.render(drawable, string, scale, font);
 		//		doEnableAntialiasing();
@@ -209,7 +212,7 @@ class FontManager {
 	}
 */
 		public void drawGlyphVector(GlyphVector gV){
-		//By default, agile always try to use the texture strategy	
+		//By default, agile always try to use the texture strategy
 		if(checkStrategy(TEXTURE_STRATEGY))
 			setStrategy(TEXTURE_STRATEGY);
 		//if not, check if the current strategy(required) is valid
@@ -221,14 +224,14 @@ class FontManager {
 		switch(present_strategy){
 			case TEXTURE_STRATEGY:
 				//System.out.println("\nDrawing new glyphVector with texture strategy");
-				_drawTextureGlyphVector(gV);				
+				_drawTextureGlyphVector(gV);
 			break;
-			case OUTLINE_STRATEGY:			
+			case OUTLINE_STRATEGY:
 				//System.out.println("\nDrawing new glyphVector with outline strategy");
-				//Too big to fit in a texture - draw from outlines instead				
+				//Too big to fit in a texture - draw from outlines instead
 				_drawOutlineGlyphVector(gV);
 			break;
-			case ROUGH_OUTLINE_STRATEGY:			
+			case ROUGH_OUTLINE_STRATEGY:
 				//System.out.println("\nDrawing new glyphVector with a rough outline strategy");
 				//Too big to fit in a texture - draw from ROUGH outline of the shapes
 				_drawRoughOutlineGlyphVector(gV);
@@ -236,9 +239,9 @@ class FontManager {
 			default:
 		}
 	}
-	
-	
-	
+
+
+
 	private void _drawTextureGlyphVector(GlyphVector g) {
 		textureFont.setIncremental(incrementalFontHint);
 
@@ -279,7 +282,7 @@ class FontManager {
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
 	}
-	
+
 }
 
 /*

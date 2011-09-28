@@ -62,7 +62,7 @@ import agile2d.ImageUtils;
 
 /**
  * AgileGraphics2D implements a reasonably complete subset of the standard Java2D
- * Graphics2D API, using JOGL OpenGL as the rendering engine. 
+ * Graphics2D API, using JOGL OpenGL as the rendering engine.
  *
  * <p>
  * Note that some API functions are marked "TBD" (to be done). Calling these
@@ -182,7 +182,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private OutlineFontRenderer outlineFont;
 		private OutlineRoughFontRenderer outlineRoughFont;
 		private FontManager fontManager;
-		
+
 		private Font              font;
 //		private Shape             shapeClip;
 		private TexturePaint      texturePaint;
@@ -193,7 +193,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private double[]          flatMatrix = new double[6];
 		private Rectangle         windowBounds = null;
 		private int               paintMode;
-		
+
 		private boolean           frcAntialiasing;
 		private boolean           frcUsesFractionalMetrics;
 		private boolean           inited;
@@ -250,7 +250,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			// No error checking in JOGL - use a DebugGL instead
 			// drawable.getGLContext().gljCheckGL();
 		}
-		
+
 		public void resetGL(GLAutoDrawable drawable) {
 		    this.drawable = drawable;
     	            this.gl = drawable.getGL().getGL2();
@@ -269,25 +269,25 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 //			glState.glSetShadeModel(GL2.GL_FLAT);
 			//glState.glSetShadeModel(GL2.GL_SMOOTH);
 			glState.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-			
+
 			//Antialiasing of lines and points (are they necessary?)
 			//glState.glEnable(GL2.GL_POINT_SMOOTH);
 			//glState.glEnable(GL2.GL_LINE_SMOOTH);
 			//glState.glEnable(GL2.GL_POLYGON_SMOOTH);
-			
+
 			//GL_BLEND should be enablend in order to apply antialiasing on lines and points
 			//but, presently, it's by default disabled in doSetColor() routine
 			gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
 			//Check if the call below works (since it passes by a glState call and shall pass a pointer as argument)
 			this.isGLStencilAvailable = (glState.getState(GL.GL_STENCIL_BITS) >= 1); // Need 1 bit for clip
-				
+
 			int nb_stencil_bits[] = new int[1];
 			nb_stencil_bits[0] = 500;
 			gl.glGetIntegerv(GL2.GL_STENCIL_BITS, nb_stencil_bits, 0);
 			System.out.println("Gl STENCIL BITS:"+ nb_stencil_bits[0]);
 
-			
+
             // For images
             maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);
 	    if (maxTexSize > ImageUtils.MAX_TEX_SIZE) { // limit texture size to MAX_TEX_SIZE
@@ -304,9 +304,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE, maxLineRange, 0);
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_GRANULARITY, lineWidthGranularity, 0);
 //			System.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
-			minLineWidth = maxLineRange[0];		
-			maxLineWidth = maxLineRange[1];		
-			
+			minLineWidth = maxLineRange[0];
+			maxLineWidth = maxLineRange[1];
+
 			// We need a Java Graphics2D to fall back on in certain cases, so make one
 			if (drawable instanceof Component) {
 				Component c = (Component)drawable;
@@ -377,8 +377,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			boolean oldAA = antiAliasingHint;
 			antiAliasingHint = (hints.get(RenderingHints.KEY_ANTIALIASING) == RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setRenderingHints(hints);
-			
-			
+
+
 			if (oldAA != antiAliasingHint) {
 				if (antiAliasingHint) {
 					doEnableAntialiasing();
@@ -440,7 +440,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (a != -1) {
 				glState.glEnable(GL.GL_BLEND);
 			}
-			else {			
+			else {
 			glState.glDisable(GL.GL_BLEND);
 			}
 			if (DEBUG_CHECK_GL)
@@ -598,8 +598,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (stroke instanceof BasicStroke) {
 				BasicStroke basic = (BasicStroke)stroke;
 				lineWidth = basic.getLineWidth();
-				absLineWidth = lineWidth * scale;				
-				
+				absLineWidth = lineWidth * scale;
+
 				//If this stroke uses a stroke pattern (e.g., dotted),
 				//get the shape of the line and paint it as a shape
 				if(basic.getDashArray() != null){
@@ -963,7 +963,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				checkForErrors();
 		}
 
-		void doFillPolygon(int[] xPts, int[] yPts, int nPts) {			
+		void doFillPolygon(int[] xPts, int[] yPts, int nPts) {
 			if (useFastShapes) {
 				shapeManager.fill(xPts, yPts, nPts, convexHint);
 			} else {
@@ -984,7 +984,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		void doFillVertexArray(VertexArray array, VertexAttributes attributes) {
-			fillShape(array, attributes, immutableShapeHint, false);	
+			fillShape(array, attributes, immutableShapeHint, false);
 		}
 
 		// All fill methods come here
@@ -1028,8 +1028,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslated(x, y, 0);
 
-			//fontManager.setStrategy(FontManager.ROUGH_OUTLINE_STRATEGY);
-			fontManager.setStrategy(FontManager.OUTLINE_STRATEGY);
+			fontManager.setStrategy(FontManager.ROUGH_OUTLINE_STRATEGY);
+			//fontManager.setStrategy(FontManager.OUTLINE_STRATEGY);
 			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
 			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawString(string);
@@ -1122,7 +1122,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		void doRunGL(GLEventListener ev) {
 			try {
-				glState.save();				
+				glState.save();
 				ev.init(drawable);
 				ev.reshape(drawable, 0, 0, windowBounds.width, windowBounds.height);
 				ev.display(drawable);
@@ -1164,7 +1164,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 */
 	public void resetAll(GLAutoDrawable drawable) {
 		engine.resetGL(drawable);
-		engine.doInit();		
+		engine.doInit();
 		setBackground(Color.white);
 		setColor(Color.black);
 		setStroke(DEFAULT_STROKE);
@@ -1810,7 +1810,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		makeCurrent();
 		engine.doFillPolygon(xPts, yPts, nPts);
 	}
-	
+
 	/**
 	 * @see java.awt.Graphics2D#fill(java.awt.Shape)
 	 */
@@ -1955,7 +1955,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
 		int sx1, int sy1, int sx2, int sy2,
 		Color bgcolor, ImageObserver observer) {
-		
+
 		makeCurrent();
 
 		// Ensure that sx/sy are positive (dx/dy can be negative)
@@ -2002,11 +2002,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		// SUPPORT IMAGES LARGER THAN MAX_TEX_SIZE x MAX_TEX_SIZE BY SHRINKING THEM TO FIT IN A TEXTURE
 		//
 		int sx1_, sy1_, dx1_, dy1_;
-		sy1_ = sy1;		
-		dy1_ = dy1;		
+		sy1_ = sy1;
+		dy1_ = dy1;
 		if (src_w > engine.maxTexSize || src_h > engine.maxTexSize) {
 			for (int delta_y = engine.maxTexSize; delta_y < (src_h+engine.maxTexSize); delta_y += engine.maxTexSize) {
-				int sy2_, dy2_;				
+				int sy2_, dy2_;
 				if((delta_y > src_h) && engine.imageManager.texture_non_power_of_two==false){
 					int resting_h = src_h-sy1_;
 					delta_y = sy1_+ImageUtils.lowerPowerOf2(resting_h);
@@ -2019,7 +2019,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				for (int delta_x = engine.maxTexSize; delta_x < (src_w+engine.maxTexSize); delta_x += engine.maxTexSize) {
 					int sx2_, dx2_;
 					if((delta_x > src_w) && engine.imageManager.texture_non_power_of_two==false){
-						int resting_w = src_w-sx1_;				
+						int resting_w = src_w-sx1_;
 						delta_x = sx1_+ImageUtils.lowerPowerOf2(resting_w);
 					}
 					delta_x = Math.min(delta_x, src_w);
@@ -2182,7 +2182,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 	}
 
-	
+
 	/**
 	 * Runs a GL program in the AgileGraphics2D context.
 	 *
@@ -2203,7 +2203,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 */
 	public void drawVertexArray(VertexArray array, VertexAttributes attributes) {
 		makeCurrent();
-		engine.doDrawVertexArray(array, attributes);		 
+		engine.doDrawVertexArray(array, attributes);
 	}
 
 	/**
@@ -2212,7 +2212,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 */
 	public void fillVertexArray(VertexArray array, VertexAttributes attributes) {
 		makeCurrent();
-		engine.doFillVertexArray(array, attributes);		 
+		engine.doFillVertexArray(array, attributes);
 	}
 
 }
