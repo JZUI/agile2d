@@ -132,6 +132,38 @@ class CompareRoutines {
 		}
 	}
 
+	public static void drawStringScale(Graphics2D g2d){
+		g2d.setColor(Color.BLACK);
+		g2d.setFont(new Font("Serif", Font.ITALIC, 10));
+		final double SCALE_INIT = 1.0;
+		final double SCALE_MAX = 6.0;
+		final double SCALE_STEP = 0.25;
+		final double init_size = 10.5;
+		double current_size = init_size;
+		int x_ = 2;
+		int init_y = 0;
+		double cursor_y = init_y;
+		
+		for(double scl_= SCALE_INIT; scl_<SCALE_MAX; scl_+=SCALE_STEP){
+			current_size = init_size*scl_;
+			cursor_y += current_size;
+			/*
+			if( (x_+size_) > 512 ){
+				x_ = 2;
+				y_ += size_;
+				if( y_ > 512 )
+					return;
+			}
+			else
+				x_ += (int)(size_/2);
+			*/
+			g2d.scale(scl_, scl_);
+			g2d.drawString("abcdefghijklmnopqrstuvwxyz", x_, (int)(cursor_y/scl_));
+			g2d.scale(1.0/scl_, 1.0/scl_);
+		}
+	}	
+	
+	
 
 	public static void drawGlyphVector(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
