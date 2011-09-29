@@ -147,16 +147,6 @@ class CompareRoutines {
 		for(double scl_= SCALE_INIT; scl_<SCALE_MAX; scl_+=SCALE_STEP){
 			current_size = init_size*scl_;
 			cursor_y += current_size;
-			/*
-			if( (x_+size_) > 512 ){
-				x_ = 2;
-				y_ += size_;
-				if( y_ > 512 )
-					return;
-			}
-			else
-				x_ += (int)(size_/2);
-			*/
 			g2d.scale(scl_, scl_);
 			g2d.drawString("abcdefghijklmnopqrstuvwxyz", x_, (int)(cursor_y/scl_));
 			g2d.scale(1.0/scl_, 1.0/scl_);
