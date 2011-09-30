@@ -155,12 +155,7 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 			int c = string.charAt(i);
 			if (c > metrics.length)
 				continue;
-			System.out.println("NormalOutline. In drawString, font size:"+font_.getSize()+" and size2D: "+font_.getSize2D()+"and scale: "+scale+" and transform: "+font_.getTransform().getScaleX());
-			if(font_.isTransformed())
-				System.out.println("Transformed");
-			else
-				System.out.println("Not Transformed");
-
+			//System.out.println("NormalOutline. In drawString, font size:"+font_.getSize()+" and size2D: "+font_.getSize2D()+"and scale: "+scale+" and transform: "+font_.getTransform().getScaleX());
 			if (installChar(drawable, c, listBaseFont, vertices)) {
 				GlyphMetrics m = metrics[c];
 				gl.glCallList(listBaseFont + c);
