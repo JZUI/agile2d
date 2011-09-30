@@ -92,7 +92,7 @@ class FontManager {
 		roughOutlineQuality = qualityHint_;
 	}
 
-	public int getRoughOutlineuality(){
+	public int getRoughOutlineQuality(){
 		return roughOutlineQuality;
 	}
 
@@ -153,36 +153,55 @@ class FontManager {
 
 
 	private void _drawRoughOutlineString(String string) {
-		double roughScale=1.0;
+		double interScale, finalSize, aboveSize;
+		//scale to shrink the outline (nearest upper available font size) to the demanded font size
+		interScale=1.0;
 		//check if the fontSize required is different than that of the font object
 		{
-			int previousSize = font.getSize();
-			previousSize *= scale;
-			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
-			if( (newRoughSize != previousSize) || scale != 1.0d){
-				System.out.println("Font size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
-				roughScale = (double)previousSize/newRoughSize;
+			finalSize = font.getSize()*scale;
+			aboveSize = roughOutlineFont.getNearestAboveSize((int)finalSize);
+			if(aboveSize != finalSize){
+				System.out.println("Font size required: "+finalSize+". Size found and shrinked: "+aboveSize);
+				interScale = (double)finalSize/aboveSize;
 				//if there's a size increase, insert this scale difference in the scale variable
-				//scale *= roughScale;
-				System.out.println("Scale: "+scale+" and rough scale: "+roughScale);
-				roughScale *= scale;
+				System.out.println("Scale: "+scale+" and interScale: "+interScale);
 				//get a new font instance with a size corresponding to the rough sizes
 				Font previousFont_ = font;
 				font = null;
-				font = previousFont_.deriveFont((float)newRoughSize);
+				font = previousFont_.deriveFont((float)aboveSize);
 			}
 		}
-		if (roughOutlineFont.installFont(drawable, font, roughScale, frcAntialiasing, frcUsesFractionalMetrics)) {
-			roughOutlineFont.render(drawable, string, roughScale, font);
+		//the block below temporarily cancel effect of the global scale transformation
+		gl.glPushMatrix();		
+		{
+			gl.glScaled(1.0/scale, 1.0/scale, 1.0);
+			if (roughOutlineFont.installFont(drawable, font, interScale, frcAntialiasing, frcUsesFractionalMetrics))
+				roughOutlineFont.render(drawable, string, interScale, font);
 		}
+		gl.glPopMatrix();
+		//End of temporary cancelling of global scale transformation
+		
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
 	}
 
 	private void _drawOutlineString(String string) {
-		if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-			outlineFont.render(drawable, string, scale, font);
+		//the block below temporarily cancel effect of the global scale transformation
+		if(scale != 1.0){
+			double scaledSize = font.getSize()*scale;
+			Font previousFont_ = font;
+			font = null;
+			font = previousFont_.deriveFont((float)scaledSize);
 		}
+		gl.glPushMatrix();		
+		{
+			gl.glScaled(1.0/scale, 1.0/scale, 1.0);		
+			if (outlineFont.installFont(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics))
+				outlineFont.render(drawable, string, scale, font);
+		}
+		gl.glPopMatrix();
+		//End of temporary cancelling of global scale transformation
+		
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
 	}
@@ -265,17 +284,17 @@ class FontManager {
 	private void _drawRoughOutlineGlyphVector(GlyphVector gV) {
 		//check if the fontSize required is different than that of the font object
 		{
-			int previousSize = gV.getFont().getSize();
-			int newRoughSize = roughOutlineFont.getNextUpperSize(previousSize);
-			if(newRoughSize != previousSize){
-				//System.out.println("Glyph size required: "+previousSize+". Size found and shrinked: "+newRoughSize);
-				double roughScale = (double)previousSize/newRoughSize;
+			int finalSize = gV.getFont().getSize();
+			int aboveSize = roughOutlineFont.getNearestAboveSize(finalSize);
+			if(aboveSize != finalSize){
+				//System.out.println("Glyph size required: "+finalSize+". Size found and shrinked: "+aboveSize);
+				double roughScale = (double)finalSize/aboveSize;
 				//if there's a size increase, insert this scale difference in the scale variable
 				scale *= roughScale;
 				//get a new font instance with a size corresponding to the rough sizes
 				Font previousFont_ = font;
 				font = null;
-				font = previousFont_.deriveFont((float)newRoughSize);
+				font = previousFont_.deriveFont((float)aboveSize);
 			}
 		}
 		roughOutlineFont.render(drawable, gV);

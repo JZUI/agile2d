@@ -120,8 +120,8 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
 	}
 
-	public int getNextUpperSize(int reqSize_){
-		System.out.println("Calling getNextUpperSize");
+	public int getNearestAboveSize(int reqSize_){
+	//	System.out.println("Calling getNearestAboveSize");
 		int length_ = listFontSizes.length;
 		for(int i=0; i<length_; i++){
 			if( listFontSizes[i] >= reqSize_ )
@@ -204,6 +204,9 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		return true;
 	}
 
+	
+	
+	
 	public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {
 		if (!installed)
 			return;
@@ -223,17 +226,12 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 				//a character (many polygons) and each vertexArray corresponds to
 				//a convex polygon composing the character
 				gl.glPushMatrix();
-				//gl.glScaled(scale, scale, 1.0);
-				System.out.println("RoughOutline. In drawString, font size:"+font_.getSize()+" and size2D: "+font_.getSize2D()+" and scale: "+scale+" and transform: "+font_.getTransform().getScaleX());
-				if(font_.isTransformed())
-					System.out.println("Transformed");
-				else
-					System.out.println("Not Transformed");
+				gl.glScaled(scale, scale, 1.0);
 				for (int j = 0; j < currentCharVAL.size(); j++)
 					ShapeManager.render(gl, currentCharVAL.getVertexArrayAt(j), null);
 				gl.glPopMatrix();
-				//gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
-				gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
+				gl.glTranslated((m.getAdvanceX()*scale), (m.getAdvanceY()*scale), 0.0d);
+				//gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
 			}
 		}
 		installed = false;

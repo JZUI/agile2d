@@ -160,8 +160,8 @@ class CompareRoutines {
 		g2d.setColor(Color.BLACK);
 		g2d.setFont(new Font("Serif", Font.ITALIC, 10));
 		final double SCALE_INIT = 1.0;
-		final double SCALE_MAX = 6.0;
-		final double SCALE_STEP = 0.25;
+		final double SCALE_MAX = 8.0;
+		final double SCALE_STEP = 0.45;
 		final double init_size = 10.5;
 		double current_size = init_size;
 		int x_ = 2;
