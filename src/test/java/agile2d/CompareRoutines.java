@@ -111,7 +111,7 @@ class CompareRoutines {
 		g2d.drawString("Sans Serif, 36 (2)", 40, 450);
 	}
 
-
+/*
 	public static void drawStringSize(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
 		final int SIZE_INIT = 10;
@@ -131,7 +131,31 @@ class CompareRoutines {
 			g2d.drawString("a", x_, y_);
 		}
 	}
-
+*/
+	
+	public static void drawStringSize(Graphics2D g2d){
+		final int SIZE_INIT = 10;
+		final int SIZE_MAX = 120;
+		final int SIZE_STEP = 4;
+		g2d.setColor(Color.BLACK);
+		
+		//double current_size = SIZE_INIT;
+		int x_ = 2;
+		int init_y = 0;
+		int cursor_y = init_y;
+		
+		for(int sz_= SIZE_INIT; sz_<SIZE_MAX; sz_+=SIZE_STEP){
+			//current_size = init_size+sz_;
+			cursor_y += sz_;
+			//g2d.scale(scl_, scl_);
+			g2d.setFont(new Font("Serif", Font.ITALIC, sz_));
+			g2d.drawString("abcdefghijklmnopqrstuvwxyz", x_, cursor_y);
+			//g2d.scale(1.0/scl_, 1.0/scl_);
+		}
+	}	
+	
+	
+	
 	public static void drawStringScale(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
 		g2d.setFont(new Font("Serif", Font.ITALIC, 10));
