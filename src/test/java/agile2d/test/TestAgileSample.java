@@ -186,6 +186,12 @@ public class TestAgileSample {
 		}
 	
 	@Test
+	public void testDrawGlyphVectorScale() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVectorScale());
+		endUnit(context, true, 3000, "glyphVectorScale", true, false);
+	}
+	
+	@Test
 		public void testFillOval() throws InterruptedException {
 			AglTestContext context = new AglTestContext(new AglTestStrategyFillOval());
 			endUnit(context, true, 600, "fillOval", true, false);

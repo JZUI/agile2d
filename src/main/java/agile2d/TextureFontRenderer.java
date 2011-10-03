@@ -46,7 +46,7 @@ class TextureFontRenderer extends BasicFontRenderer {
     static LinkedList cache = new LinkedList();
 
     static int texWidth = 512;
-    static int texHeight = 256;
+    static int texHeight = 512;
 
     public TextureFontRenderer() {
     }

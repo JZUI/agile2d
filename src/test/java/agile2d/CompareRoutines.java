@@ -136,21 +136,18 @@ class CompareRoutines {
 	public static void drawStringSize(Graphics2D g2d){
 		final int SIZE_INIT = 10;
 		final int SIZE_MAX = 120;
-		final int SIZE_STEP = 4;
+		final int SIZE_STEP = 8;
 		g2d.setColor(Color.BLACK);
 		
-		//double current_size = SIZE_INIT;
 		int x_ = 2;
 		int init_y = 0;
 		int cursor_y = init_y;
 		
 		for(int sz_= SIZE_INIT; sz_<SIZE_MAX; sz_+=SIZE_STEP){
-			//current_size = init_size+sz_;
 			cursor_y += sz_;
-			//g2d.scale(scl_, scl_);
-			g2d.setFont(new Font("Serif", Font.BOLD, sz_));
+			g2d.setFont(new Font("URW Palladio L", Font.BOLD, sz_));
 			g2d.drawString("abcdefghijklmnopqrstuvwxyz", x_, cursor_y);
-			//g2d.scale(1.0/scl_, 1.0/scl_);
+
 		}
 	}	
 	
@@ -158,11 +155,11 @@ class CompareRoutines {
 	
 	public static void drawStringScale(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
-		g2d.setFont(new Font("Serif", Font.ITALIC, 10));
+		g2d.setFont(new Font("URW Palladio L", Font.ITALIC, 12));
 		final double SCALE_INIT = 1.0;
 		final double SCALE_MAX = 8.0;
 		final double SCALE_STEP = 0.45;
-		final double init_size = 10.5;
+		final double init_size = 12.5;
 		double current_size = init_size;
 		int x_ = 2;
 		int init_y = 0;
@@ -200,35 +197,60 @@ class CompareRoutines {
 		font_ = new Font("Monospaced", Font.PLAIN, 180);
 		g2d.setFont(font_);
 		fontRendContext = g2d.getFontRenderContext();
-	        GlyphVector glyphVectorBig = font_.createGlyphVector(fontRendContext, st);
-        	g2d.drawGlyphVector(glyphVectorBig, 50, 300);
+	    GlyphVector glyphVectorBig = font_.createGlyphVector(fontRendContext, st);
+        g2d.drawGlyphVector(glyphVectorBig, 50, 300);
 	}
+	
+	
 
 	public static void drawGlyphVectorSize(Graphics2D g2d){
-		g2d.setColor(Color.BLACK);
 		final int SIZE_INIT = 10;
 		final int SIZE_MAX = 300;
-		final String SAMPLE_STRING = "g";
+		final int SIZE_STEP = 8;
+		final String SAMPLE_STRING = "abcdefghijklmnopqrstwuxyz1234567890";
 		int x_ = 2;
-		int y_ = 40;
-		for(int size_=SIZE_INIT; size_<SIZE_MAX; size_+=2){
-			if( (x_+size_) > 512 ){
-				x_ = 2;
-				y_ += size_;
-				if( y_ > 512 )
-					return;
-			}
-			else
-				x_ += (int)(size_/2);
-			Font font_ = new Font("SansSerif", Font.PLAIN, size_);
+		int init_y = 0;
+		int cursor_y = init_y;
+		g2d.setColor(Color.BLACK);
+
+		for(int sz_= SIZE_INIT; sz_<SIZE_MAX; sz_+=SIZE_STEP){
+			Font font_ = new Font("URW Palladio L", Font.PLAIN, sz_);
 			g2d.setFont(font_);
+			cursor_y += sz_;
 			FontRenderContext fontRendContext = g2d.getFontRenderContext();
-		        GlyphVector glyphVector_ = font_.createGlyphVector(fontRendContext, SAMPLE_STRING);
-        		g2d.drawGlyphVector(glyphVector_, x_, y_);
+		    GlyphVector glyphVector_ = font_.createGlyphVector(fontRendContext, SAMPLE_STRING);
+        	g2d.drawGlyphVector(glyphVector_, x_, cursor_y);
 		}
 	}
 
+	public static void drawGlyphVectorScale(Graphics2D g2d){
 
+		g2d.setColor(Color.BLACK);
+		Font font_ = new Font("URW Palladio L", Font.PLAIN, 12);
+		g2d.setFont(font_);
+		final double SCALE_INIT = 1.0;
+		final double SCALE_MAX = 8.0;
+		final double SCALE_STEP = 0.45;
+		final double init_size = 12.5;
+		final String SAMPLE_STRING = "abcdefghijklmnopqrstwuxyz1234567890";
+		double current_size = init_size;
+		int x_ = 2;
+		int init_y = 0;
+		double cursor_y = init_y;
+		FontRenderContext fontRendContext = g2d.getFontRenderContext();
+		GlyphVector glyphVector_ = font_.createGlyphVector(fontRendContext, SAMPLE_STRING);
+		
+		for(double scl_= SCALE_INIT; scl_<SCALE_MAX; scl_+=SCALE_STEP){
+			current_size = init_size*scl_;
+			cursor_y += current_size;
+			g2d.scale(scl_, scl_);
+			g2d.drawGlyphVector(glyphVector_, x_, (int)(cursor_y/scl_));
+			g2d.scale(1.0/scl_, 1.0/scl_);
+		}
+	}
+	
+	
+	
 	public static void fillOval(Graphics2D g2d){
 		g2d.setColor(Color.BLACK);
 	        g2d.fillOval(100, 100, 200, 100);
@@ -237,7 +259,6 @@ class CompareRoutines {
 	public static void gradient(Graphics2D g2d) {
 		GradientPaint gradient = new GradientPaint(0, 0, Color.red, 175, 175, Color.yellow,true); // true (last arg) means repeat pattern
 		g2d.setPaint(gradient);
-		//g2d.fillOval(200, 200, 80, 280);
 		g2d.fillRect(200, 100, 150, 350);
 	}	
 

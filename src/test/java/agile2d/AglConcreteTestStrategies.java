@@ -97,6 +97,13 @@ class AglTestStrategyDrawGlyphVectorSize implements TestStrategy {
      public Object[] getObjects() {return null;}
 }
 
+class AglTestStrategyDrawGlyphVectorScale implements TestStrategy {
+    public void draw(Graphics2D gSample) {
+	CompareRoutines.drawGlyphVectorScale(gSample);
+   }
+    public Object[] getObjects() {return null;}
+}
+
 class AglTestStrategyFillOval implements TestStrategy {
      public void draw(Graphics2D gSample) {
 	CompareRoutines.fillOval(gSample);
