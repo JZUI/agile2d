@@ -287,7 +287,7 @@ class FontManager {
 			int finalSize = gV.getFont().getSize();
 			int aboveSize = roughOutlineFont.getNearestAboveSize(finalSize);
 			if(aboveSize != finalSize){
-				//System.out.println("Glyph size required: "+finalSize+". Size found and shrinked: "+aboveSize);
+				System.out.println("Glyph size required: "+finalSize+". Size found and shrinked: "+aboveSize);
 				double roughScale = (double)finalSize/aboveSize;
 				//if there's a size increase, insert this scale difference in the scale variable
 				scale *= roughScale;
