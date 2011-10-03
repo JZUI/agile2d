@@ -93,8 +93,8 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 2048;
 	private static final int INIT_FONT_SIZE_LENGTH = 64;
 
-	private static final int CHARS_HASHMAP_SIZE = 256;
-	private static final int GLYPHVECTORS_HASHMAP_SIZE = 64;
+	private static final int CHARS_HASHMAP_SIZE = 32;
+	private static final int GLYPHVECTORS_HASHMAP_SIZE = 32;
 
 	private static int font_size_length;
 	private static int listFontSizes[];
@@ -174,10 +174,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		//If data doesn't exist (still / anymore), make it;
 		if (currentCharVAL == null){
 			addTesselation(drawable, c);
-		//	System.out.println("No vertexArrayList for character: "+tempKey_.toString());
+			System.out.println("No vertexArrayList for character: "+tempKey_.toString());
 		}
-		//else
-			//System.out.println("Found VertexArrayList for character: "+tempKey_.toString());
+		else
+			System.out.println("Found VertexArrayList for character: "+tempKey_.toString());
 		return true;
 	}
 

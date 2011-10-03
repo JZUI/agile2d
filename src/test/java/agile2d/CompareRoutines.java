@@ -148,7 +148,7 @@ class CompareRoutines {
 			//current_size = init_size+sz_;
 			cursor_y += sz_;
 			//g2d.scale(scl_, scl_);
-			g2d.setFont(new Font("Serif", Font.ITALIC, sz_));
+			g2d.setFont(new Font("Serif", Font.BOLD, sz_));
 			g2d.drawString("abcdefghijklmnopqrstuvwxyz", x_, cursor_y);
 			//g2d.scale(1.0/scl_, 1.0/scl_);
 		}
