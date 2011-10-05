@@ -13,7 +13,9 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
 import java.util.Hashtable;
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 
@@ -159,7 +161,7 @@ class FontManager {
 		//check if the fontSize required is different than that of the font object
 		{
 			finalSize = font.getSize()*scale;
-			aboveSize = roughOutlineFont.getNearestAboveSize((int)finalSize);
+			aboveSize = roughOutlineFont.getNearestAboveFont((int)finalSize);
 			if(aboveSize != finalSize){
 				System.out.println("Font size required: "+finalSize+". Size found and shrinked: "+aboveSize);
 				interScale = (double)finalSize/aboveSize;
@@ -172,11 +174,17 @@ class FontManager {
 			}
 		}
 		//the block below temporarily cancel effect of the global scale transformation
+		
+		Component c = (Component)drawable;
+		Graphics2D g2d = (Graphics2D)c.createImage(1, 1).getGraphics();
+		GlyphVector tempGV = font.createGlyphVector(g2d.getFontRenderContext(), string);
+		
 		gl.glPushMatrix();		
 		{
 			gl.glScaled(1.0/scale, 1.0/scale, 1.0);
-			if (roughOutlineFont.installFont(drawable, font, interScale, frcAntialiasing, frcUsesFractionalMetrics))
-				roughOutlineFont.render(drawable, string, interScale, font);
+			_drawRoughOutlineGlyphVector(tempGV, interScale);
+			//if (roughOutlineFont.installFont(drawable, font, interScale, frcAntialiasing, frcUsesFractionalMetrics))
+			//	roughOutlineFont.render(drawable, string, interScale, font);
 		}
 		gl.glPopMatrix();
 		//End of temporary cancelling of global scale transformation
@@ -253,7 +261,7 @@ class FontManager {
 			case ROUGH_OUTLINE_STRATEGY:
 				//System.out.println("\nDrawing new glyphVector with a rough outline strategy");
 				//Too big to fit in a texture - draw from ROUGH outline of the shapes
-				_drawRoughOutlineGlyphVector(gV);
+				_drawRoughOutlineGlyphVector(gV, 1.0);
 			break;
 			default:
 		}
@@ -281,23 +289,34 @@ class FontManager {
 			checkForErrors();
 	}
 
-	private void _drawRoughOutlineGlyphVector(GlyphVector gV) {
-		//check if the fontSize required is different than that of the font object
-		{
-			int finalSize = gV.getFont().getSize();
-			int aboveSize = roughOutlineFont.getNearestAboveSize(finalSize);
+	private void _drawRoughOutlineGlyphVector(GlyphVector gV, double interScale_) {		
+		//double interScale, finalSize, aboveSize;		
+		/*{
+			//scale to shrink the outline (nearest upper available font size) to the demanded glyph size
+			interScale=1.0;
+			//check if the fontSize required is different than that of the font object
+		
+			finalSize = gV.getFont().getSize();
+			aboveSize = roughOutlineFont.getNearestAboveSize((int)finalSize);			
 			if(aboveSize != finalSize){
 				System.out.println("Glyph size required: "+finalSize+". Size found and shrinked: "+aboveSize);
-				double roughScale = (double)finalSize/aboveSize;
+				interScale = (double)finalSize/aboveSize;
 				//if there's a size increase, insert this scale difference in the scale variable
-				scale *= roughScale;
+				//scale *= roughScale;
 				//get a new font instance with a size corresponding to the rough sizes
 				Font previousFont_ = font;
 				font = null;
 				font = previousFont_.deriveFont((float)aboveSize);
-			}
+			}			
+		}*/	
+		//the block below temporarily cancel effect of the global scale transformation
+		gl.glPushMatrix();		
+		{
+			gl.glScaled(1.0/scale, 1.0/scale, 1.0);
+			roughOutlineFont.render(drawable, gV, (scale*interScale_));
 		}
-		roughOutlineFont.render(drawable, gV);
+		gl.glPopMatrix();
+		//End of temporary cancelling of global scale transformation		
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
 	}

@@ -132,7 +132,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
 	}
 
-	public int getNearestAboveSize(int reqSize_){
+	public int getNearestAboveFont(int reqSize_){
 	//	System.out.println("Calling getNearestAboveSize");
 		int length_ = listFontSizes.length;
 		for(int i=0; i<length_; i++){
@@ -245,34 +245,31 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 					ShapeManager.render(gl, currentCharVAL.getVertexArrayAt(j), null);
 				gl.glPopMatrix();
 				gl.glTranslated((m.getAdvanceX()*scale), (m.getAdvanceY()*scale), 0.0d);
-				//gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0.0d);
 			}
 		}
 		installed = false;
 	}
 	
 	
-	public void render(GLAutoDrawable drawable, GlyphVector gV) {
+	public void render(GLAutoDrawable drawable, GlyphVector gV, double scale) {
 		int i;
 		GL2 gl = drawable.getGL().getGL2();
 		currentGlyphVAL = null;
-		if (installGlyphs(drawable, gV) ) {
-			System.out.println("Number of glyphs in this vector :"+gV.getNumGlyphs());
-			for (i = 0; i < gV.getNumGlyphs(); i++) {
-				//Get the metrics for each character
-				//GlyphMetrics m = metrics[i];
-				GlyphMetrics m = gV.getGlyphMetrics(i);
+		for (i = 0; i < gV.getNumGlyphs(); i++) {
+			if (installGlyph(drawable, gV, i) ) {
+				//System.out.println("Number of glyphs in this vector :"+gV.getNumGlyphs());
 				//DRAW A CHARACTER
 				//i.e.: each VertexArrayList (many VertexArrays) corresponds to
 				//a GlyphVector (many glyphs) and each vertexArray corresponds to
 				//a polygon composing one glyph (a char may be composed of many glyphs)
-				double scale = 1.0d;
 				gl.glPushMatrix();
 				gl.glScaled(scale, scale, 1.0);
-				for (int j = 0; j < currentGlyphVAL.size(); j++)
+				System.out.println("Vertices: "+currentGlyphVAL.size()+" and scale: "+scale);
+				for (int j = 0; j < currentGlyphVAL.size(); j++){
+					//System.out.println("Vertex: "+j+" and scale: "+scale);
 					ShapeManager.render(gl, currentGlyphVAL.getVertexArrayAt(j), null);
+				}
 				gl.glPopMatrix();
-				gl.glTranslated((m.getAdvanceX())*scale, (m.getAdvanceY())*scale, 0.0d);
 			}
 		}
 	}
@@ -331,23 +328,21 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	}
 
 	
-	protected boolean installGlyphs(GLAutoDrawable drawable, GlyphVector gV) {
+	protected boolean installGlyph(GLAutoDrawable drawable, GlyphVector gV, int i_) {
 
 		GL2 gl = drawable.getGL().getGL2();
 
 		//get VertexArray list of the glyph g
-		for(int i=0; i<gV.getNumGlyphs(); i++){
-			GlyphKey tempKey_ = new GlyphKey( gV.getFont(), gV.getGlyphCode(i) );
-			System.out.println("Temp key: "+tempKey_.toString());			
-			currentGlyphVAL = (VertexArrayList)glyphSoftHashMap.get(tempKey_);
-			//If data doesn't exist (still / anymore), make it
-			if (currentGlyphVAL == null){
-				addTesselation(drawable, gV, i, tempKey_);			
-				System.out.println("No VertexArrayList for glyph: "+tempKey_.toString());			
-			}
-			else
-				System.out.println("Found VertexArrayList for glyph: "+tempKey_.toString());
-		}		
+		GlyphKey tempKey_ = new GlyphKey( gV.getFont(), gV.getGlyphCode(i_) );
+		//System.out.println("Temp key: "+tempKey_.toString());			
+		currentGlyphVAL = (VertexArrayList)glyphSoftHashMap.get(tempKey_);
+		//If data doesn't exist (still / anymore), make it
+		if (currentGlyphVAL == null){
+			addTesselation(drawable, gV, i_, tempKey_);			
+			System.out.println("No VertexArrayList for glyph: "+tempKey_.toString());			
+		}
+		else
+			System.out.println("Found VertexArrayList for glyph: "+tempKey_.toString());
 		return true;
 	}
 	

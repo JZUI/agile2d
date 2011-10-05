@@ -193,7 +193,7 @@ class CompareRoutines {
 	        GlyphVector glyphVectorMedium = font_.createGlyphVector(fontRendContext, st);
         	g2d.drawGlyphVector(glyphVectorMedium, 50, 90);
 		//big glyph
-		st = "Big";
+		st = "Biig";
 		font_ = new Font("Monospaced", Font.PLAIN, 180);
 		g2d.setFont(font_);
 		fontRendContext = g2d.getFontRenderContext();
