@@ -178,13 +178,15 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private ImageManager      imageManager;
 		private StencilManager    stencilManager;
 		private GradientManager   gradientManager;
+
 		private TextureFontRenderer textureFont;
 		private OutlineFontRenderer outlineFont;
 		private OutlineRoughFontRenderer outlineRoughFont;
 		private FontManager fontManager;
-		private int preferedGlyphDrawStrategy;
-
 		private Font              font;
+		private FontRenderContext frc;
+		private int preferedGlyphDrawStrategy;
+		
 //		private Shape             shapeClip;
 		private TexturePaint      texturePaint;
 		private double            scale;
@@ -339,6 +341,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
+			//Get a fontRenderContext specific to the current FONT 
+			//Obs: maybe should be called only once when there's a setFont action
+			g2d.setFont(this.font);
+			frc = g2d.getFontRenderContext();
+			
 			gradientManager = new GradientManager(gl);
 
 			inited = true;
@@ -597,7 +604,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		// FONT AND STROKE
 		void doSetFont(Font font) {
 			this.font = font;
-			//fontManager.setFont(font);
+			//Get a fontRenderContext specific to this new FONT 
+			g2d.setFont(font);
+			frc = g2d.getFontRenderContext();			
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
@@ -1037,7 +1046,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glTranslated(x, y, 0);			
 			
 			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
-			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
+			fontManager.updateStates(active, drawable, font, scale, frc, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawString(string);
 
 			gl.glPopMatrix();
@@ -1049,13 +1058,13 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		void doDrawGlyphVector(GlyphVector g, float x, float y) {
 			Font font = g.getFont();
-			FontRenderContext frc = g.getFontRenderContext();
+			FontRenderContext frc_gv = g.getFontRenderContext();
 
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
 			
 			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
-			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
+			fontManager.updateStates(active, drawable, font, scale, frc_gv, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawGlyphVector(g);
 
 			gl.glPopMatrix();

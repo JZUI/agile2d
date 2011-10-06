@@ -46,16 +46,18 @@ class FontManager {
 	private AgileGraphics2D ag2d_active;
 	private GLAutoDrawable drawable;
 	private Font font;
+	private FontRenderContext frc;
 	private double scale;
 	private boolean frcAntialiasing;
 	private boolean frcUsesFractionalMetrics;
 	private boolean useFastShapes;
 	private boolean incrementalFontHint;
 
-	public void updateStates(AgileGraphics2D ag2d_active_, GLAutoDrawable drawable_, Font font_, double scale_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
+	public void updateStates(AgileGraphics2D ag2d_active_, GLAutoDrawable drawable_, Font font_, double scale_, FontRenderContext frc_, boolean frcAntialiasing_, boolean frcUsesFractionalMetrics_, boolean useFastShapes_){
 		this.drawable = drawable_;
 		this.font = font_;
 		this.scale = scale_;
+		this.frc = frc_;
 		this.frcAntialiasing = frcAntialiasing_;
 		this.frcUsesFractionalMetrics = frcUsesFractionalMetrics_;
 		this.useFastShapes = useFastShapes_;
@@ -79,14 +81,6 @@ class FontManager {
 
 	public int getStrategy(){
 		return present_strategy;
-	}
-
-	public void setFont(Font _font){
-		font = _font;
-	}
-
-	public Font getFont(){
-		return font;
 	}
 
 	public void setRoughOutlineQuality(int qualityHint_){
@@ -153,45 +147,16 @@ class FontManager {
 		// drawable.getGLContext().gljCheckGL();
 	}
 
+	private void _drawTextureString(String string) {
+		textureFont.setIncremental(incrementalFontHint);
+		//		doDisableAntialiasing();
+		textureFont.render(drawable, string, scale, font);
+		//		doEnableAntialiasing();
 
-	private void _drawRoughOutlineString(String string) {
-		double interScale, finalSize, aboveSize;
-		//scale to shrink the outline (nearest upper available font size) to the demanded font size
-		interScale=1.0;
-		//check if the fontSize required is different than that of the font object
-		{
-			finalSize = font.getSize()*scale;
-			aboveSize = roughOutlineFont.getNearestAboveFont((int)finalSize);
-			if(aboveSize != finalSize){
-				System.out.println("Font size required: "+finalSize+". Size found and shrinked: "+aboveSize);
-				interScale = (double)finalSize/aboveSize;
-				//if there's a size increase, insert this scale difference in the scale variable
-				System.out.println("Scale: "+scale+" and interScale: "+interScale);
-				//get a new font instance with a size corresponding to the rough sizes
-				Font previousFont_ = font;
-				font = null;
-				font = previousFont_.deriveFont((float)aboveSize);
-			}
-		}
-		//the block below temporarily cancel effect of the global scale transformation
-		
-		Component c = (Component)drawable;
-		Graphics2D g2d = (Graphics2D)c.createImage(1, 1).getGraphics();
-		GlyphVector tempGV = font.createGlyphVector(g2d.getFontRenderContext(), string);
-		
-		gl.glPushMatrix();		
-		{
-			gl.glScaled(1.0/scale, 1.0/scale, 1.0);
-			_drawRoughOutlineGlyphVector(tempGV, interScale);
-			//if (roughOutlineFont.installFont(drawable, font, interScale, frcAntialiasing, frcUsesFractionalMetrics))
-			//	roughOutlineFont.render(drawable, string, interScale, font);
-		}
-		gl.glPopMatrix();
-		//End of temporary cancelling of global scale transformation
-		
+		ag2d_active.setPaint(ag2d_active.getPaint());
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
-	}
+	}	
 
 	private void _drawOutlineString(String string) {
 		//the block below temporarily cancel effect of the global scale transformation
@@ -212,33 +177,45 @@ class FontManager {
 		
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
-	}
-
-	private void _drawTextureString(String string) {
-		textureFont.setIncremental(incrementalFontHint);
-		//		doDisableAntialiasing();
-		textureFont.render(drawable, string, scale, font);
-		//		doEnableAntialiasing();
-
-		ag2d_active.setPaint(ag2d_active.getPaint());
+	}	
+	
+	private void _drawRoughOutlineString(String string) {
+		double interScale, finalSize, aboveSize;
+		//scale to shrink the outline (nearest upper available font size) to the demanded font size
+		interScale=1.0;
+		//check if the fontSize required is different than that of the font object
+		{
+			finalSize = font.getSize()*scale;
+			aboveSize = roughOutlineFont.getNearestAboveFont((int)finalSize);
+			if(aboveSize != finalSize){
+				System.out.println("Font size required: "+finalSize+". Size found and shrinked: "+aboveSize);
+				interScale = (double)finalSize/aboveSize;
+				//if there's a size increase, insert this scale difference in the scale variable
+				System.out.println("Scale: "+scale+" and interScale: "+interScale);
+				//get a new font instance with a size corresponding to the rough sizes
+				Font previousFont_ = font;
+				font = null;
+				font = previousFont_.deriveFont((float)aboveSize);
+			}
+		}		
+		
+		GlyphVector tempGV = font.createGlyphVector(frc, string);
+		//the block below temporarily cancel effect of the global scale transformation
+		gl.glPushMatrix();		
+		{
+			gl.glScaled(1.0/scale, 1.0/scale, 1.0);
+			_drawRoughOutlineGlyphVector(tempGV, interScale);
+			//if (roughOutlineFont.installFont(drawable, font, interScale, frcAntialiasing, frcUsesFractionalMetrics))
+			//	roughOutlineFont.render(drawable, string, interScale, font);
+		}
+		gl.glPopMatrix();
+		//End of temporary cancelling of global scale transformation
+		
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
 	}
 
-/*
-	public void drawGlyphVector(GlyphVector g_){
-		if( (present_strategy == TEXTURE_STRATEGY) && (checkStrategy(TEXTURE_STRATEGY)) ){
-			// Fits in font cache - draw using texture memory
-			_drawTextureGlyphVector(g_);
-		}
-		else {
-			setStrategy(OUTLINE_STRATEGY);
-			// Too big to fit in a texture - draw from outlines instead
-			_drawOutlineGlyphVector(g_);
-		}
-	}
-*/
-		public void drawGlyphVector(GlyphVector gV){
+	public void drawGlyphVector(GlyphVector gV){
 		//By default, agile always try to use the texture strategy
 		if(checkStrategy(TEXTURE_STRATEGY))
 			setStrategy(TEXTURE_STRATEGY);
@@ -267,8 +244,6 @@ class FontManager {
 		}
 	}
 
-
-
 	private void _drawTextureGlyphVector(GlyphVector g) {
 		textureFont.setIncremental(incrementalFontHint);
 
@@ -290,25 +265,6 @@ class FontManager {
 	}
 
 	private void _drawRoughOutlineGlyphVector(GlyphVector gV, double interScale_) {		
-		//double interScale, finalSize, aboveSize;		
-		/*{
-			//scale to shrink the outline (nearest upper available font size) to the demanded glyph size
-			interScale=1.0;
-			//check if the fontSize required is different than that of the font object
-		
-			finalSize = gV.getFont().getSize();
-			aboveSize = roughOutlineFont.getNearestAboveSize((int)finalSize);			
-			if(aboveSize != finalSize){
-				System.out.println("Glyph size required: "+finalSize+". Size found and shrinked: "+aboveSize);
-				interScale = (double)finalSize/aboveSize;
-				//if there's a size increase, insert this scale difference in the scale variable
-				//scale *= roughScale;
-				//get a new font instance with a size corresponding to the rough sizes
-				Font previousFont_ = font;
-				font = null;
-				font = previousFont_.deriveFont((float)aboveSize);
-			}			
-		}*/	
 		//the block below temporarily cancel effect of the global scale transformation
 		gl.glPushMatrix();		
 		{
@@ -320,7 +276,6 @@ class FontManager {
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
 	}
-
 }
 
 /*
