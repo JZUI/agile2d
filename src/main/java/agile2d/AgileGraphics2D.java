@@ -182,6 +182,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private OutlineFontRenderer outlineFont;
 		private OutlineRoughFontRenderer outlineRoughFont;
 		private FontManager fontManager;
+		private int preferedGlyphDrawStrategy;
 
 		private Font              font;
 //		private Shape             shapeClip;
@@ -329,6 +330,13 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			outlineFont = new OutlineFontRenderer(tesselator);
 			outlineRoughFont = new OutlineRoughFontRenderer(tesselator);
 			fontManager = new FontManager(gl, textureFont, outlineFont, outlineRoughFont);
+			//Strategy can be defined elsewhere as well
+			//The important thin is to remember that it will impact both drawString and drawGlyphVector methods
+			//That's why we call setStrategy() every time in the beginning of this methods
+			preferedGlyphDrawStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
+			//The quality hint can be set only once
+			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
+			
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
 			gradientManager = new GradientManager(gl);
@@ -1026,11 +1034,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (font == null)
 				return;
 			gl.glPushMatrix();
-			gl.glTranslated(x, y, 0);
-
-			fontManager.setStrategy(FontManager.ROUGH_OUTLINE_STRATEGY);
-			//fontManager.setStrategy(FontManager.OUTLINE_STRATEGY);
-			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
+			gl.glTranslated(x, y, 0);			
+			
+			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawString(string);
 
@@ -1047,8 +1053,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
-
-			fontManager.setStrategy(FontManager.ROUGH_OUTLINE_STRATEGY);
+			
+			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawGlyphVector(g);
 
