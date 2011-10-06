@@ -36,19 +36,15 @@ class GlyphKey implements Comparable<GlyphKey>
 	private String _key;
 	private int _size;
 
-	GlyphKey(char c_, Font f_)
-	{
+	/*GlyphKey(char c_, Font f_){
 		_size = f_.getSize();
 		_key = Character.toString(c_)+"_"+f_.getFontName()+"_"+f_.getStyle()+"_"+_size;
-
 	}
-
-	GlyphKey(GlyphVector gV_)
-	{
-		_key = Integer.toString(gV_.toString().hashCode());
-
+	GlyphKey(GlyphVector gV_){
+		_key = Integer.toStrin(gV_.toString().hashCode());
 	}
-
+	*/
+	
 	//Create a key from an individual glyph (extracted from a glyphVector)
 	GlyphKey(Font f_, int glyphCode_)
 	{
@@ -87,11 +83,11 @@ class GlyphKey implements Comparable<GlyphKey>
 
 class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
-	private VertexArrayList currentCharVAL;
-	private SoftHashMap charSoftHashMap;
+//	private VertexArrayList currentCharVAL;
+//	private SoftHashMap charSoftHashMap;
 
-	private VertexArrayList currentGlyphVecVAL;
-	private SoftHashMap glyphVecSoftHashMap;
+//	private VertexArrayList currentGlyphVecVAL;
+//	private SoftHashMap glyphVecSoftHashMap;
 
 	private VertexArrayList currentGlyphVAL;
 	private SoftHashMap glyphSoftHashMap;	
@@ -104,12 +100,15 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 2048;
 	private static final int INIT_FONT_SIZE_LENGTH = 64;
 
-	private static final int CHARS_HASHMAP_SIZE = 32;
-	private static final int GLYPHVECTORS_HASHMAP_SIZE = 32;
-	private static final int GLYPHS_HASHMAP_SIZE = 512;
+//	private static final int CHARS_HASHMAP_SIZE = 32;
+//	private static final int GLYPHVECTORS_HASHMAP_SIZE = 32;
+	
+	//See documentation of "public SoftHashMap(int retentionSize)"
+	private static final int GLYPHS_HASHMAP_RETENTION_SIZE = 128;
 
 	private static int font_size_length;
 	private static int listFontSizes[];
+	private int glyphs_reused_counter;
 
 	//Static block to create list of font sizes that can be rendered in vertex arrays
 	static{
@@ -146,9 +145,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
 	public OutlineRoughFontRenderer(Tesselator tesselator) {
 		this.tesselator = tesselator;
-		charSoftHashMap = new SoftHashMap(CHARS_HASHMAP_SIZE);
-		glyphVecSoftHashMap = new SoftHashMap(GLYPHVECTORS_HASHMAP_SIZE);
-		glyphSoftHashMap = new SoftHashMap(GLYPHS_HASHMAP_SIZE);
+		glyphSoftHashMap = new SoftHashMap(GLYPHS_HASHMAP_RETENTION_SIZE);
+		//charSoftHashMap = new SoftHashMap(CHARS_HASHMAP_SIZE);
+		//glyphVecSoftHashMap = new SoftHashMap(GLYPHVECTORS_HASHMAP_SIZE);
+		glyphs_reused_counter=0;
 	}
 
 	public void render(GLAutoDrawable drawable, GlyphVector gV, double scale) {
@@ -164,7 +164,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 				//a polygon composing one glyph (a char may be composed of many glyphs)
 				gl.glPushMatrix();
 				gl.glScaled(scale, scale, 1.0);
-				System.out.println("Vertices: "+currentGlyphVAL.size()+" and scale: "+scale);
+				//System.out.println("Vertices: "+currentGlyphVAL.size()+" and scale: "+scale);
 				for (int j = 0; j < currentGlyphVAL.size(); j++){
 					//System.out.println("Vertex: "+j+" and scale: "+scale);
 					gl.glPushMatrix();
@@ -175,6 +175,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 				gl.glPopMatrix();
 			}
 		}
+		System.out.println("\n\nUntil now.\nCache's size= "+this.glyphSoftHashMap.size()+"\nNb times of glyphs reuse: "+this.glyphs_reused_counter+"\n");			
 	}
 
 	protected boolean installGlyph(GLAutoDrawable drawable, GlyphVector gV, int i_) {
@@ -191,8 +192,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 			addTesselation(drawable, gV, i_, tempKey_, temp_offset_x);			
 			System.out.println("No VertexArrayList for glyph: "+tempKey_.toString());			
 		}
-		else
+		else{
 			System.out.println("Found VertexArrayList for glyph: "+tempKey_.toString());
+			this.glyphs_reused_counter++;
+		}
 		return true;
 	}
 	
