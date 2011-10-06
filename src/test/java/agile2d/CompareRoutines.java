@@ -199,8 +199,15 @@ class CompareRoutines {
 		fontRendContext = g2d.getFontRenderContext();
 	    GlyphVector glyphVectorBig = font_.createGlyphVector(fontRendContext, st);
         g2d.drawGlyphVector(glyphVectorBig, 50, 300);
-	}
 	
+        st = "Sans Serif, 48 (2)";
+        font_ = new Font("SansSerif", Font.BOLD, 48);
+		g2d.setFont(font_);
+		fontRendContext = g2d.getFontRenderContext();
+	    GlyphVector glyphVectorSS = font_.createGlyphVector(fontRendContext, st);
+	    g2d.drawGlyphVector(glyphVectorSS, 50, 380);
+	
+	}
 	
 
 	public static void drawGlyphVectorSize(Graphics2D g2d){

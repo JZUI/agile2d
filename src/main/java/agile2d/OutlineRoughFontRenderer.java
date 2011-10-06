@@ -267,7 +267,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 				System.out.println("Vertices: "+currentGlyphVAL.size()+" and scale: "+scale);
 				for (int j = 0; j < currentGlyphVAL.size(); j++){
 					//System.out.println("Vertex: "+j+" and scale: "+scale);
+					gl.glPushMatrix();
+					gl.glTranslated(gV.getGlyphPosition(i).getX(), 0.0, 0.0);
 					ShapeManager.render(gl, currentGlyphVAL.getVertexArrayAt(j), null);
+					gl.glPopMatrix();
 				}
 				gl.glPopMatrix();
 			}
@@ -329,7 +332,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 
 	
 	protected boolean installGlyph(GLAutoDrawable drawable, GlyphVector gV, int i_) {
-
+		float temp_offset_x = 0.0f;
 		GL2 gl = drawable.getGL().getGL2();
 
 		//get VertexArray list of the glyph g
@@ -338,7 +341,8 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		currentGlyphVAL = (VertexArrayList)glyphSoftHashMap.get(tempKey_);
 		//If data doesn't exist (still / anymore), make it
 		if (currentGlyphVAL == null){
-			addTesselation(drawable, gV, i_, tempKey_);			
+			temp_offset_x = (float)gV.getGlyphPosition(i_).getX();
+			addTesselation(drawable, gV, i_, tempKey_, temp_offset_x);			
 			System.out.println("No VertexArrayList for glyph: "+tempKey_.toString());			
 		}
 		else
@@ -347,8 +351,9 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	}
 	
 	//We will eat glyph by glyph and not bite a whole glyphVector
-	public boolean addTesselation(GLAutoDrawable drawable, GlyphVector gV, int i_, GlyphKey key_) {
-		Shape s = gV.getGlyphOutline(i_);
+	public boolean addTesselation(GLAutoDrawable drawable, GlyphVector gV, int i_, GlyphKey key_, float offset_x) {
+		//use the x offset so that the origin of all fonts geometry be "0"
+		Shape s = gV.getGlyphOutline(i_, -offset_x, 0.0f);
 		currentGlyphVAL = new VertexArrayList();
 		VertexArrayTesselatorVisitor visitor = new VertexArrayTesselatorVisitor(currentGlyphVAL);
 		tesselator.tesselate(s.getPathIterator(null, 0.01), visitor);
