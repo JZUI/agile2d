@@ -92,7 +92,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>agile2d.AgileCanvas</mainClass>
+              <mainClass>agile2d.AgileAnimeCanvas</mainClass>
               <packageName>agile2d</packageName>
               <addClasspath>true</addClasspath>
             </manifest>

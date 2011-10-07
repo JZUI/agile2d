@@ -241,6 +241,7 @@ class FontManager {
 				_drawRoughOutlineGlyphVector(gV, 1.0);
 			break;
 			default:
+			break;
 		}
 	}
 
