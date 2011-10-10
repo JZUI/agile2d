@@ -104,7 +104,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 //	private static final int GLYPHVECTORS_HASHMAP_SIZE = 32;
 	
 	//See documentation of "public SoftHashMap(int retentionSize)"
-	private static final int GLYPHS_HASHMAP_RETENTION_SIZE = 128;
+	private static final int GLYPHS_HASHMAP_RETENTION_SIZE = 64;
 
 	private static int font_size_length;
 	private static int listFontSizes[];
@@ -175,7 +175,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 				gl.glPopMatrix();
 			}
 		}
-		System.out.println("\n\nUntil now.\nCache's size= "+this.glyphSoftHashMap.size()+"\nNb times of glyphs reuse: "+this.glyphs_reused_counter+"\n");			
+		//System.out.println("\n\nUntil now.\nCache's size= "+this.glyphSoftHashMap.size()+"\nNb times of glyphs reuse: "+this.glyphs_reused_counter+"\n");			
 	}
 
 	protected boolean installGlyph(GLAutoDrawable drawable, GlyphVector gV, int i_) {
@@ -190,10 +190,10 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		if (currentGlyphVAL == null){
 			temp_offset_x = (float)gV.getGlyphPosition(i_).getX();
 			addTesselation(drawable, gV, i_, tempKey_, temp_offset_x);			
-			System.out.println("No VertexArrayList for glyph: "+tempKey_.toString());			
+			//System.out.println("No VertexArrayList for glyph: "+tempKey_.toString());			
 		}
 		else{
-			System.out.println("Found VertexArrayList for glyph: "+tempKey_.toString());
+			//System.out.println("Found VertexArrayList for glyph: "+tempKey_.toString());
 			this.glyphs_reused_counter++;
 		}
 		return true;

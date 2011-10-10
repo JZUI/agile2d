@@ -336,6 +336,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			//The important thin is to remember that it will impact both drawString and drawGlyphVector methods
 			//That's why we call setStrategy() every time in the beginning of this methods
 			preferedGlyphDrawStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
+			//preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;
 			//The quality hint can be set only once
 			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
 			

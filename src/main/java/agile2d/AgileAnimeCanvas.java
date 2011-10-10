@@ -10,6 +10,9 @@ package agile2d;
 import java.awt.Color;
 
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Shape;
 import java.awt.BasicStroke;
 import java.awt.Dimension;
@@ -47,6 +50,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 
+
 /**
  * <b>AgileCanvas</b>
  * 
@@ -61,15 +65,28 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	private int keyPressed, exampleNb;
 	private boolean interactive_antialias = false;
 	private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
+	private double incrementor = 1.0;
 	private double rTheta = 1.0;
 	private double zFactor = 1.00;	
 	private final static int WIN_W = 1200;
 	private final static int WIN_H = 800;
 	private Thread thread;
+	private static Chrono chrono;
+	private int frame_counter;
+	private static Font[] allFonts;
+	private final static int NB_FONTS=32;
+	private static Font[] someFonts = new Font[NB_FONTS];	
+	
+	static{
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		allFonts = ge.getAllFonts();
+		for(int i=0; i<NB_FONTS; i++)
+			someFonts[i] = allFonts[i].deriveFont(12.0f);
+	}
+	
 	
 	public AgileAnimeCanvas(Component root) {
 		this.root = root;
-
 	}
 
 	public void start() {
@@ -94,50 +111,31 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
         }
         thread = null;
     }
-	
+    
+    public long getFPS(Chrono ch, int nb_frames){   	
+    	ch.stop();
+    	long duration_sec = ch.getDuration()/1000; 
+    	ch.start();
+    	return (nb_frames/duration_sec);
+    }
+    	
+    
+    
 	
     public void reset(int w, int h) {
-     //   size = (w > h) ? h/6f : w/6f;
-     /*   for (int i = 0; i < lines.length; i++) {
-            lines[i] = new Line2D.Float(0,0,size,0);
-            strokes[i] = new BasicStroke(size/3, caps[i], joins[i]);
-            rAmt[i] = i * 360/lines.length;
-            direction[i] = i%2;
-            speed[i] = i + 1;
-        }
-	*/
-        /*
-    	path = new GeneralPath();
-        path.moveTo(size, -size/2);
-        path.lineTo(size+size/2, 0);
-        path.lineTo(size, +size/2);
-
-        ellipse.setFrame(w/2-size*2-4.5f,h/2-size*2-4.5f,size*4,size*4);
-        PathIterator pi = ellipse.getPathIterator(null, 0.9);
-        Point2D[] points = new Point2D[100];
-        int num_pts = 0;
-        while ( !pi.isDone() ) {
-            float[] pt = new float[6];
-            switch ( pi.currentSegment(pt) ) {
-                case FlatteningPathIterator.SEG_MOVETO:
-                case FlatteningPathIterator.SEG_LINETO:
-                    points[num_pts] = new Point2D.Float(pt[0], pt[1]);
-                    num_pts++;
-            }
-            pi.next();
-        }
-        pts = new Point2D[num_pts];
-        System.arraycopy(points, 0, pts, 0, num_pts);
-        */
     }
 
     public void step() {
-    		zFactor += 0.05;
-    		System.out.println("zFactor: "+zFactor);
+    		incrementor += 0.025;
+    		incrementor %= Math.PI;
+    		zFactor = 15.0*Math.sin(incrementor);
+    		//System.out.println("zFactor: "+zFactor);
     }
 	
 	public void init(GLAutoDrawable drawable) {
 		GLU glu = new GLU();
+		Component c = (Component)drawable;
+		
 		jgraphics = new AgileGraphics2D(drawable);
 		GL2 gl = drawable.getGL().getGL2();
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
@@ -151,15 +149,9 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		gl.glGetIntegerv(GL2.GL_SAMPLES, samples, 0);
 		System.out.println("Number of sample buffers: " + buf[0]);
 		System.out.println("Number of samples: " + samples[0]);
-
 		// Defines frequency in which buffers (back and front) are changed
 		gl.setSwapInterval(1);
-
-		try {
-			img_buff = ImageIO.read(new File("world.jpg"));
-			// img_buff = ImageIO.read(new File("DukeWave.gif"));
-		} catch (IOException e) {
-		}
+		frame_counter=0;
 	}
 
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
@@ -168,6 +160,8 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		}
 	}
 
+	
+	
 	public void display(GLAutoDrawable drawable) {
 
 		GL2 gl = drawable.getGL().getGL2();
@@ -187,18 +181,14 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
 		
+		
 		drawBigText(WIN_W, WIN_H, zFactor, jgraphics);
-		/*
-		switch (exampleNb) {
-		case 1:
-			drawBigText(WIN_W, WIN_H, zFactor, jgraphics);
-			break;
-
-		default:
-			drawSimpleCurves(WIN_W, WIN_H, jgraphics);
-			break;
+		frame_counter++;
+		if (zFactor < 0.2){
+			System.out.println("FPS: "+this.getFPS(this.chrono, this.frame_counter));
+			frame_counter=0;			
 		}
-		*/
+
 	}
 
 	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
@@ -292,7 +282,7 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		}
 		Frame frame = new Frame("Agile2D Demo");
 		final AgileAnimeCanvas agile = new AgileAnimeCanvas(null);
-
+		
 		GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 		glCaps.setDoubleBuffered(true);// request double buffer display mode
 		glCaps.setSampleBuffers(true);
@@ -319,7 +309,6 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 			.println("\nBad usage.\nYou must specify the type of GL component that should be used: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).\n");
 			System.exit(0);
 		}
-
 		frame.setSize(WIN_W, WIN_H);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -327,41 +316,42 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 			}
 		});
 		frame.setVisible(true);
-		frame.addKeyListener(agile);
+		frame.addKeyListener(agile);				
+	
+        chrono = new Chrono();
+        chrono.start();		
 		agile.start();
 	}
 
 	// Sample display to test text rendering performance during zooming
-	void drawBigText(int x, int y, double zoomFactor, AgileGraphics2D glGraphics) {
+	void drawBigText(int x, int y, double zoomFactor, Graphics2D glGraphics) {
 		glGraphics.scale(zoomFactor, zoomFactor);
-		jgraphics.drawString("Test drawString", 0, 30);
-		jgraphics.setColor(Color.GREEN);
-		jgraphics.drawRect(4, 4, 120, 120);
-		jgraphics.setColor(Color.RED);
-		jgraphics.drawLine(3, 3, 130, 130);
+		for(int i=0; i<NB_FONTS; i++){
+			jgraphics.setFont(someFonts[i]);
+			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUWXYZ", 2, ((i+1)*13));
+		}
 	}
 
 	// JAVA2D EXAMPLE CODE
 	private static Color colors[] = { Color.blue, Color.green, Color.red };
 
-	public void drawSimpleCurves(int w, int h, AgileGraphics2D glGraphics) {
-
-		GeneralPath p = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-		p.moveTo(w * .2f, h * .25f);
-
-		// adds a cubic curve to the path
-		p.curveTo(w * .4f, h * .5f, w * .6f, 0.0f, w * .8f, h * .25f);
-
-		p.moveTo(w * .2f, h * .6f);
-
-		// adds a quad curve to the path
-		p.quadTo(w * .5f, h * 1.0f, w * .8f, h * .6f);
-
-		glGraphics.setColor(Color.lightGray);
-		glGraphics.fill(p);
-		glGraphics.setColor(Color.black);
-		glGraphics.draw(p);
-		glGraphics.drawString("curveTo", (int) (w * .2), (int) (h * .25f) - 5);
-		glGraphics.drawString("quadTo", (int) (w * .2), (int) (h * .6f) - 5);
+	private static final class Chrono{
+	    private long begin, end;	    
+	 
+	    public Chrono(){
+	    	begin = end = 0;
+	    }
+	    
+	    public void start(){
+	        begin = System.currentTimeMillis();
+	    }
+	 
+	    public void stop(){	    	
+	        end = System.currentTimeMillis();
+	    }
+	    public long getDuration() {
+	        return end-begin;
+	    }
 	}
+
 }

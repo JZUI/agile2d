@@ -125,16 +125,16 @@ class FontManager {
 		//then, check which strategy is on and call it
 		switch(present_strategy){
 			case TEXTURE_STRATEGY:
-				System.out.println("\nDrawing new string with texture strategy");
+				//System.out.println("\nDrawing new string with texture strategy");
 				_drawTextureString(string_);
 			break;
 			case OUTLINE_STRATEGY:
-				System.out.println("\nDrawing new string with outline strategy");
+				//System.out.println("\nDrawing new string with outline strategy");
 				//Too big to fit in a texture - draw from outlines instead
 				_drawOutlineString(string_);
 			break;
 			case ROUGH_OUTLINE_STRATEGY:
-				System.out.println("\nDrawing new string with a rough outline strategy");
+				//System.out.println("\nDrawing new string with a rough outline strategy");
 				//Too big to fit in a texture - draw from ROUGH outline of the shapes
 				_drawRoughOutlineString(string_);
 			break;
@@ -188,10 +188,10 @@ class FontManager {
 			finalSize = font.getSize()*scale;
 			aboveSize = roughOutlineFont.getNearestAboveFont((int)finalSize);
 			if(aboveSize != finalSize){
-				System.out.println("Font size required: "+finalSize+". Size found and shrinked: "+aboveSize);
+				//System.out.println("Font size required: "+finalSize+". Size found and shrinked: "+aboveSize);
 				interScale = (double)finalSize/aboveSize;
 				//if there's a size increase, insert this scale difference in the scale variable
-				System.out.println("Scale: "+scale+" and interScale: "+interScale);
+				//System.out.println("Scale: "+scale+" and interScale: "+interScale);
 				//get a new font instance with a size corresponding to the rough sizes
 				Font previousFont_ = font;
 				font = null;
