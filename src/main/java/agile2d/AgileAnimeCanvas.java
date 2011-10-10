@@ -74,8 +74,11 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	private static Chrono chrono;
 	private int frame_counter;
 	private static Font[] allFonts;
-	private final static int NB_FONTS=32;
+	private final static int NB_FONTS=8;
 	private static Font[] someFonts = new Font[NB_FONTS];	
+	private int mX, mY;
+	private Image mImage;
+	
 	
 	static{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -326,9 +329,9 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	// Sample display to test text rendering performance during zooming
 	void drawBigText(int x, int y, double zoomFactor, Graphics2D glGraphics) {
 		glGraphics.scale(zoomFactor, zoomFactor);
-		for(int i=0; i<NB_FONTS; i++){
-			jgraphics.setFont(someFonts[i]);
-			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUWXYZ", 2, ((i+1)*13));
+		for(int i=0; i<3*NB_FONTS; i++){
+			jgraphics.setFont(someFonts[i%NB_FONTS]);
+			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*12));
 		}
 	}
 
