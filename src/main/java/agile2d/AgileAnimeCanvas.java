@@ -53,7 +53,7 @@ import javax.media.opengl.GLProfile;
 
 /**
  * <b>AgileCanvas</b>
- * 
+ *
  * @author Jean-Daniel Fekete
  * @version $Revision$
  */
@@ -67,27 +67,28 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 	private double incrementor = 1.0;
 	private double rTheta = 1.0;
-	private double zFactor = 1.00;	
+	private double zFactor = 1.00;
 	private final static int WIN_W = 1200;
 	private final static int WIN_H = 800;
 	private Thread thread;
 	private static Chrono chrono;
 	private int frame_counter;
 	private static Font[] allFonts;
-	private final static int NB_FONTS=8;
-	private static Font[] someFonts = new Font[NB_FONTS];	
-	private int mX, mY;
-	private Image mImage;
-	
-	
+	private final static int NB_FONTS=2;
+	private final static int NB_REPETITIONS=3;
+	private static Font[] someFonts = new Font[NB_FONTS];
+	private final static float INIT_FONT_SIZE = 8.0f;
+	private final static long INTERVAL = 15000;
+
+
 	static{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		allFonts = ge.getAllFonts();
 		for(int i=0; i<NB_FONTS; i++)
-			someFonts[i] = allFonts[i].deriveFont(12.0f);
+			someFonts[i] = allFonts[i].deriveFont(INIT_FONT_SIZE);
 	}
-	
-	
+
+
 	public AgileAnimeCanvas(Component root) {
 		this.root = root;
 	}
@@ -114,31 +115,35 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
         }
         thread = null;
     }
-    
-    public long getFPS(Chrono ch, int nb_frames){   	
+
+    public long getFPS(Chrono ch, int nb_frames){
     	ch.stop();
-    	long duration_sec = ch.getDuration()/1000; 
+    	long duration_sec = ch.getDuration()/1000;
     	ch.start();
     	return (nb_frames/duration_sec);
     }
-    	
-    
-    
-	
+
+
+
+
     public void reset(int w, int h) {
     }
 
     public void step() {
     		incrementor += 0.025;
-    		incrementor %= Math.PI;
-    		zFactor = 15.0*Math.sin(incrementor);
+    		incrementor %= (2*Math.PI);
+    		zFactor = 8.0*(Math.sin(incrementor)+1.1);
+    		if(incrementor<0.025){
+    			System.out.println("FPS: "+this.getFPS(this.chrono, this.frame_counter));
+    			frame_counter=0;
+    		}
     		//System.out.println("zFactor: "+zFactor);
     }
-	
+
 	public void init(GLAutoDrawable drawable) {
 		GLU glu = new GLU();
 		Component c = (Component)drawable;
-		
+
 		jgraphics = new AgileGraphics2D(drawable);
 		GL2 gl = drawable.getGL().getGL2();
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
@@ -163,8 +168,8 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		}
 	}
 
-	
-	
+
+
 	public void display(GLAutoDrawable drawable) {
 
 		GL2 gl = drawable.getGL().getGL2();
@@ -183,14 +188,17 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		this.step();
 		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		
+
+
 		drawBigText(WIN_W, WIN_H, zFactor, jgraphics);
 		frame_counter++;
-		if (zFactor < 0.2){
+		//System.out.println("Duration: "+Long.toString(chrono.getDuration()));
+		/*if (chrono.getDuration() >= INTERVAL){
 			System.out.println("FPS: "+this.getFPS(this.chrono, this.frame_counter));
-			frame_counter=0;			
-		}
+			frame_counter=0;
+			chrono.stop();
+			chrono.start();
+		}*/
 
 	}
 
@@ -265,7 +273,7 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		case KeyEvent.VK_SPACE:
 			System.out.println("Stop thread");
 			this.stop();
-			break;			
+			break;
 		}
 		root.repaint();
 	}
@@ -285,7 +293,7 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		}
 		Frame frame = new Frame("Agile2D Demo");
 		final AgileAnimeCanvas agile = new AgileAnimeCanvas(null);
-		
+
 		GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 		glCaps.setDoubleBuffered(true);// request double buffer display mode
 		glCaps.setSampleBuffers(true);
@@ -319,19 +327,19 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 			}
 		});
 		frame.setVisible(true);
-		frame.addKeyListener(agile);				
-	
+		frame.addKeyListener(agile);
+
         chrono = new Chrono();
-        chrono.start();		
+        chrono.start();
 		agile.start();
 	}
 
 	// Sample display to test text rendering performance during zooming
 	void drawBigText(int x, int y, double zoomFactor, Graphics2D glGraphics) {
 		glGraphics.scale(zoomFactor, zoomFactor);
-		for(int i=0; i<3*NB_FONTS; i++){
+		for(int i=0; i<NB_REPETITIONS*NB_FONTS; i++){
 			jgraphics.setFont(someFonts[i%NB_FONTS]);
-			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*12));
+			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXY", 2, ((i+1)*INIT_FONT_SIZE));
 		}
 	}
 
@@ -339,21 +347,21 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	private static Color colors[] = { Color.blue, Color.green, Color.red };
 
 	private static final class Chrono{
-	    private long begin, end;	    
-	 
+	    private long begin, end;
+
 	    public Chrono(){
-	    	begin = end = 0;
+	    	begin = end = System.currentTimeMillis();
 	    }
-	    
+
 	    public void start(){
 	        begin = System.currentTimeMillis();
 	    }
-	 
-	    public void stop(){	    	
+
+	    public void stop(){
 	        end = System.currentTimeMillis();
 	    }
 	    public long getDuration() {
-	        return end-begin;
+	        return System.currentTimeMillis()-begin;
 	    }
 	}
 
