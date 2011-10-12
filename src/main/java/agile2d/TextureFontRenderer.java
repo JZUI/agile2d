@@ -39,7 +39,8 @@ import javax.media.opengl.GLAutoDrawable;
 class TextureFontRenderer extends BasicFontRenderer {
     int texture;
     CacheInfo current;
-    boolean highQuality = true;
+    //boolean highQuality = true;
+    boolean highQuality = false;
     boolean incremental = false;
 
     static int maxCacheLength = 100;

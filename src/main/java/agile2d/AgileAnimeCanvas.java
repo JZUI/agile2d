@@ -74,12 +74,12 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	private static Chrono chrono;
 	private int frame_counter;
 	private static Font[] allFonts;
-	private final static int NB_FONTS=2;
-	private final static int NB_REPETITIONS=3;
+	private final static int NB_FONTS=36;
+	private final static int NB_REPETITIONS=1;
 	private static Font[] someFonts = new Font[NB_FONTS];
-	private final static float INIT_FONT_SIZE = 8.0f;
-	private final static long INTERVAL = 15000;
-
+	private final static float INIT_FONT_SIZE = 6.0f;
+	private final static float MAX_SCALE = 9.0f;
+	
 
 	static{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -130,14 +130,17 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
     }
 
     public void step() {
+    		//Incrementor ]0, 2*PI[
     		incrementor += 0.025;
     		incrementor %= (2*Math.PI);
-    		zFactor = 8.0*(Math.sin(incrementor)+1.1);
+    		//zFactor ]1.0, MAX_SCALE[ 
+    		zFactor = MAX_SCALE*(Math.sin(incrementor)+1.1);
+    		//Gets the fps once per cycle (when the angle approaches "0")
     		if(incrementor<0.025){
     			System.out.println("FPS: "+this.getFPS(this.chrono, this.frame_counter));
     			frame_counter=0;
-    		}
-    		//System.out.println("zFactor: "+zFactor);
+    			System.out.println("zFactor: "+zFactor);
+    		}   		
     }
 
 	public void init(GLAutoDrawable drawable) {
@@ -185,20 +188,14 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		jgraphics.setBackground(Color.WHITE);
 		jgraphics.clearRect(0, 0, 1200, 800);
 
-		this.step();
+
 		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
 
 
 		drawBigText(WIN_W, WIN_H, zFactor, jgraphics);
 		frame_counter++;
-		//System.out.println("Duration: "+Long.toString(chrono.getDuration()));
-		/*if (chrono.getDuration() >= INTERVAL){
-			System.out.println("FPS: "+this.getFPS(this.chrono, this.frame_counter));
-			frame_counter=0;
-			chrono.stop();
-			chrono.start();
-		}*/
+		this.step();
 
 	}
 
@@ -336,10 +333,12 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 
 	// Sample display to test text rendering performance during zooming
 	void drawBigText(int x, int y, double zoomFactor, Graphics2D glGraphics) {
+		jgraphics.drawRect(10, 10, 200, 200);
+		jgraphics.fillRect(100, 100, 200, 200);
 		glGraphics.scale(zoomFactor, zoomFactor);
 		for(int i=0; i<NB_REPETITIONS*NB_FONTS; i++){
 			jgraphics.setFont(someFonts[i%NB_FONTS]);
-			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXY", 2, ((i+1)*INIT_FONT_SIZE));
+			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*INIT_FONT_SIZE));
 		}
 	}
 
