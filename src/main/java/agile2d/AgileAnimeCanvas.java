@@ -7,48 +7,20 @@
  *****************************************************************************/
 package agile2d;
 
-import java.awt.Color;
+import agile2d.benchmark.*;
 
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.Shape;
-import java.awt.BasicStroke;
-import java.awt.Dimension;
-import java.awt.geom.*;
-import java.awt.font.TextAttribute;
+
+import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.event.*;
-
 import java.awt.Component;
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-
-import java.awt.font.TextLayout;
-import java.awt.font.FontRenderContext;
-import java.text.AttributedString;
-import java.text.AttributedCharacterIterator;
-
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLProfile;
 
 
 /**
@@ -58,54 +30,35 @@ import javax.media.opengl.GLProfile;
  * @version $Revision$
  */
 public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable {
+	
 	private final static int WIN_W = 1200;
 	private final static int WIN_H = 800;
-	private final static int NB_FONTS=36;
-	private final static int NB_REPETITIONS=1;
-	private final static float INIT_FONT_SIZE = 6.0f;
-	private final static float MAX_SCALE = 9.0f;
 	private final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
-	
-	private static Font[] allFonts;	
-	private static Font[] someFonts = new Font[NB_FONTS];
-	private static Chrono chrono;	
+
+	private Chrono chrono;
 	
 	private AgileGraphics2D jgraphics;
 	private Component root;
-	private BufferedImage img_buff = null;
-	private Image img = null;
 	private Thread thread;
-	
-	private double incrementor = 1.0;
-	private double rTheta = 1.0;
-	private double zFactor = 1.00;
-	private int frame_counter, keyPressed, exampleNb;
+	private AnimeBenchmark bench;
+
 	private boolean interactive_antialias = false;
-
+	private int keyPressed;
 	
-	static{
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		allFonts = ge.getAllFonts();
-		for(int i=0; i<NB_FONTS; i++)
-			someFonts[i] = allFonts[i].deriveFont(INIT_FONT_SIZE);
-	}
-
-
 	public AgileAnimeCanvas(Component root) {
 		this.root = root;
 	}
 
-	public void start() {
+	public void startAnim() {
         thread = new Thread(this);
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
     }
 
 
-    public synchronized void stop() {
+    public synchronized void stopAnim() {
         thread = null;
     }
-
 
     public void run() {
         Thread me = Thread.currentThread();
@@ -118,37 +71,16 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
         thread = null;
     }
 
-    public long getFPS(Chrono ch, int nb_frames){
-    	ch.stop();
-    	long duration_sec = ch.getDuration()/1000;
-    	ch.start();
-    	return (nb_frames/duration_sec);
-    }
-
-
-
-
     public void reset(int w, int h) {
-    }
-
-    public void step() {
-    		//Incrementor ]0, 2*PI[
-    		incrementor += 0.025;
-    		incrementor %= (2*Math.PI);
-    		//zFactor ]1.0, MAX_SCALE[ 
-    		zFactor = MAX_SCALE*(Math.sin(incrementor)+1.1);
-    		//Gets the fps once per cycle (when the angle approaches "0")
-    		if(incrementor<0.025){
-    			System.out.println("FPS: "+this.getFPS(this.chrono, this.frame_counter));
-    			frame_counter=0;
-    			System.out.println("zFactor: "+zFactor);
-    		}   		
     }
 
 	public void init(GLAutoDrawable drawable) {
 		GLU glu = new GLU();
 		Component c = (Component)drawable;
-
+		
+		chrono = new Chrono();		
+		bench = new AnimeBenchmark(chrono);
+		
 		jgraphics = new AgileGraphics2D(drawable);
 		GL2 gl = drawable.getGL().getGL2();
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
@@ -164,7 +96,7 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		System.out.println("Number of samples: " + samples[0]);
 		// Defines frequency in which buffers (back and front) are changed
 		gl.setSwapInterval(1);
-		frame_counter=0;
+		bench.resetCounter();		
 	}
 
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
@@ -193,11 +125,10 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 
 		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
-
-
-		drawBigText(WIN_W, WIN_H, zFactor, jgraphics);
-		frame_counter++;
-		this.step();
+		
+		bench.drawBigText(WIN_W, WIN_H, jgraphics);
+		bench.increment();
+		bench.step();
 
 	}
 
@@ -222,56 +153,9 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	public void keyPressed(KeyEvent e) {
 		keyPressed = e.getKeyCode();
 		switch (keyPressed) {
-		case KeyEvent.VK_F1:
-			exampleNb = 1;
-			break;
-		case KeyEvent.VK_F2:
-			exampleNb = 2;
-			break;
-		case KeyEvent.VK_F3:
-			exampleNb = 3;
-			break;
-		case KeyEvent.VK_F4:
-			exampleNb = 4;
-			break;
-		case KeyEvent.VK_F5:
-			exampleNb = 5;
-			break;
-		case KeyEvent.VK_F6:
-			exampleNb = 6;
-			break;
-		case KeyEvent.VK_F7:
-			exampleNb = 7;
-			break;
-		case KeyEvent.VK_F8:
-			exampleNb = 8;
-			break;
-		case KeyEvent.VK_F9:
-			exampleNb = 9;
-			break;
-
-			// Other events
-		case KeyEvent.VK_A:
-			if (interactive_antialias == false) {
-				interactive_antialias = true;
-				System.out.println("Antialiasing is ON");
-			} else {
-				interactive_antialias = false;
-				System.out.println("Antialiasing is OFF");
-			}
-			break;
-		case KeyEvent.VK_R:
-			rTheta += 0.15;
-			break;
-		case KeyEvent.VK_I:// zoom in
-			zFactor += 0.1;
-			break;
-		case KeyEvent.VK_O:
-			zFactor -= 0.1;
-			break;
 		case KeyEvent.VK_SPACE:
 			System.out.println("Stop thread");
-			this.stop();
+			this.stopAnim();
 			break;
 		}
 		root.repaint();
@@ -280,9 +164,9 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	public void keyReleased(KeyEvent e) {
 	}
 
-
+/*
 	public static void main(String[] args) {
-
+		
 		if (args.length == 0) {
 			System.out
 			.println("\nBad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).");
@@ -328,42 +212,7 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		frame.setVisible(true);
 		frame.addKeyListener(agile);
 
-        chrono = new Chrono();
-        chrono.start();
-		agile.start();
+		agile.startAnim();
 	}
-
-	// Sample display to test text rendering performance during zooming
-	void drawBigText(int x, int y, double zoomFactor, Graphics2D glGraphics) {
-		jgraphics.drawRect(10, 10, 200, 200);
-		jgraphics.fillRect(100, 100, 200, 200);
-		glGraphics.scale(zoomFactor, zoomFactor);
-		for(int i=0; i<NB_REPETITIONS*NB_FONTS; i++){
-			jgraphics.setFont(someFonts[i%NB_FONTS]);
-			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*INIT_FONT_SIZE));
-		}
-	}
-
-	// JAVA2D EXAMPLE CODE
-	private static Color colors[] = { Color.blue, Color.green, Color.red };
-
-	private static final class Chrono{
-	    private long begin, end;
-
-	    public Chrono(){
-	    	begin = end = System.currentTimeMillis();
-	    }
-
-	    public void start(){
-	        begin = System.currentTimeMillis();
-	    }
-
-	    public void stop(){
-	        end = System.currentTimeMillis();
-	    }
-	    public long getDuration() {
-	        return System.currentTimeMillis()-begin;
-	    }
-	}
-
+	*/
 }
