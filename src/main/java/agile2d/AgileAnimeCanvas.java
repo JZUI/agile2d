@@ -58,29 +58,31 @@ import javax.media.opengl.GLProfile;
  * @version $Revision$
  */
 public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable {
+	private final static int WIN_W = 1200;
+	private final static int WIN_H = 800;
+	private final static int NB_FONTS=36;
+	private final static int NB_REPETITIONS=1;
+	private final static float INIT_FONT_SIZE = 6.0f;
+	private final static float MAX_SCALE = 9.0f;
+	private final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
+	
+	private static Font[] allFonts;	
+	private static Font[] someFonts = new Font[NB_FONTS];
+	private static Chrono chrono;	
+	
 	private AgileGraphics2D jgraphics;
 	private Component root;
 	private BufferedImage img_buff = null;
 	private Image img = null;
-	private int keyPressed, exampleNb;
-	private boolean interactive_antialias = false;
-	private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
+	private Thread thread;
+	
 	private double incrementor = 1.0;
 	private double rTheta = 1.0;
 	private double zFactor = 1.00;
-	private final static int WIN_W = 1200;
-	private final static int WIN_H = 800;
-	private Thread thread;
-	private static Chrono chrono;
-	private int frame_counter;
-	private static Font[] allFonts;
-	private final static int NB_FONTS=36;
-	private final static int NB_REPETITIONS=1;
-	private static Font[] someFonts = new Font[NB_FONTS];
-	private final static float INIT_FONT_SIZE = 6.0f;
-	private final static float MAX_SCALE = 9.0f;
-	
+	private int frame_counter, keyPressed, exampleNb;
+	private boolean interactive_antialias = false;
 
+	
 	static{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		allFonts = ge.getAllFonts();
