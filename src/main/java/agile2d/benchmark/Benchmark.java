@@ -9,8 +9,6 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 
-import agile2d.AgileAnimeCanvas;
-
 public class Benchmark {
 
 	public static void main(String[] args) {

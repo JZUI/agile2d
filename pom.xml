@@ -43,7 +43,6 @@
 		<artifactId>newt.all</artifactId>
 		<version>2.0</version>
 	    </dependency>
-
 	<dependency>
 	    <groupId>junit</groupId>
 	    <artifactId>junit</artifactId>
@@ -85,11 +84,12 @@
   
   <build>
     <plugins>
-    <plugin>
+    <plugin>    	
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
 	<version>2.3.1</version>
         <configuration>
+        <classifier>Benchmark</classifier>
           <archive>
             <manifest>
               <mainClass>agile2d.benchmark.Benchmark</mainClass>
@@ -102,7 +102,27 @@
             </manifestEntries>
           </archive>
         </configuration>
-      </plugin>
+      </plugin>      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+	<version>2.3.1</version>
+        <configuration>
+		<classifier>HelloWorld</classifier>
+          <archive>
+            <manifest>
+              <mainClass>agile2d.examples.HelloWorld</mainClass>
+              <packageName>agile2d.examples</packageName>
+              <addClasspath>true</addClasspath>
+            </manifest>
+            <manifestEntries>
+              <mode>development</mode>
+              <url>${pom.url}</url>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>   
+      
     <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>dependency-maven-plugin</artifactId>
