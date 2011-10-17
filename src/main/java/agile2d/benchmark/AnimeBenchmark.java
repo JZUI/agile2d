@@ -8,14 +8,16 @@
 package agile2d.benchmark;
 
 import agile2d.benchmark.Chrono;
-
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 
 public class AnimeBenchmark{
-	private final static int NB_FONTS=36;
-	private final static int NB_REPETITIONS=1;
+	public final static int WIN_W = 1400;
+	public final static int WIN_H = 200;		
+	
+	private final static int NB_FONTS=6;
+	private final static int NB_REPETITIONS=2;
 	private final static float INIT_FONT_SIZE = 6.0f;
 	private final static float MAX_SCALE = 9.0f;
 
@@ -70,8 +72,6 @@ public class AnimeBenchmark{
     
 	// Sample display to test text rendering performance during zooming
 	public void drawBigText(int x, int y, Graphics2D g2_) {
-		//g2_.drawRect(10, 10, 200, 200);
-		//g2_.fillRect(100, 100, 200, 200);
 		g2_.scale(this.zFactor, this.zFactor);
 		for(int i=0; i<(NB_REPETITIONS*NB_FONTS); i++){
 			g2_.setFont(someFonts[i%NB_FONTS]);

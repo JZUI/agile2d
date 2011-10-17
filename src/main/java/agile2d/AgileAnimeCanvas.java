@@ -25,25 +25,18 @@ import javax.media.opengl.GLEventListener;
 
 /**
  * <b>AgileCanvas</b>
- *
- * @author Jean-Daniel Fekete
- * @version $Revision$
+ * 
  */
 public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable {
-	
-	private final static int WIN_W = 1200;
-	private final static int WIN_H = 800;
-	private final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
+	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 
-	private Chrono chrono;
-	
+	private Chrono chrono;	
 	private AgileGraphics2D jgraphics;
 	private Component root;
 	private Thread thread;
 	private AnimeBenchmark bench;
-
-	private boolean interactive_antialias = false;
 	private int keyPressed;
+	private boolean interactive_antialias = false;
 	
 	public AgileAnimeCanvas(Component root) {
 		this.root = root;
@@ -54,7 +47,6 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
     }
-
 
     public synchronized void stopAnim() {
         thread = null;
@@ -105,8 +97,6 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		}
 	}
 
-
-
 	public void display(GLAutoDrawable drawable) {
 
 		GL2 gl = drawable.getGL().getGL2();
@@ -120,16 +110,15 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 
 		// Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
-		jgraphics.clearRect(0, 0, 1200, 800);
+		jgraphics.clearRect(0, 0, AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
 
 
 		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		bench.drawBigText(WIN_W, WIN_H, jgraphics);
+		bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);
 		bench.increment();
 		bench.step();
-
 	}
 
 	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
