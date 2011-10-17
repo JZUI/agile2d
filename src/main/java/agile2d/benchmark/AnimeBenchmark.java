@@ -13,10 +13,9 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 
 public class AnimeBenchmark{
-	public final static int WIN_W = 1400;
-	public final static int WIN_H = 200;		
-	
-	private final static int NB_FONTS=6;
+	public final static int WIN_W = 150;
+	public final static int WIN_H = 150;		
+	private final static int NB_FONTS=18;
 	private final static int NB_REPETITIONS=2;
 	private final static float INIT_FONT_SIZE = 6.0f;
 	private final static float MAX_SCALE = 9.0f;

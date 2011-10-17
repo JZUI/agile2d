@@ -5,10 +5,7 @@
  * a copy of which has been included with this distribution in the           *
  * license-agile2d.txt file.                                                 *
  *****************************************************************************/
-package agile2d;
-
-import agile2d.benchmark.*;
-
+package agile2d.benchmark;
 
 import java.awt.Color;
 import java.awt.RenderingHints;
@@ -19,9 +16,9 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
-
 import javax.media.opengl.GLEventListener;
 
+import agile2d.AgileGraphics2D;
 
 /**
  * <b>AgileCanvas</b>
@@ -57,7 +54,7 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
         while (thread == me) {
             root.repaint();
             try {
-                thread.sleep(10);
+                Thread.sleep(10);
             } catch (InterruptedException e) { break; }
         }
         thread = null;
@@ -67,19 +64,17 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
     }
 
 	public void init(GLAutoDrawable drawable) {
-		GLU glu = new GLU();
-		Component c = (Component)drawable;
-		
+		GLU glu = new GLU();		
 		chrono = new Chrono();		
-		bench = new AnimeBenchmark(chrono);
-		
-		jgraphics = new AgileGraphics2D(drawable);
+		bench = new AnimeBenchmark(chrono);		
+		jgraphics = new AgileGraphics2D(drawable);		
 		GL2 gl = drawable.getGL().getGL2();
+		
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
 
-		// Check if MULTISAMPLE is avaiable
+		// Check if MULTISAMPLE is available
 		int[] buf = new int[2];
 		int[] samples = new int[2];
 		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
@@ -100,7 +95,6 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	public void display(GLAutoDrawable drawable) {
 
 		GL2 gl = drawable.getGL().getGL2();
-		AgileState glState = AgileState.get(gl);
 
 		// Call the glClear to clear the background
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -152,56 +146,4 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 
 	public void keyReleased(KeyEvent e) {
 	}
-
-/*
-	public static void main(String[] args) {
-		
-		if (args.length == 0) {
-			System.out
-			.println("\nBad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).");
-			System.out
-			.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
-			System.exit(0);
-		}
-		Frame frame = new Frame("Agile2D Demo");
-		final AgileAnimeCanvas agile = new AgileAnimeCanvas(null);
-
-		GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
-		glCaps.setDoubleBuffered(true);// request double buffer display mode
-		glCaps.setSampleBuffers(true);
-		glCaps.setNumSamples(NB_OF_SAMPLES_FOR_MULTISAMPLE);
-
-		if (args[0].equals("GLCanvas")) {
-			final GLCanvas canvas = new GLCanvas(glCaps);
-			frame.add(canvas);
-			canvas.addGLEventListener(agile);
-			agile.setRoot(canvas);
-			System.out
-			.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
-			System.out
-			.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
-			System.out
-			.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
-		} else if (args[0].equals("GLJPanel")) {
-			final GLJPanel panel = new GLJPanel(glCaps);
-			frame.add(panel);
-			panel.addGLEventListener(agile);
-			agile.setRoot(panel);
-		} else {
-			System.out
-			.println("\nBad usage.\nYou must specify the type of GL component that should be used: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).\n");
-			System.exit(0);
-		}
-		frame.setSize(WIN_W, WIN_H);
-		frame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-		frame.setVisible(true);
-		frame.addKeyListener(agile);
-
-		agile.startAnim();
-	}
-	*/
 }
