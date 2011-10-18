@@ -1,23 +1,27 @@
-- Extract the jnilibs from the jogl JAR file
-
+1. Extract the jnilibs from the jogl JAR file
 jar xf jogl-linux-i586-1.1.1-rc6.jar
 
-
-- Extract the jnilibs from the gluegen JAR file
-
+2. Extract the jnilibs from the gluegen JAR file
 jar xf gluegen-rt-linux-i586-1.0b05.jar
 
-
-- add the directory containing those files to your LD_LIBRARY_PATH environment variable
-
+3. add the directory containing those files to your LD_LIBRARY_PATH environment variable
 export LD_LIBRARY_PATH=path/to/target/dir:$LD_LIBRARY_PATH
 
+4. add the Agile2D class directory to the CLASSPATH environment variable:
+export CLASSPATH=target/agile2d-0.0.1-SNAPSHOT.jar:$CLASSPATH
 
-- Command line exec of demo:
+5. Command line to execute a demo:
+java agile2d.AgileCanvas GLCanvas
+Obs: you can replace 'GLCanvas' by 'GLJPanel' if you want to see diference in using Swing components
 
-java -jar target/agile2d-0.0.1-SNAPSHOT.jar 
+6. Command line to execute a Hello World example (check the source java files to see how to switch from a pure Graphics2D to a Agile2D canvas):
+java agile2d.examples.HelloWorld GLCanvas 
 
+6. Command line to execute the Benchmark application:
+java agile2d.benchmark.Benchmark
+Obs: Use this to see in which cases (number of glyphs, use of textures) there's a gain in performance using Agile instead of Graphics2d
 
+********************
 - If you get the following error:
 
 wrong ELF class: ELFCLASS32 (Possible cause: architecture word width mismatch)
