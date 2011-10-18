@@ -152,6 +152,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	static final int PAINT_GRADIENT = 1;
 	static final int PAINT_TEXTURE = 2;
 
+	public final static int ROUGH_SCALE_STRATEGY = 0;
+	public final static int DEFAUT_STRATEGY = 1;
+
 	// GraphicsEngine class
 	//
 	// In Java, many different Graphics objects can be created which refer
@@ -186,8 +189,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private Font              font;
 		private FontRenderContext frc;
 		private int preferedGlyphDrawStrategy;
-		
-//		private Shape             shapeClip;
+		private int currentRenderingStrategy;
+
+		//		private Shape             shapeClip;
 		private TexturePaint      texturePaint;
 		private double            scale;
 		private double            lineWidth = 1.0;
@@ -200,7 +204,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private boolean           frcAntialiasing;
 		private boolean           frcUsesFractionalMetrics;
 		private boolean           inited;
-//		private boolean           usePixelAlignment;
+		//		private boolean           usePixelAlignment;
 		private boolean           useShapeClip;
 		private boolean           isGLStencilAvailable;
 
@@ -226,7 +230,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private boolean  incrementalFontHint;
 		private boolean  antiAliasingHint;
 		// will change the value when we can create a MULTISAMPLE_BUFFER with gl4java
-//		private boolean  aaEnabled = false;
+		//		private boolean  aaEnabled = false;
 
 		private double[] modelViewMatrix;
 		private double[] projectionMatrix;
@@ -255,11 +259,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		public void resetGL(GLAutoDrawable drawable) {
-		    this.drawable = drawable;
-    	            this.gl = drawable.getGL().getGL2();
-   		    this.glu = new GLU();
-		    //IndirectGL igl = (IndirectGL)gl;
-		    //igl.setGl(drawable.getGL());
+			this.drawable = drawable;
+			this.gl = drawable.getGL().getGL2();
+			this.glu = new GLU();
+			//IndirectGL igl = (IndirectGL)gl;
+			//igl.setGl(drawable.getGL());
 		}
 
 		void doInit() {
@@ -269,7 +273,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			//this.gl = new IndirectGL(drawable.getGL());
 			this.glu = new GLU();
 			this.glState = AgileState.get(gl);
-//			glState.glSetShadeModel(GL2.GL_FLAT);
+			//			glState.glSetShadeModel(GL2.GL_FLAT);
 			//glState.glSetShadeModel(GL2.GL_SMOOTH);
 			glState.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
@@ -291,13 +295,13 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			System.out.println("Gl STENCIL BITS:"+ nb_stencil_bits[0]);
 
 
-            // For images
-            maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);
-	    if (maxTexSize > ImageUtils.MAX_TEX_SIZE) { // limit texture size to MAX_TEX_SIZE
-			maxTexSize = ImageUtils.MAX_TEX_SIZE;
-            }
-            buf = new BufferedImage(maxTexSize, maxTexSize, BufferedImage.TYPE_INT_ARGB);
-            bg = (Graphics2D)buf.getGraphics();
+			// For images
+			maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);
+			if (maxTexSize > ImageUtils.MAX_TEX_SIZE) { // limit texture size to MAX_TEX_SIZE
+				maxTexSize = ImageUtils.MAX_TEX_SIZE;
+			}
+			buf = new BufferedImage(maxTexSize, maxTexSize, BufferedImage.TYPE_INT_ARGB);
+			bg = (Graphics2D)buf.getGraphics();
 
 			//The glState.getState(GL_LINE_WIDTH_RANGE) call would crash the
 			//application since it doesn't return the state the value, instead we must
@@ -306,7 +310,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			float lineWidthGranularity[] = new float[1];
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE, maxLineRange, 0);
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_GRANULARITY, lineWidthGranularity, 0);
-//			System.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
+			//			System.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
 			minLineWidth = maxLineRange[0];
 			maxLineWidth = maxLineRange[1];
 
@@ -328,25 +332,26 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			imageManager = new ImageManager(gl, buf, bg);
 			stencilManager = new StencilManager(gl);
 			textureFont = new TextureFontRenderer();
-//			TextureFontRenderer.setMaxTextureSize(maxTexSize);
+			//			TextureFontRenderer.setMaxTextureSize(maxTexSize);
 			outlineFont = new OutlineFontRenderer(tesselator);
 			outlineRoughFont = new OutlineRoughFontRenderer(tesselator);
 			fontManager = new FontManager(gl, textureFont, outlineFont, outlineRoughFont);
 			//Strategy can be defined elsewhere as well
 			//The important thin is to remember that it will impact both drawString and drawGlyphVector methods
 			//That's why we call setStrategy() every time in the beginning of this methods
-			preferedGlyphDrawStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
-			//preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;
+			//preferedGlyphDrawStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
+			preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;
 			//The quality hint can be set only once
 			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
-			
+			currentRenderingStrategy = AgileGraphics2D.DEFAUT_STRATEGY;
+
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
 			//Get a fontRenderContext specific to the current FONT 
 			//Obs: maybe should be called only once when there's a setFont action
 			g2d.setFont(this.font);
 			frc = g2d.getFontRenderContext();
-			
+
 			gradientManager = new GradientManager(gl);
 
 			inited = true;
@@ -362,7 +367,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		// Prepares the engine for rendering - resets the transform
 		//
 		void doReset() {
-            Dimension sz = new Dimension(drawable.getWidth(), drawable.getHeight());
+			Dimension sz = new Dimension(drawable.getWidth(), drawable.getHeight());
 			windowBounds = new Rectangle(0, 0, sz.width, sz.height);
 
 			isAffineMatrix = (modelViewMatrix == null && projectionMatrix == null);
@@ -380,7 +385,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		void doSetRenderingHints(RenderingHints hints) {
 			convexHint = (hints.get(AgileRenderingHints.KEY_CONVEX_SHAPE_HINT) == Boolean.TRUE);
-//			convexHint = true;
+			//			convexHint = true;
 			immutableShapeHint = (hints.get(AgileRenderingHints.KEY_IMMUTABLE_SHAPE_HINT) == Boolean.TRUE);
 			immutableImageHint = (hints.get(AgileRenderingHints.KEY_IMMUTABLE_IMAGE_HINT) != Boolean.FALSE);
 			incrementalFontHint = (hints.get(AgileRenderingHints.KEY_INCREMENTAL_FONT_RENDERER_HINT) != Boolean.FALSE);
@@ -457,7 +462,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				glState.glEnable(GL.GL_BLEND);
 			}
 			else {
-			glState.glDisable(GL.GL_BLEND);
+				glState.glDisable(GL.GL_BLEND);
 			}
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
@@ -499,7 +504,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			}
 
 			if (rect == null ||
-				RectUtils.containsOrEquals(rect, windowBounds)) {
+					RectUtils.containsOrEquals(rect, windowBounds)) {
 				// Disable clipping planes and scissor test
 				glState.glDisable(GL.GL_SCISSOR_TEST);
 				glState.glDisable(GL2.GL_CLIP_PLANE0);
@@ -514,9 +519,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			} else {
 				if (DEBUG_CLIP) {
 					System.out.println("CLIP: " + rect.x + " " +
-						(windowBounds.height -
-						(rect.y + rect.height)) + " " +
-						rect.width + " " + rect.height);
+							(windowBounds.height -
+									(rect.y + rect.height)) + " " +
+									rect.width + " " + rect.height);
 				}
 
 				if (isAffineMatrix) {
@@ -526,9 +531,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 					// Use the Scissor test, which only works in 2D
 					//
 					gl.glScissor(rect.x - 1,
-						windowBounds.height -
-						(rect.y + rect.height) + 1, rect.width + 1,
-						rect.height);
+							windowBounds.height -
+							(rect.y + rect.height) + 1, rect.width + 1,
+							rect.height);
 					glState.glEnable(GL.GL_SCISSOR_TEST);
 
 					// Disable the clip planes just to be sure
@@ -655,7 +660,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (projectionMatrix == null) {
 				gl.glLoadIdentity();
 				glu.gluOrtho2D(0, windowBounds.width,
-					windowBounds.height, 0);
+						windowBounds.height, 0);
 			} else {
 				gl.glLoadMatrixd(projectionMatrix, 0);
 			}
@@ -690,21 +695,21 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				projectionMatrix = null;
 				loadProjectionMatrix();
 				isAffineMatrix = (modelViewMatrix == null &&
-					projectionMatrix == null);
+						projectionMatrix == null);
 			} else if (val != null && projectionMatrix == null) {
 				projectionMatrix = new double[16];
 				System.arraycopy(val, 0, projectionMatrix, 0, val.length);
 				loadProjectionMatrix();
 				isAffineMatrix = (modelViewMatrix == null &&
-					projectionMatrix == null);
+						projectionMatrix == null);
 			} else if (val != null && projectionMatrix != null) {
 				for (int i = 0; i < val.length; i++) {
 					if (projectionMatrix[i] != val[i]) {
 						System.arraycopy(val, 0, projectionMatrix, 0,
-							val.length);
+								val.length);
 						loadProjectionMatrix();
 						isAffineMatrix = (modelViewMatrix == null &&
-							projectionMatrix == null);
+								projectionMatrix == null);
 
 						break;
 					}
@@ -720,23 +725,23 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				shapeManager.setModelViewMatrix(null);
 				doSetTransform(active.transform);
 				isAffineMatrix = (modelViewMatrix == null &&
-					projectionMatrix == null);
+						projectionMatrix == null);
 			} else if (val != null && modelViewMatrix == null) {
 				modelViewMatrix = new double[16];
 				System.arraycopy(val, 0, modelViewMatrix, 0, val.length);
 				shapeManager.setModelViewMatrix(modelViewMatrix);
 				doSetTransform(active.transform);
 				isAffineMatrix = (modelViewMatrix == null &&
-					projectionMatrix == null);
+						projectionMatrix == null);
 			} else if (val != null && modelViewMatrix != null) {
 				for (int i = 0; i < val.length; i++) {
 					if (modelViewMatrix[i] != val[i]) {
 						System.arraycopy(val, 0, modelViewMatrix, 0,
-							val.length);
+								val.length);
 						shapeManager.setModelViewMatrix(modelViewMatrix);
 						doSetTransform(active.transform);
 						isAffineMatrix = (modelViewMatrix == null &&
-							projectionMatrix == null);
+								projectionMatrix == null);
 
 						break;
 					}
@@ -751,29 +756,29 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private void transformChanged() {
 			AffineTransform transform = active.transform;
 
-//			usePixelAlignment = (isAffineMatrix ? true : false);
+			//			usePixelAlignment = (isAffineMatrix ? true : false);
 
 			if (transform.isIdentity()) {
 				scale = 1;
 			} else if (transform.getShearX() == 0 &&
-				transform.getShearY() == 0) {
+					transform.getShearY() == 0) {
 				scale = Math.abs(Math.max(transform.getScaleX(),
-					transform.getScaleY()));
+						transform.getScaleY()));
 			} else if (transform.getScaleX() == 0 &&
-				transform.getScaleY() == 0) {
+					transform.getScaleY() == 0) {
 				scale = Math.abs(Math.max(transform.getShearX(),
-					transform.getShearY()));
+						transform.getShearY()));
 			} else {
 				// Turn off pixel alignment for text if there is a
 				// general transform
-//				usePixelAlignment = false;
+				//				usePixelAlignment = false;
 
 				// Transform a vector, then compute its length
 				point[0] = 1;
 				point[1] = 0;
 				transform.deltaTransform(point, 0, point, 0, 1);
 				scale = Math.sqrt((point[0] * point[0]) +
-					(point[1] * point[1]));
+						(point[1] * point[1]));
 			}
 
 			absLineWidth = lineWidth * scale;
@@ -810,44 +815,44 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		void doTransform(AffineTransform aTransform) {
 			switch (aTransform.getType()) {
-				case AffineTransform.TYPE_TRANSLATION:
-					gl.glTranslated(aTransform.getTranslateX(),
+			case AffineTransform.TYPE_TRANSLATION:
+				gl.glTranslated(aTransform.getTranslateX(),
 						aTransform.getTranslateY(), 0);
-					break;
-				case AffineTransform.TYPE_IDENTITY:
-					break;
-				case AffineTransform.TYPE_UNIFORM_SCALE:
-					gl.glScaled(aTransform.getScaleX(), aTransform.getScaleX(), 1);
-					break;
-				case AffineTransform.TYPE_TRANSLATION | AffineTransform.TYPE_UNIFORM_SCALE:
-					gl.glTranslated(aTransform.getTranslateX(),
+				break;
+			case AffineTransform.TYPE_IDENTITY:
+				break;
+			case AffineTransform.TYPE_UNIFORM_SCALE:
+				gl.glScaled(aTransform.getScaleX(), aTransform.getScaleX(), 1);
+				break;
+			case AffineTransform.TYPE_TRANSLATION | AffineTransform.TYPE_UNIFORM_SCALE:
+				gl.glTranslated(aTransform.getTranslateX(),
 						aTransform.getTranslateY(), 0);
-					gl.glScaled(aTransform.getScaleX(), aTransform.getScaleX(), 1);
-					break;
-				default:
-					aTransform.getMatrix(flatMatrix);
+				gl.glScaled(aTransform.getScaleX(), aTransform.getScaleX(), 1);
+				break;
+			default:
+				aTransform.getMatrix(flatMatrix);
 
-					// flatMatrix is m00 m10 m01 m11 m02 m12
-					glMatrix[0] = flatMatrix[0];
-					glMatrix[1] = flatMatrix[1];
-					glMatrix[2] = 0;
-					glMatrix[3] = 0;
+				// flatMatrix is m00 m10 m01 m11 m02 m12
+				glMatrix[0] = flatMatrix[0];
+				glMatrix[1] = flatMatrix[1];
+				glMatrix[2] = 0;
+				glMatrix[3] = 0;
 
-					glMatrix[4] = flatMatrix[2];
-					glMatrix[5] = flatMatrix[3];
-					glMatrix[6] = 0;
-					glMatrix[7] = 0;
+				glMatrix[4] = flatMatrix[2];
+				glMatrix[5] = flatMatrix[3];
+				glMatrix[6] = 0;
+				glMatrix[7] = 0;
 
-					glMatrix[8] = 0;
-					glMatrix[9] = 0;
-					glMatrix[10] = 1;
-					glMatrix[11] = 0;
+				glMatrix[8] = 0;
+				glMatrix[9] = 0;
+				glMatrix[10] = 1;
+				glMatrix[11] = 0;
 
-					glMatrix[12] = flatMatrix[4];
-					glMatrix[13] = flatMatrix[5];
-					glMatrix[14] = 0;
-					glMatrix[15] = 1;
-					gl.glMultMatrixd(glMatrix, 0);
+				glMatrix[12] = flatMatrix[4];
+				glMatrix[13] = flatMatrix[5];
+				glMatrix[14] = 0;
+				glMatrix[15] = 1;
+				gl.glMultMatrixd(glMatrix, 0);
 			}
 			transformChanged();
 		}
@@ -993,7 +998,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		void doFillShape(Shape shape) {
-//			fillShape(shape, null, immutableShapeHint, convexHint);
+			//			fillShape(shape, null, immutableShapeHint, convexHint);
 			tesselator.fill(gl, shape,  null, 1);
 		}
 
@@ -1008,30 +1013,30 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		// All fill methods come here
 		private void fillShape(Shape shape, VertexAttributes attributes, boolean immutable, boolean convex) {
 			switch (paintMode) {
-				case PAINT_SOLID:
-					// Just fill the shape
-					shapeManager.fill(shape, attributes, (float)scale, immutable, convex);
-					break;
-				case PAINT_GRADIENT:
-					// Installs a 1D texture with a suitable texture generator
-					// and fills the shape.
-					gradientManager.begin((float)alpha);
-					shapeManager.fill(shape, attributes, (float)scale, immutable, convex);
-					gradientManager.end();
-					break;
-				case PAINT_TEXTURE:
-					// Installs a 2D texture with S and T texture gen
-					// and fills the shape.
-					Texture texture = imageManager.findTexture(texturePaint.getImage(),
+			case PAINT_SOLID:
+				// Just fill the shape
+				shapeManager.fill(shape, attributes, (float)scale, immutable, convex);
+				break;
+			case PAINT_GRADIENT:
+				// Installs a 1D texture with a suitable texture generator
+				// and fills the shape.
+				gradientManager.begin((float)alpha);
+				shapeManager.fill(shape, attributes, (float)scale, immutable, convex);
+				gradientManager.end();
+				break;
+			case PAINT_TEXTURE:
+				// Installs a 2D texture with S and T texture gen
+				// and fills the shape.
+				Texture texture = imageManager.findTexture(texturePaint.getImage(),
 						null,
 						immutableImageHint, true);
 
-					if (texture != null) {
-						texture.begin(texturePaint.getAnchorRect());
-						shapeManager.fill(shape, attributes, (float)scale, immutable, convex);
-						texture.end();
-					}
-					break;
+				if (texture != null) {
+					texture.begin(texturePaint.getAnchorRect());
+					shapeManager.fill(shape, attributes, (float)scale, immutable, convex);
+					texture.end();
+				}
+				break;
 			}
 
 			if (DEBUG_CHECK_GL)
@@ -1045,7 +1050,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				return;
 			gl.glPushMatrix();
 			gl.glTranslated(x, y, 0);			
-			
+
 			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frc, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawString(string);
@@ -1063,7 +1068,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
-			
+
 			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frc_gv, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawGlyphVector(g);
@@ -1084,39 +1089,39 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			active.setPaint(active.paint);
 		}
 
-//		void doDrawImage(BufferedImage image, AffineTransform transform,
-//			int dx, int dy, int dwidth, int dheight) {
-//			int width = image.getWidth();
-//			point[0] = dx;
-//			point[1] = dy;
-//			transform.transform(point, 0, point, 0, 1);
-//			dx = (int)(point[0]);
-//			dy = (int)(point[1]);
-//
-//			// System.out.println("DRAW IMAGE " + dx + " " + dy + " " + dwidth + " " + dheight);
-//			// ONLY WORKS WITH GL.GL_RGB Images
-//			int[] data = ((DataBufferInt)(image.getWritableTile(0, 0)
-//				.getDataBuffer())).getData();
-//
-//			ImageUtils.convertAndFlipARGBtoRGBA(data, image.getWidth(),
-//				image.getHeight(), dwidth,
-//				dheight);
-//            IntBuffer buffer = IntBuffer.wrap(data);
-//
-//			gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
-//			gl.glPixelStorei(GL.GL_UNPACK_ROW_LENGTH, width);
-//
-//			gl.glPushMatrix();
-//			gl.glLoadIdentity();
-//			gl.glRasterPos2i(dx, dy + dheight); // windowBounds.height - (dy+dheight));
-//			gl.glDrawPixels(dwidth, dheight, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE,
-//				buffer);
-//			gl.glPopMatrix();
-//
-//			gl.glPixelStorei(GL.GL_UNPACK_ROW_LENGTH, 0);
-//			if (DEBUG_CHECK_GL)
-//				checkForErrors();
-//		}
+		//		void doDrawImage(BufferedImage image, AffineTransform transform,
+		//			int dx, int dy, int dwidth, int dheight) {
+		//			int width = image.getWidth();
+		//			point[0] = dx;
+		//			point[1] = dy;
+		//			transform.transform(point, 0, point, 0, 1);
+		//			dx = (int)(point[0]);
+		//			dy = (int)(point[1]);
+		//
+		//			// System.out.println("DRAW IMAGE " + dx + " " + dy + " " + dwidth + " " + dheight);
+		//			// ONLY WORKS WITH GL.GL_RGB Images
+		//			int[] data = ((DataBufferInt)(image.getWritableTile(0, 0)
+		//				.getDataBuffer())).getData();
+		//
+		//			ImageUtils.convertAndFlipARGBtoRGBA(data, image.getWidth(),
+		//				image.getHeight(), dwidth,
+		//				dheight);
+		//            IntBuffer buffer = IntBuffer.wrap(data);
+		//
+		//			gl.glPixelStorei(GL.GL_UNPACK_ALIGNMENT, 4);
+		//			gl.glPixelStorei(GL.GL_UNPACK_ROW_LENGTH, width);
+		//
+		//			gl.glPushMatrix();
+		//			gl.glLoadIdentity();
+		//			gl.glRasterPos2i(dx, dy + dheight); // windowBounds.height - (dy+dheight));
+		//			gl.glDrawPixels(dwidth, dheight, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE,
+		//				buffer);
+		//			gl.glPopMatrix();
+		//
+		//			gl.glPixelStorei(GL.GL_UNPACK_ROW_LENGTH, 0);
+		//			if (DEBUG_CHECK_GL)
+		//				checkForErrors();
+		//		}
 
 		void doCopyArea(Rectangle src, Rectangle dst) {
 			int wasBlending = glState.getState(GL.GL_BLEND);
@@ -1125,8 +1130,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glLoadIdentity();
 			gl.glRasterPos2i(dst.x, dst.y + dst.height);
 			gl.glCopyPixels(src.x,
-				windowBounds.height - (src.y + src.height),
-				src.width, src.height, GL2.GL_COLOR);
+					windowBounds.height - (src.y + src.height),
+					src.width, src.height, GL2.GL_COLOR);
 			gl.glPopMatrix();
 			if (wasBlending != 0)
 				glState.glEnable(GL.GL_BLEND);
@@ -1192,6 +1197,33 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		clearRenderingHints();
 		engine.doSetRenderingHints(renderingHints);
 		engine.doReset();
+
+		this.setRenderingStrategy(engine.currentRenderingStrategy);
+	}
+
+	/**
+	 * Set glyph rendering strategy.
+	 */
+	public void setRenderingStrategy(int strat_) {
+		if(engine.currentRenderingStrategy != strat_){
+			engine.currentRenderingStrategy = strat_;
+			switch(strat_){
+			case DEFAUT_STRATEGY:
+				engine.preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;			
+				//enable high-precision scaling in texture font rendering
+				engine.textureFont.setHighQuality(true);
+				break;
+			case ROUGH_SCALE_STRATEGY:
+				engine.preferedGlyphDrawStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
+				//disable high-precision scaling in texture font rendering
+				engine.textureFont.setHighQuality(false);
+				break;
+			}
+		}
+	}
+
+	public int getRenderingStrategy() {
+		return engine.currentRenderingStrategy;
 	}
 
 	/**
@@ -1373,7 +1405,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 * @see java.awt.Graphics#getFontMetrics(java.awt.Font)
 	 */
 	@SuppressWarnings("deprecation")
-    public FontMetrics getFontMetrics(Font f) {
+	public FontMetrics getFontMetrics(Font f) {
 		if (engine.g2d == null)
 			return Toolkit.getDefaultToolkit().getFontMetrics(f);
 		else
@@ -1732,10 +1764,10 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 * @see java.awt.Graphics#drawRoundRect(int, int, int, int, int, int)
 	 */
 	public void drawRoundRect(int x, int y, int width, int height,
-		int arcWidth, int arcHeight) {
+			int arcWidth, int arcHeight) {
 		makeCurrent();
 		engine.roundRectProto.setRoundRect(x, y, width, height, arcWidth,
-			arcHeight);
+				arcHeight);
 		draw(engine.roundRectProto);
 	}
 
@@ -1753,7 +1785,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 * @see java.awt.Graphics#drawArc(int, int, int, int, int, int)
 	 */
 	public void drawArc(int x, int y, int width, int height, int startAngle,
-		int arcAngle) {
+			int arcAngle) {
 		makeCurrent();
 		engine.arcProto.setArc(x, y, width, height, startAngle, arcAngle, Arc2D.OPEN);
 		draw(engine.arcProto);
@@ -1888,60 +1920,60 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		int imgHeight = img.getHeight(observer);
 
 		return drawImage(img, x, y, x + imgWidth, y + imgHeight, 0, 0,
-			imgWidth, imgHeight, null, observer);
+				imgWidth, imgHeight, null, observer);
 	}
 
 	/**
 	 * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, int, int, java.awt.image.ImageObserver)
 	 */
 	public boolean drawImage(Image img, int x, int y, int width, int height,
-		ImageObserver observer) {
+			ImageObserver observer) {
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 
 		return drawImage(img, x, y, x + width, y + height, 0, 0, imgWidth,
-			imgHeight, null, observer);
+				imgHeight, null, observer);
 	}
 
 	/**
 	 * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, java.awt.Color, java.awt.image.ImageObserver)
 	 */
 	public boolean drawImage(Image img, int x, int y, Color bgcolor,
-		ImageObserver observer) {
+			ImageObserver observer) {
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 
 		return drawImage(img, x, y, x + imgWidth, y + imgHeight, 0, 0,
-			imgWidth, imgHeight, bgcolor, observer);
+				imgWidth, imgHeight, bgcolor, observer);
 	}
 
 	/**
 	 * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, int, int, java.awt.Color, java.awt.image.ImageObserver)
 	 */
 	public boolean drawImage(Image img, int x, int y, int width, int height,
-		Color bgcolor, ImageObserver observer) {
+			Color bgcolor, ImageObserver observer) {
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 
 		return drawImage(img, x, y, x + width, y + height, 0, 0, imgWidth,
-			imgHeight, bgcolor, observer);
+				imgHeight, bgcolor, observer);
 	}
 
 	/**
 	 * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, int, int, int, int, int, int, java.awt.image.ImageObserver)
 	 */
 	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
-		int sx1, int sy1, int sx2, int sy2,
-		ImageObserver observer) {
+			int sx1, int sy1, int sx2, int sy2,
+			ImageObserver observer) {
 		return drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null,
-			observer);
+				observer);
 	}
 
 	/**
 	 * @see java.awt.Graphics2D#drawImage(java.awt.Image, java.awt.geom.AffineTransform, java.awt.image.ImageObserver)
 	 */
 	public boolean drawImage(Image img, AffineTransform xform,
-		ImageObserver obs) {
+			ImageObserver obs) {
 		AffineTransform tm = getTransform();
 		transform(xform);
 
@@ -1956,11 +1988,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			return false;
 
 		switch(transform.getType()) {
-			case AffineTransform.TYPE_IDENTITY:
-			case AffineTransform.TYPE_TRANSLATION:
-				return true;
-			default:
-				return false;
+		case AffineTransform.TYPE_IDENTITY:
+		case AffineTransform.TYPE_TRANSLATION:
+			return true;
+		default:
+			return false;
 		}
 	}
 
@@ -1969,8 +2001,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, int, int, int, int, int, int, java.awt.Color, java.awt.image.ImageObserver)
 	 */
 	public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2,
-		int sx1, int sy1, int sx2, int sy2,
-		Color bgcolor, ImageObserver observer) {
+			int sx1, int sy1, int sx2, int sy2,
+			Color bgcolor, ImageObserver observer) {
 
 		makeCurrent();
 
@@ -2006,12 +2038,12 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		// Explore simple case we can handle right away
 		if (! engine.immutableImageHint &&
-			engine.alpha == 1 &&
-			isTransformTranslation() &&
-			(img instanceof BufferedImage) &&
-			sx1 == 0 && sy1 == 0 &&
-			src_w == dst_w && src_h == dst_h &&
-			engine.imageManager.drawImage((BufferedImage)img, dx1, dy1, src_w, src_h)) {
+				engine.alpha == 1 &&
+				isTransformTranslation() &&
+				(img instanceof BufferedImage) &&
+				sx1 == 0 && sy1 == 0 &&
+				src_w == dst_w && src_h == dst_h &&
+				engine.imageManager.drawImage((BufferedImage)img, dx1, dy1, src_w, src_h)) {
 			return true;
 		}
 
@@ -2042,7 +2074,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 					sx2_ = sx1+delta_x;
 					dx2_ = dx1 + ((delta_x * dst_w) / src_w);//delta_x must be deformed if src_w != dst_w
 					drawImage(img, dx1_, dy1_, dx2_, dy2_, sx1_, sy1_, sx2_, sy2_, bgcolor, observer);
-//					drawRect(dx1_, dy1_, dx2_-dx1_, dy2_-dy1_);//uncoment this line to see the layout of the tiles
+					//					drawRect(dx1_, dy1_, dx2_-dx1_, dy2_-dy1_);//uncoment this line to see the layout of the tiles
 					sx1_ = sx2_;
 					dx1_ = dx2_;
 				}
@@ -2071,7 +2103,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		} else {
 			rect = new Rectangle(sx1, sy1, sx2 - sx1, sy2 - sy1);
 		}
-//		drawRect(rect.x, rect.y, rect.width, rect.height);
+		//		drawRect(rect.x, rect.y, rect.width, rect.height);
 
 		Texture tex = engine.imageManager.findTexture(img, rect, engine.immutableImageHint, false);
 
@@ -2124,8 +2156,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 */
 	public FontRenderContext getFontRenderContext() {
 		return new FontRenderContext(null,
-			engine.frcAntialiasing,
-			engine.frcUsesFractionalMetrics);
+				engine.frcAntialiasing,
+				engine.frcUsesFractionalMetrics);
 	}
 
 	// TBD: Graphics FUNCTIONS

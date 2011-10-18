@@ -124,10 +124,11 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 		}while( (i<INIT_FONT_SIZE_LENGTH) && (size_ < MAX_PRE_RENDER_FONT_SIZE) );
 		font_size_length = i;
 
-		System.out.print("Sizes: ");
-		int j;
-		for(j=0; j<font_size_length; j++)
+		/*
+		System.out.print("Sizes: ");		
+		for(int j=0; j<font_size_length; j++)
 			System.out.print(listFontSizes[j]+", ");
+		*/
 
 	}
 

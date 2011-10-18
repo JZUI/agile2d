@@ -23,12 +23,12 @@ public class Benchmark {
 
 		if(args[0].equals("GLCanvas") || args[0].equals("GLJPanel") ){
 			final Frame frame = new Frame("Agile2D Demo");
-			final AgileAnimeCanvas agile = new AgileAnimeCanvas(null);
+			final AgileFrame agile = new AgileFrame(null);
 			
 			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
 			glCaps.setSampleBuffers(true);
-			glCaps.setNumSamples(AgileAnimeCanvas.NB_OF_SAMPLES_FOR_MULTISAMPLE);
+			glCaps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);
 
 			if (args[0].equals("GLCanvas")) {
 				final GLCanvas canvas = new GLCanvas(glCaps);

@@ -39,8 +39,8 @@ import javax.media.opengl.GLAutoDrawable;
 class TextureFontRenderer extends BasicFontRenderer {
     int texture;
     CacheInfo current;
-    //boolean highQuality = true;
-    boolean highQuality = false;
+    boolean highQuality = true;
+    //boolean highQuality = false;
     boolean incremental = false;
 
     static int maxCacheLength = 100;
@@ -199,9 +199,9 @@ class TextureFontRenderer extends BasicFontRenderer {
                 // we never tried to create any character in the mosaic yet
                 graphics = (Graphics2D) image.getGraphics();
                 //System.out.println("Current font: "+font.getName());
-                System.out.println("Texture font size BEFORE derive: "+graphics.getFont().getSize()+" and transform: "+graphics.getFont().getTransform());
+                //System.out.println("Texture font size BEFORE derive: "+graphics.getFont().getSize()+" and transform: "+graphics.getFont().getTransform());
                 graphics.setFont(font.deriveFont(frc.getTransform()));
-                System.out.println("Texture font size AFTER derive: "+graphics.getFont().getSize()+" and transform: "+graphics.getFont().getTransform());
+                //System.out.println("Texture font size AFTER derive: "+graphics.getFont().getSize()+" and transform: "+graphics.getFont().getTransform());
                 graphics.setRenderingHint(
                     RenderingHints.KEY_TEXT_ANTIALIASING,
                     (frc.isAntiAliased() ?
