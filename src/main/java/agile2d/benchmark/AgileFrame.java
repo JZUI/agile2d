@@ -24,7 +24,7 @@ import agile2d.AgileGraphics2D;
  * <b>AgileCanvas</b>
  * 
  */
-public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable {
+public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 
 	private Chrono chrono;	
@@ -35,7 +35,7 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 	private int keyPressed;
 	private boolean interactive_antialias = false;
 	
-	public AgileAnimeCanvas(Component root) {
+	public AgileFrame(Component root) {
 		this.root = root;
 	}
 
@@ -137,8 +137,11 @@ public class AgileAnimeCanvas implements GLEventListener, KeyListener, Runnable 
 		keyPressed = e.getKeyCode();
 		switch (keyPressed) {
 		case KeyEvent.VK_SPACE:
-			System.out.println("Stop thread");
-			this.stopAnim();
+			System.out.println("Change strategy");
+			if(jgraphics.getRenderingStrategy() == AgileGraphics2D.DEFAUT_STRATEGY)
+				jgraphics.setRenderingStrategy(AgileGraphics2D.ROUGH_SCALE_STRATEGY);
+			else if(jgraphics.getRenderingStrategy() == AgileGraphics2D.ROUGH_SCALE_STRATEGY)
+				jgraphics.setRenderingStrategy(AgileGraphics2D.DEFAUT_STRATEGY);
 			break;
 		}
 		root.repaint();
