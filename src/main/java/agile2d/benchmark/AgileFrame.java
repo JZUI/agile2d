@@ -8,6 +8,7 @@
 package agile2d.benchmark;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.*;
 import java.awt.Component;
@@ -60,9 +61,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
         thread = null;
     }
 
-    public void reset(int w, int h) {
-    }
-
+    @Override
 	public void init(GLAutoDrawable drawable) {
 		GLU glu = new GLU();		
 		chrono = new Chrono();		
@@ -85,13 +84,15 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		gl.setSwapInterval(60);
 		bench.resetCounter();
 	}
-
+	
+    @Override
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
 		if (root != null) {
 			root.setSize(width, height);
 		}
 	}
-
+	
+	@Override
 	public void display(GLAutoDrawable drawable) {
 
 		GL2 gl = drawable.getGL().getGL2();
@@ -106,20 +107,27 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		jgraphics.setBackground(Color.WHITE);
 		jgraphics.clearRect(0, 0, AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
 
-
-		if (interactive_antialias == true)
+/*		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
+*/		
+		//bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);
 		
-		bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);
+		jgraphics.scale(bench.getZ(), bench.getZ());
+		for(int i=0; i<(AnimeBenchmark.NB_REPETITIONS*AnimeBenchmark.NB_FONTS); i++){
+			jgraphics.setFont(bench.getFont(i));
+			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*AnimeBenchmark.INIT_FONT_SIZE));
+		}
+		
 		bench.increment();
 		bench.step();
 	}
 
+	@Override
+	public void dispose(GLAutoDrawable drawable) {
+	}
+	
 	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
 			boolean deviceChanged) {
-	}
-
-	public void dispose(GLAutoDrawable drawable) {
 	}
 
 	public void setRoot(Component root) {
@@ -146,7 +154,8 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		}
 		root.repaint();
 	}
-
+	
+	
 	public void keyReleased(KeyEvent e) {
 	}
 }

@@ -15,10 +15,10 @@ import java.awt.GraphicsEnvironment;
 public class AnimeBenchmark{
 	public final static int WIN_W = 800;
 	public final static int WIN_H = 600;		
-	private final static int NB_FONTS=6;
-	private final static int NB_REPETITIONS=2;
-	private final static float INIT_FONT_SIZE = 6.0f;
-	private final static float MAX_SCALE = 9.0f;
+	public final static int NB_FONTS=6;
+	public final static int NB_REPETITIONS=2;
+	public final static float INIT_FONT_SIZE = 6.0f;
+	public final static float MAX_SCALE = 9.0f;
 
 	private double incrementor = 1.0;
 	private double zFactor = 1.00;	
@@ -68,8 +68,17 @@ public class AnimeBenchmark{
     	this.frame_counter++;    	
     }    
     
+    public double getZ(){
+    	return this.zFactor;    	
+    }
+
+    public Font getFont(int i_){
+    	return someFonts[i_%NB_FONTS];  	
+    }
+    
 	// Sample display to test text rendering performance during zooming
 	public void drawBigText(int x, int y, Graphics2D g2_) {
+		
 		g2_.scale(this.zFactor, this.zFactor);
 		for(int i=0; i<(NB_REPETITIONS*NB_FONTS); i++){
 			g2_.setFont(someFonts[i%NB_FONTS]);
