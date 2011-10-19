@@ -34,12 +34,12 @@ public class G2DFrame extends JFrame implements Runnable {
 		thread.start();
 	}
 
-	public void frameInit(){
+	public G2DFrame(){
 		chrono = new Chrono();		
 		bench = new AnimeBenchmark(chrono);
 		bench.resetCounter();
 	}
-
+	
 	public void paint(Graphics g) {
 		// Clear the offscreen image.
 		Dimension d = getSize();

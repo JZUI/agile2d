@@ -59,15 +59,15 @@ public class Benchmark {
 			agile.startAnim();
 		}
 		else if (args[0].equals("JFrame")) {
-			G2DFrame frame = new G2DFrame();
+			final G2DFrame frame = new G2DFrame();
 			frame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
 			frame.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
 				}
 			});
-			frame.setVisible(true);
-			frame.start();
+				frame.setVisible(true);
+				frame.start();
 		} else {
 			System.out
 			.println("\nBad usage.\nYou must specify the type of GL component that should be used: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).\n");
