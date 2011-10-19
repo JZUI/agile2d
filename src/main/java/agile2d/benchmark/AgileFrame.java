@@ -82,8 +82,8 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		System.out.println("Number of sample buffers: " + buf[0]);
 		System.out.println("Number of samples: " + samples[0]);
 		// Defines frequency in which buffers (back and front) are changed
-		gl.setSwapInterval(1);
-		bench.resetCounter();		
+		gl.setSwapInterval(60);
+		bench.resetCounter();
 	}
 
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {

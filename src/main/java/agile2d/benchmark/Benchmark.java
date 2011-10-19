@@ -8,6 +8,9 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
+
+import agile2d.AgileGraphics2D;
+
 import com.sun.opengl.util.Animator;
 
 public class Benchmark {
@@ -40,6 +43,9 @@ public class Benchmark {
 				
 				animator = new Animator(canvas);
 				animator.add(canvas);
+				
+				//Frame settings
+				frame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
 				frame.setVisible(true);
 				animator.start();
 				
@@ -57,11 +63,11 @@ public class Benchmark {
 				
 				animator = new Animator(panel);
 				animator.add(panel);
+				//Frame settings
+				frame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);				
 				frame.setVisible(true);
 				animator.start();
 			}
-			//Frame settings
-			frame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
 			frame.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
