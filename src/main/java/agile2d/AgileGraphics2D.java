@@ -153,7 +153,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	static final int PAINT_TEXTURE = 2;
 
 	public final static int ROUGH_SCALE_STRATEGY = 0;
-	public final static int DEFAUT_STRATEGY = 1;
+	public final static int DEFAULT_STRATEGY = 1;
 
 	// GraphicsEngine class
 	//
