@@ -48,6 +48,7 @@ public class AnimeBenchmark{
     }
     
     public void step() {
+            //System.out.println("In step");
     		//Incrementor ]0, 2*PI[
     		incrementor += 0.025;
     		incrementor %= (2*Math.PI);
@@ -80,7 +81,11 @@ public class AnimeBenchmark{
 	public void drawBigText(int x, int y, Graphics2D g2_) {
 		
 		g2_.scale(this.zFactor, this.zFactor);
+		//System.out.println("AfterScale and before for loop");
+		
 		for(int i=0; i<(NB_REPETITIONS*NB_FONTS); i++){
+    		//System.out.println("Inside for Loop");
+		    
 			g2_.setFont(someFonts[i%NB_FONTS]);
 			g2_.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*INIT_FONT_SIZE));
 		}

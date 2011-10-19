@@ -83,6 +83,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		// Defines frequency in which buffers (back and front) are changed
 		gl.setSwapInterval(60);
 		bench.resetCounter();
+		//System.out.println("End of init");
 	}
 	
     @Override
@@ -94,7 +95,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
-
+		//System.out.println("Start of display");
 		GL2 gl = drawable.getGL().getGL2();
 
 		// Call the glClear to clear the background
@@ -111,15 +112,25 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
 */		
 		//bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);
+		//System.out.println("Before scale");
 		
 		jgraphics.scale(bench.getZ(), bench.getZ());
+		
+		//System.out.println("AfterScale and before for loop");
+		
 		for(int i=0; i<(AnimeBenchmark.NB_REPETITIONS*AnimeBenchmark.NB_FONTS); i++){
 			jgraphics.setFont(bench.getFont(i));
 			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*AnimeBenchmark.INIT_FONT_SIZE));
 		}
 		
+		//System.out.println("Before Increment");
+
 		bench.increment();
+		//System.out.println("Before Step");
+
 		bench.step();
+		//System.out.println("End of display");
+		
 	}
 
 	@Override
