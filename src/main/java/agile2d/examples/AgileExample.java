@@ -25,7 +25,7 @@ import agile2d.AgileGraphics2D;
  * 
  */
 public class AgileExample implements GLEventListener, KeyListener {
-	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
+	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 2;
 
 	private AgileGraphics2D jgraphics;
 	private Component root;
@@ -41,7 +41,8 @@ public class AgileExample implements GLEventListener, KeyListener {
 
 	public void init(GLAutoDrawable drawable) {
 		GLU glu = new GLU();		
-		jgraphics = new AgileGraphics2D(drawable);		
+		//jgraphics = new AgileGraphics2D(drawable);
+		jgraphics = AgileGraphics2D.getInstance(drawable);
 		GL2 gl = drawable.getGL().getGL2();
 		
 		System.out.println("INIT GL IS: " + gl.getClass().getName());

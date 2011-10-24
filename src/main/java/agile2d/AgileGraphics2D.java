@@ -71,6 +71,7 @@ import agile2d.ImageUtils;
  * </p>
  */
 public final class AgileGraphics2D extends Graphics2D implements Cloneable, VertexArraySupport {
+	private static volatile AgileGraphics2D instance = null;
 	//
 	// GRAPHICS STATE
 	//
@@ -275,6 +276,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			this.glState = AgileState.get(gl);
 			//			glState.glSetShadeModel(GL2.GL_FLAT);
 			//glState.glSetShadeModel(GL2.GL_SMOOTH);
+			
 			glState.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
 			//Antialiasing of lines and points (are they necessary?)
@@ -343,7 +345,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;
 			//The quality hint can be set only once
 			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
-			currentRenderingStrategy = AgileGraphics2D.DEFAUT_STRATEGY;
+			currentRenderingStrategy = AgileGraphics2D.DEFAULT_STRATEGY;
 
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
@@ -1172,10 +1174,31 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 *
 	 * @param drawable the underlying GLDrawable
 	 */
-	public AgileGraphics2D(GLAutoDrawable drawable) {
+	
+	//Old constructor (without singleton pattern) 
+	/*public AgileGraphics2D(GLAutoDrawable drawable) {
+		engine = new GraphicsEngine(drawable);
+	}*/
+	
+	//Disabled the public access to the constructor in order to adopt the Singleton pattern
+	private AgileGraphics2D(GLAutoDrawable drawable) {
+		super();
 		engine = new GraphicsEngine(drawable);
 	}
-
+	
+	public final static AgileGraphics2D getInstance(GLAutoDrawable drawable){
+		if (AgileGraphics2D.instance == null) {
+            // Syncronized keyword is essential in order to block multiple instantiation by different threads at work 
+            synchronized(AgileGraphics2D.class) {
+              if (AgileGraphics2D.instance == null) {
+            	  AgileGraphics2D.instance = new AgileGraphics2D(drawable);
+              }
+            }
+         }
+         return AgileGraphics2D.instance;
+	}
+	
+	
 	GLAutoDrawable getDrawable() {
 		return engine.drawable;
 	}
@@ -1208,7 +1231,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		if(engine.currentRenderingStrategy != strat_){
 			engine.currentRenderingStrategy = strat_;
 			switch(strat_){
-			case DEFAUT_STRATEGY:
+			case DEFAULT_STRATEGY:
 				engine.preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;			
 				//enable high-precision scaling in texture font rendering
 				engine.textureFont.setHighQuality(true);

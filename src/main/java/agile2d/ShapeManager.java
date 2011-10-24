@@ -18,6 +18,7 @@ import java.util.WeakHashMap;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
 
 import agile2d.geom.VertexArray;
 import agile2d.geom.VertexAttributes;
@@ -358,9 +359,10 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 		}
 	}
 
+	
 	// Basic method for rendering a VertexArray
-	static void render(GL2 gl, VertexArray array, VertexAttributes attributes) {
-			
+	static void render(GLAutoDrawable drawable, VertexArray array, VertexAttributes attributes) {
+		GL2 gl = drawable.getGL().getGL2();
 		int count = array.getVertexCount();
 		java.nio.FloatBuffer arrayData = array.getDataRef();
 
@@ -371,9 +373,56 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 		if (attributes == null) {
 			// It would be great if we could avoid setting the vertex pointer, but
 			// we couldn't because Java Garbage Collector can move objects at any time.
+			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 			arrayData.rewind();
 			gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
 			gl.glDrawArrays(array.getMode(), 0, count);
+			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+			
+			return;
+		}
+
+		count = Math.min(array.getVertexCount(), attributes.getSize());
+		java.nio.ByteBuffer attributeData = attributes.getColorRef();
+
+		if (attributes.isSmooth()) {
+			gl.glShadeModel(GL2.GL_SMOOTH);
+		}
+
+		// It would be great if we could avoid setting the vertex pointer, but
+		// we couldn't because Java Garbage Collector can move objects at any time.
+		// TODO: JM - we could potentially use the VertexBufferObject in JOGL to address this!
+		gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+		gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
+		gl.glColorPointer(4, GL2.GL_UNSIGNED_BYTE, 0, attributeData);
+		gl.glDrawArrays(array.getMode(), 0, count);
+		gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+		gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+
+		if (attributes.isSmooth()) {
+			gl.glShadeModel(GL2.GL_FLAT);
+		}
+	}
+	
+	// Basic method for rendering a VertexArray
+	static void render(GL2 gl, VertexArray array, VertexAttributes attributes) {
+		int count = array.getVertexCount();
+		java.nio.FloatBuffer arrayData = array.getDataRef();
+
+		if (count == 0) {
+			return;
+		}
+
+		if (attributes == null) {
+			// It would be great if we could avoid setting the vertex pointer, but
+			// we couldn't because Java Garbage Collector can move objects at any time.
+			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+			arrayData.rewind();
+			gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
+			gl.glDrawArrays(array.getMode(), 0, count);
+			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+			
 			return;
 		}
 

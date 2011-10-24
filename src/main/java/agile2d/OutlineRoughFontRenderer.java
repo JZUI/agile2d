@@ -171,6 +171,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 					gl.glPushMatrix();
 					gl.glTranslated(gV.getGlyphPosition(i).getX(), 0.0, 0.0);
 					ShapeManager.render(gl, currentGlyphVAL.getVertexArrayAt(j), null);
+					//ShapeManager.render(drawable, currentGlyphVAL.getVertexArrayAt(j), null);
 					gl.glPopMatrix();
 				}
 				gl.glPopMatrix();
@@ -212,9 +213,9 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	}	
 
 	//MUST implement these abstract methods since we inherit from BasicOutlineFontRender
-	protected boolean addTesselation(GLAutoDrawable drawable, int c){return false;}
-	public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm){return false;}
-	public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {return;}
+	protected boolean addTesselation(GLAutoDrawable drawable, int c){System.out.println("Warning! Empty addTesselation() being called.");return false;}
+	public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm){System.out.println("Warning! Empty installFont() being called.");return false;}
+	public void render(GLAutoDrawable drawable, String string, double scale, Font font_) {System.out.println("Warning! Empty render() being called.");return;}
 	
 /*
 	public boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm) {

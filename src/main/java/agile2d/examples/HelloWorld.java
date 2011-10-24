@@ -30,7 +30,8 @@ public class HelloWorld {
 			final Frame frame = new Frame("Agile2D Demo");
 			final AgileExample agile = new AgileExample(null);
 			
-			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+			GLProfile myGLProfile = GLProfile.get(GLProfile.GL2);
+			GLCapabilities glCaps = new GLCapabilities(myGLProfile);
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
 			glCaps.setSampleBuffers(true);
 			glCaps.setNumSamples(AgileExample.NB_OF_SAMPLES_FOR_MULTISAMPLE);

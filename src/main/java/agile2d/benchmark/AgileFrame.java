@@ -157,10 +157,10 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		switch (keyPressed) {
 		case KeyEvent.VK_SPACE:
 			System.out.println("Change strategy");
-			if(jgraphics.getRenderingStrategy() == AgileGraphics2D.DEFAUT_STRATEGY)
+			if(jgraphics.getRenderingStrategy() == AgileGraphics2D.DEFAULT_STRATEGY)
 				jgraphics.setRenderingStrategy(AgileGraphics2D.ROUGH_SCALE_STRATEGY);
 			else if(jgraphics.getRenderingStrategy() == AgileGraphics2D.ROUGH_SCALE_STRATEGY)
-				jgraphics.setRenderingStrategy(AgileGraphics2D.DEFAUT_STRATEGY);
+				jgraphics.setRenderingStrategy(AgileGraphics2D.DEFAULT_STRATEGY);
 			break;
 		}
 		root.repaint();
