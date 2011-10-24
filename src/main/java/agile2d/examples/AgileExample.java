@@ -41,7 +41,6 @@ public class AgileExample implements GLEventListener, KeyListener {
 
 	public void init(GLAutoDrawable drawable) {
 		GLU glu = new GLU();		
-		//jgraphics = new AgileGraphics2D(drawable);
 		jgraphics = AgileGraphics2D.getInstance(drawable);
 		GL2 gl = drawable.getGL().getGL2();
 		

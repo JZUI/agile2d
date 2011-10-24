@@ -66,7 +66,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		GLU glu = new GLU();		
 		chrono = new Chrono();		
 		bench = new AnimeBenchmark(chrono);		
-		jgraphics = new AgileGraphics2D(drawable);		
+		jgraphics = AgileGraphics2D.getInstance(drawable);
 		GL2 gl = drawable.getGL().getGL2();
 		
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
