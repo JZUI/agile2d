@@ -20,7 +20,7 @@ import java.util.Hashtable;
 /**
  * <code>AgileState</code> locally keeps OpenGL state to avoid useless
  * state changes that are very expensive in OpenGL.
- * 
+ *
  * <p>Note: AgileGraphics2D uses AgileState to manage all state changes. To interact well with
  * AgileGraphics2D, use AgileState to manage state, or use the AgileGraphics2D.run() method to run code
  * in a safe context. e.g.
@@ -34,7 +34,7 @@ import java.util.Hashtable;
  *    }
  *    agileState.glDisable(GL.GL_TEXTURE_2D);
  * </pre>
- * 
+ *
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.3 $
  */
@@ -50,11 +50,11 @@ public class AgileState {
     static final HashMap<GL2,AgileState> gl2state = new HashMap<GL2, AgileState>();
     static byte lastR, lastG, lastB, lastA;
     static final boolean DEBUG = false;
-    
-    
+
+
     /**
      * Get/Create a <code>AgileState</code> object for a GL context.
-     * 
+     *
      * @param gl the GL context
      * @return the associated AgileState
      */
@@ -69,7 +69,7 @@ public class AgileState {
 
     /**
      * AgileState constructor.
-     * 
+     *
      * @param gl the GL context.
      */
     protected AgileState(GL2 gl) {
@@ -78,7 +78,7 @@ public class AgileState {
         state.setDefaultValue(-1);
         initialize();
     }
-    
+
     private void initialize() {
         version = gl.glGetString(GL.GL_VERSION);
         state.put(GL2.GL_TEXTURE_1D, 0);
@@ -88,14 +88,14 @@ public class AgileState {
         state.put(GL2.GL_TEXTURE_ENV_MODE, 0);
 	getGlExtensions();
     }
-    
+
     private int initializeState(int attrib) {
         gl.glGetIntegerv(attrib, tmpValue, 0);
         state.put(attrib, tmpValue[0]);
         return tmpValue[0];
     }
 
-    //Gets (only once) a list of GL extensions available on the implementation being used, 
+    //Gets (only once) a list of GL extensions available on the implementation being used,
     //splits it, and put GL extension strings in a hash table
     private void getGlExtensions(){
 	String[] ogl_extensions;
@@ -129,21 +129,21 @@ public class AgileState {
     public String getVersion() {
         return version;
     }
-    
+
     /**
      * Returns the GL context.
-     * 
+     *
      * @return the GL context.
      */
     public GL2 getGL() {
         return gl;
     }
-    
+
     /**
      * Returns the value currently associated with the specified GL attribute.
      * If the constant has not been queried before, the GL state is queried
      * first to initialize the local state to the right value.
-     * 
+     *
      * @param attrib the GL attribute
      * @return the associated value.
      */
@@ -159,12 +159,12 @@ public class AgileState {
      * Sets the value currently associated with a specified GL attribute.
      * Returns <code>true</code> if the value is different from the one
      * in the GL state, meaning that a GL primitive should be used to set it.
-     
+
      * * @param attrib the attribute
      * @param value the value r
      * @return <code>true</code> if the value is different from the one
      * in the GL state, meaning that a GL primitive should be used to set it.
-     */    
+     */
     public boolean setState(int attrib, int value) {
         if (getState(attrib) == value) {
             savedCount++;
@@ -174,17 +174,17 @@ public class AgileState {
         state.put(attrib, value);
         return true;
     }
-    
+
     protected void checkError() {
         if (gl.glGetError() != 0)
-            System.err.println("Error");            
+            System.err.println("Error");
     }
 
     /**
      * Equivalent to glEnable but checks the value first and skip the
      * GL function is the value is already set to 1.
      * @param attrib the attribute to set.
-     */    
+     */
     public void glEnable(int attrib) {
         if (setState(attrib, 1)) {
             gl.glEnable(attrib);
@@ -196,11 +196,11 @@ public class AgileState {
      * Equivalent to glDisable but checks the value first and skip the
      * GL function is the value is already set to 0.
      * @param attrib the attribute to set.
-     */    
+     */
     public void glDisable(int attrib) {
         if (setState(attrib, 0)) {
             gl.glDisable(attrib);
-            checkError();            
+            checkError();
         }
     }
 
@@ -211,10 +211,10 @@ public class AgileState {
     public void bindTexture1D(int tex) {
         if (setState(GL2.GL_TEXTURE_BINDING_1D, tex)) {
             gl.glBindTexture(GL2.GL_TEXTURE_1D, tex);
-            checkError();        
+            checkError();
         }
     }
-    
+
     /**
      * Binds the specified 2D texture
      * @param tex the texture
@@ -222,7 +222,7 @@ public class AgileState {
     public void bindTexture2D(int tex) {
         if (setState(GL2.GL_TEXTURE_BINDING_2D, tex)) {
             gl.glBindTexture(GL2.GL_TEXTURE_2D, tex);
-            checkError();        
+            checkError();
         }
     }
 
@@ -236,7 +236,7 @@ public class AgileState {
             checkError();
         }
     }
-    
+
     /**
      * Enables the specified client state
      * @param mode state to set
@@ -269,7 +269,7 @@ public class AgileState {
             checkError();
         }
     }
-    
+
     /**
      * Sets the texture color
      * @param r red
@@ -278,7 +278,7 @@ public class AgileState {
      * @param a alpha
      */
     public void glColor4ub(byte r, byte g, byte b, byte a) {
-        if (lastR != r || lastG != g || lastB != b || lastA != a) { 
+        if (lastR != r || lastG != g || lastB != b || lastA != a) {
             lastR = r;
             lastG = g;
             lastB = b;
@@ -287,7 +287,7 @@ public class AgileState {
             checkError();
         }
     }
-    
+
     /**
      * Sets the texture color
      * @param r red

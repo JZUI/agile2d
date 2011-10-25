@@ -276,7 +276,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			this.glState = AgileState.get(gl);
 			//			glState.glSetShadeModel(GL2.GL_FLAT);
 			//glState.glSetShadeModel(GL2.GL_SMOOTH);
-			
+
 			glState.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
 			//Antialiasing of lines and points (are they necessary?)
@@ -349,7 +349,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
-			//Get a fontRenderContext specific to the current FONT 
+			//Get a fontRenderContext specific to the current FONT
 			//Obs: maybe should be called only once when there's a setFont action
 			g2d.setFont(this.font);
 			frc = g2d.getFontRenderContext();
@@ -382,7 +382,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
-
 		}
 
 		void doSetRenderingHints(RenderingHints hints) {
@@ -612,9 +611,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		// FONT AND STROKE
 		void doSetFont(Font font) {
 			this.font = font;
-			//Get a fontRenderContext specific to this new FONT 
+			//Get a fontRenderContext specific to this new FONT
 			g2d.setFont(font);
-			frc = g2d.getFontRenderContext();			
+			frc = g2d.getFontRenderContext();
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
 		}
@@ -1051,7 +1050,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (font == null)
 				return;
 			gl.glPushMatrix();
-			gl.glTranslated(x, y, 0);			
+			gl.glTranslated(x, y, 0);
 
 			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frc, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
@@ -1174,21 +1173,21 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 *
 	 * @param drawable the underlying GLDrawable
 	 */
-	
-	//Old constructor (without singleton pattern) 
+
+	//Old constructor (without singleton pattern)
 	/*public AgileGraphics2D(GLAutoDrawable drawable) {
 		engine = new GraphicsEngine(drawable);
 	}*/
-	
+
 	//Disabled the public access to the constructor in order to adopt the Singleton pattern
 	private AgileGraphics2D(GLAutoDrawable drawable) {
 		super();
 		engine = new GraphicsEngine(drawable);
 	}
-	
+
 	public final static AgileGraphics2D getInstance(GLAutoDrawable drawable){
 		if (AgileGraphics2D.instance == null) {
-            // Syncronized keyword is essential in order to block multiple instantiation by different threads at work 
+            // Syncronized keyword is essential in order to block multiple instantiation by different threads at work
             synchronized(AgileGraphics2D.class) {
               if (AgileGraphics2D.instance == null) {
             	  AgileGraphics2D.instance = new AgileGraphics2D(drawable);
@@ -1197,8 +1196,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
          }
          return AgileGraphics2D.instance;
 	}
-	
-	
+
+
 	GLAutoDrawable getDrawable() {
 		return engine.drawable;
 	}
@@ -1232,7 +1231,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			engine.currentRenderingStrategy = strat_;
 			switch(strat_){
 			case DEFAULT_STRATEGY:
-				engine.preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;			
+				engine.preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;
 				//enable high-precision scaling in texture font rendering
 				engine.textureFont.setHighQuality(true);
 				break;
