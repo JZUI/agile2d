@@ -8,10 +8,8 @@
 package agile2d.benchmark;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.*;
-import java.awt.Component;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -30,16 +28,17 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 
 	private Chrono chrono;	
 	private AgileGraphics2D jgraphics;
-	private Component root;
 	private Thread thread;
 	private AnimeBenchmark bench;
 	private int keyPressed;
 	private boolean interactive_antialias = false;
+	private int w, h;
 	
-	public AgileFrame(Component root) {
-		this.root = root;
-	}
 
+	public void setStrategy(int strat_){
+		jgraphics.setRenderingStrategy(strat_);
+	}
+	
 	public void startAnim() {
         thread = new Thread(this);
         thread.setPriority(Thread.MIN_PRIORITY);
@@ -53,7 +52,6 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
     public void run() {
         Thread me = Thread.currentThread();
         while (thread == me) {
-            root.repaint();
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) { break; }
@@ -63,15 +61,16 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 
     @Override
 	public void init(GLAutoDrawable drawable) {
-		GLU glu = new GLU();		
-		chrono = new Chrono();		
-		bench = new AnimeBenchmark(chrono);		
-		jgraphics = AgileGraphics2D.getInstance(drawable);
 		GL2 gl = drawable.getGL().getGL2();
+    	GLU glu = new GLU();
+		chrono = new Chrono();		
+		bench = new AnimeBenchmark(chrono);
+		jgraphics = AgileGraphics2D.getInstance(drawable);
 		
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
+		
 
 		// Check if MULTISAMPLE is available
 		int[] buf = new int[2];
@@ -84,13 +83,15 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		gl.setSwapInterval(60);
 		bench.resetCounter();
 		//System.out.println("End of init");
+		w = AnimeBenchmark.WIN_W;
+		h = AnimeBenchmark.WIN_H;
 	}
 	
     @Override
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
-		if (root != null) {
-			root.setSize(width, height);
-		}
+			w=width;
+			h=height;
+			System.out.println("Resizing window to "+w+" x "+h);
 	}
 	
 	@Override
@@ -106,7 +107,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 
 		// Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
-		jgraphics.clearRect(0, 0, AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
+		jgraphics.clearRect(0, 0, w, h);
 
 /*		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
@@ -118,8 +119,8 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		
 		//System.out.println("AfterScale and before for loop");
 		
-		for(int i=0; i<(AnimeBenchmark.NB_REPETITIONS*AnimeBenchmark.NB_FONTS); i++){
-			jgraphics.setFont(bench.getFont(i));
+		for(int i=0; i<(AnimeBenchmark.nb_repetitions*AnimeBenchmark.nb_fonts); i++){
+			jgraphics.setFont(bench.getFont(i%AnimeBenchmark.nb_fonts));
 			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*AnimeBenchmark.INIT_FONT_SIZE));
 		}
 		
@@ -141,14 +142,6 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 			boolean deviceChanged) {
 	}
 
-	public void setRoot(Component root) {
-		this.root = root;
-	}
-
-	public Component getRoot() {
-		return root;
-	}
-
 	public void keyTyped(KeyEvent e) {
 	}
 
@@ -163,7 +156,6 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 				jgraphics.setRenderingStrategy(AgileGraphics2D.DEFAULT_STRATEGY);
 			break;
 		}
-		root.repaint();
 	}
 	
 	

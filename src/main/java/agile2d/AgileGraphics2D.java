@@ -359,6 +359,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			inited = true;
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
+			
 		}
 
 		void doActivate(AgileGraphics2D g) {

@@ -62,6 +62,7 @@ public class AgileExample implements GLEventListener, KeyListener {
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
 		if (root != null) {
 			root.setSize(width, height);
+			System.out.println("Resizing window to "+width+" x "+height);			
 		}
 	}
 

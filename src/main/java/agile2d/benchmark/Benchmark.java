@@ -9,8 +9,6 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 
-import agile2d.AgileGraphics2D;
-
 import com.sun.opengl.util.Animator;
 
 public class Benchmark {
@@ -27,7 +25,7 @@ public class Benchmark {
 
 		if(args[0].equals("GLCanvas") || args[0].equals("GLJPanel") ){
 			final Frame frame = new Frame("Agile2D Demo");
-			final AgileFrame agile = new AgileFrame(null);
+			final AgileFrame agile = new AgileFrame();
 			
 			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
@@ -39,10 +37,9 @@ public class Benchmark {
 				final GLCanvas canvas = new GLCanvas(glCaps);
 				frame.add(canvas);
 				canvas.addGLEventListener(agile);
-				agile.setRoot(canvas);
 				
 				animator = new Animator(canvas);
-				animator.add(canvas);
+				animator.add(canvas);				
 				
 				//Frame settings
 				frame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
@@ -59,14 +56,15 @@ public class Benchmark {
 				final GLJPanel panel = new GLJPanel(glCaps);
 				frame.add(panel);
 				panel.addGLEventListener(agile);
-				agile.setRoot(panel);
 				
 				animator = new Animator(panel);
 				animator.add(panel);
+				
 				//Frame settings
 				frame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);				
 				frame.setVisible(true);
 				animator.start();
+				
 			}
 			frame.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
@@ -74,7 +72,6 @@ public class Benchmark {
 				}
 			});	
 			frame.addKeyListener(agile);
-			//agile.startAnim();
 		}
 		else if (args[0].equals("JFrame")) {
 			final G2DFrame frame = new G2DFrame();

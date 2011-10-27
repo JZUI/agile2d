@@ -17,28 +17,35 @@ public class AnimeBenchmark{
 	public final static int WIN_H = 600;		
 	public final static int NB_FONTS=6;
 	public final static int NB_REPETITIONS=2;
+	public final static int MAX_NB_FONTS=12;
+	public final static int MAX_NB_REPETITIONS=15;
 	public final static float INIT_FONT_SIZE = 6.0f;
 	public final static float MAX_SCALE = 9.0f;
+	
+	private static Font[] allFonts;
+	private static Font[] someFonts = new Font[MAX_NB_FONTS];
 
+	private Chrono chrono;
 	private double incrementor = 1.0;
 	private double zFactor = 1.00;	
 	//private Thread thread;
-	private static Chrono chrono;
 	private int frame_counter;
-	private static Font[] allFonts;
-	private static Font[] someFonts = new Font[NB_FONTS];
-
+	public static int nb_fonts, nb_repetitions, nb_shapes;
+	
 	static{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		allFonts = ge.getAllFonts();
-		for(int i=0; i<NB_FONTS; i++)
+		for(int i=0; i<MAX_NB_FONTS; i++)
 			someFonts[i] = allFonts[i].deriveFont(INIT_FONT_SIZE);
+		nb_fonts = 1;
+		nb_repetitions = 1;
 	}
-
+	
 	public AnimeBenchmark(Chrono ch_){
 		chrono = ch_;
 		chrono.start();
-	}	
+	}
+	
    
     public long getFPS(){   	
     	chrono.stop();
@@ -81,13 +88,25 @@ public class AnimeBenchmark{
 	public void drawBigText(int x, int y, Graphics2D g2_) {
 		
 		g2_.scale(this.zFactor, this.zFactor);
-		//System.out.println("AfterScale and before for loop");
+		System.out.println("Printing "+nb_repetitions*nb_fonts+" lines");
 		
-		for(int i=0; i<(NB_REPETITIONS*NB_FONTS); i++){
+		//for(int i=0; i<(NB_REPETITIONS*NB_FONTS); i++){
+		for(int i=0; i<(nb_repetitions*nb_fonts); i++){
     		//System.out.println("Inside for Loop");
 		    
-			g2_.setFont(someFonts[i%NB_FONTS]);
+			//g2_.setFont(someFonts[i%NB_FONTS]);
+			g2_.setFont(someFonts[i%nb_fonts]);
 			g2_.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*INIT_FONT_SIZE));
 		}
 	}
+	
+	public static void setNbFonts(int n){
+		nb_fonts = n;		
+	}
+
+	public static void setNbRepetitions(int n){
+		nb_repetitions = n;		
+	}
+
+	
 }
