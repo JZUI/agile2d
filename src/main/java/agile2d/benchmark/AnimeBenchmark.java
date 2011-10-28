@@ -30,6 +30,7 @@ public class AnimeBenchmark{
 	private double zFactor = 1.00;	
 	//private Thread thread;
 	private int frame_counter;
+	private long lastFPS;
 	public static int nb_fonts, nb_repetitions, nb_shapes;
 	
 	static{
@@ -44,14 +45,20 @@ public class AnimeBenchmark{
 	public AnimeBenchmark(Chrono ch_){
 		chrono = ch_;
 		chrono.start();
+		lastFPS=0;
 	}
 	
    
-    public long getFPS(){   	
+    private long getFPS(){   	
     	chrono.stop();
     	long duration_sec = chrono.getDuration()/1000; 
     	chrono.start();
-    	return (this.frame_counter/duration_sec);
+    	lastFPS = (this.frame_counter/duration_sec);  
+    	return lastFPS;
+    }
+    
+    public int getLastFPS(){
+    	return (int)lastFPS;	
     }
     
     public void step() {
@@ -88,7 +95,6 @@ public class AnimeBenchmark{
 	public void drawBigText(int x, int y, Graphics2D g2_) {
 		
 		g2_.scale(this.zFactor, this.zFactor);
-		System.out.println("Printing "+nb_repetitions*nb_fonts+" lines");
 		
 		//for(int i=0; i<(NB_REPETITIONS*NB_FONTS); i++){
 		for(int i=0; i<(nb_repetitions*nb_fonts); i++){

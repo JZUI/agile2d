@@ -26,6 +26,7 @@ import agile2d.AgileGraphics2D;
 public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 
+	private BenchmarkGUI myParentRef;
 	private Chrono chrono;	
 	private AgileGraphics2D jgraphics;
 	private Thread thread;
@@ -35,6 +36,10 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 	private int w, h;
 	
 
+	public void setRoot(BenchmarkGUI myParent_){
+		myParentRef = myParent_;
+	}
+	
 	public void setStrategy(int strat_){
 		jgraphics.setRenderingStrategy(strat_);
 	}
@@ -131,7 +136,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 
 		bench.step();
 		//System.out.println("End of display");
-		
+		myParentRef.setFpsLabel(bench.getLastFPS());
 	}
 
 	@Override
@@ -158,6 +163,9 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 		}
 	}
 	
+	public long getLastFPS(){
+		return bench.getLastFPS();
+	}
 	
 	public void keyReleased(KeyEvent e) {
 	}

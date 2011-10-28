@@ -21,12 +21,13 @@ import javax.swing.*;
  * <b>AgileCanvas</b>
  * 
  */
-public class G2DFrame extends JFrame implements Runnable {
+public class G2DFrame extends JPanel implements Runnable {
 	private static Graphics2D g2;
 	private static Chrono chrono;	
 	private Thread thread;
 	private Image mImage;	
 	private AnimeBenchmark bench;
+	private BenchmarkGUI myParentRef;
 
 	public void start() {
 		thread = new Thread(this);
@@ -40,6 +41,9 @@ public class G2DFrame extends JFrame implements Runnable {
 		bench.resetCounter();
 	}
 	
+	public void setRoot(BenchmarkGUI myParent_){
+		myParentRef = myParent_;
+	}
 	public void paint(Graphics g) {
 		// Clear the offscreen image.
 		Dimension d = getSize();
@@ -92,5 +96,6 @@ public class G2DFrame extends JFrame implements Runnable {
 		bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, g2);		
 		bench.increment();
 		bench.step();
+		myParentRef.setFpsLabel(bench.getLastFPS());
 	}
 }

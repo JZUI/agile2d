@@ -76,11 +76,11 @@ public class Benchmark {
 		else if (args[0].equals("JFrame")) {
 			final G2DFrame frame = new G2DFrame();
 			frame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
-			frame.addWindowListener(new WindowAdapter() {
+			/*frame.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
 				}
-			});
+			});*/
 				frame.setVisible(true);
 				frame.start();
 		} else {
