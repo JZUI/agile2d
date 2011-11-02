@@ -23,27 +23,35 @@ import agile2d.AgileGraphics2D;
  * <b>AgileCanvas</b>
  * 
  */
-public class AgileFrame implements GLEventListener, KeyListener, Runnable {
+//public class AgileFrame implements GLEventListener, KeyListener, Runnable {
+public class AgileFrame implements GLEventListener, KeyListener{
 	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 
-	private BenchmarkGUI myParentRef;
+	//private BenchmarkGUI myParentRef;
 	private Chrono chrono;	
 	private AgileGraphics2D jgraphics;
-	private Thread thread;
+//	private Thread thread;
 	private AnimeBenchmark bench;
 	private int keyPressed;
 	private boolean interactive_antialias = false;
 	private int w, h;
 	
 
-	public void setRoot(BenchmarkGUI myParent_){
+	/*public void setRoot(BenchmarkGUI myParent_){
 		myParentRef = myParent_;
-	}
+	}*/
 	
 	public void setStrategy(int strat_){
 		jgraphics.setRenderingStrategy(strat_);
 	}
+
+	public AnimeBenchmark getRefToBench(){
+		if(bench==null)
+			System.out.println("Warning. Bench is empty");
+		return bench;
+	}
 	
+	/*
 	public void startAnim() {
         thread = new Thread(this);
         thread.setPriority(Thread.MIN_PRIORITY);
@@ -63,7 +71,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
         }
         thread = null;
     }
-
+*/
     @Override
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -136,7 +144,7 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 
 		bench.step();
 		//System.out.println("End of display");
-		myParentRef.setFpsLabel(bench.getLastFPS());
+		//myParentRef.setFpsLabel(bench.getLastFPS());
 	}
 
 	@Override
@@ -164,7 +172,11 @@ public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 	}
 	
 	public long getLastFPS(){
-		return bench.getLastFPS();
+		if(bench!=null)
+			//return bench.getLastFPS();
+			return 1;
+		else
+			return 0;
 	}
 	
 	public void keyReleased(KeyEvent e) {

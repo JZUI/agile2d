@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -23,11 +24,17 @@ import agile2d.AgileGraphics2D;
 
 import com.sun.opengl.util.Animator;
 
-public class BenchmarkGUI implements ActionListener, ChangeListener{
+public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	private final static int GLCANVAS_TYPE = 0;
 	private final static int GLJPANEL_TYPE = 1;
 	private final static int JFRAME_TYPE = 2;
-
+	
+	private final static int CANVAS_W = 640;
+	private final static int CANVAS_H = 480;
+	private Chrono chrono;
+	private Thread thread;
+	private AnimeBenchmark benchRef=null;
+	
 	//final Frame frame = new Frame("Agile2D Demo");
 	AgileFrame agile;
 	GLJPanel glPanel;
@@ -42,20 +49,34 @@ public class BenchmarkGUI implements ActionListener, ChangeListener{
 	JLabel fpsLabel;
 	static JFrame benchFrame;
 	int currentCanvas = GLJPANEL_TYPE;
+	int false_counter=0;
 
+	public synchronized void stop() {
+		thread = null;
+	}
+
+
+	public void run() {
+		Thread me = Thread.currentThread();
+		while (thread == me) {
+			if(benchRef!=null)
+				//this.setFpsLabel(benchRef.getLastFPS());
+				this.setFpsLabel(0);
+			else
+				benchRef = agile.getRefToBench();
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) { break; }
+		}
+		thread = null;
+	}
+	
+	
 	private void enableAgileOptions(boolean b_){			
 		this.roughStrButton.setEnabled(b_);
 		this.defaultStrButton.setEnabled(b_);
 	}
 	
-	private void setCanvasType(String canvas){
-		if(canvas.equals("GLJPanel"))
-			currentCanvas = GLJPANEL_TYPE;
-		else if(canvas.equals("GLCanvas"))
-			currentCanvas = GLCANVAS_TYPE;
-		else if(canvas.equals("JFrame"))
-			currentCanvas = JFRAME_TYPE;
-	}
 	
 	private void removeCurrentCanvas(){
 		if(this.currentCanvas==GLJPANEL_TYPE){
@@ -86,7 +107,9 @@ public class BenchmarkGUI implements ActionListener, ChangeListener{
 		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE){
 			//Prepare creation of viewPanel (GLView)
 			agile = new AgileFrame();
-			agile.setRoot(this);
+			thread = new Thread(this);
+			thread.setPriority(Thread.MIN_PRIORITY);
+			//agile.setRoot(this);
 			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
 			glCaps.setSampleBuffers(true);
@@ -98,7 +121,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener{
 				glPanel.addGLEventListener(agile);
 				animator = new Animator(glPanel);
 				animator.add(glPanel);
-				glPanel.setPreferredSize(new Dimension(600, 500));
+				glPanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
+				glPanel.setMinimumSize(new Dimension(CANVAS_W, CANVAS_H));
+				glPanel.setMaximumSize(new Dimension(CANVAS_W, CANVAS_H));
+				
 			}	
 			else if (newCanvas_==GLCANVAS_TYPE){
 				glCanvas = new GLCanvas(glCaps);
@@ -107,11 +133,13 @@ public class BenchmarkGUI implements ActionListener, ChangeListener{
 
 				animator = new Animator(glCanvas);
 				animator.add(glCanvas);
-				glCanvas.setPreferredSize(new Dimension(600, 500));
+				glCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
 				
 			}
 			//Start the animator specific to agile (part of JOGL)
 			animator.start();
+			benchRef=agile.getRefToBench();
+			thread.start();
 		}
 		else if (newCanvas_==JFRAME_TYPE){
 			simplePanel = new G2DFrame();
@@ -119,11 +147,14 @@ public class BenchmarkGUI implements ActionListener, ChangeListener{
 			mainPanel.add(simplePanel);
 			simplePanel.setVisible(true);
 			simplePanel.start(); //Start the ordinary animator (not specific to JOGL)
-			simplePanel.setPreferredSize(new Dimension(600, 500));
+			simplePanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
 		}
 	}
 
 	public BenchmarkGUI(){
+		
+		//chrono = new Chrono();
+		//chrono.start();
 		//Create panels and widgets
 		mainPanel = new JPanel();
 		fpsLabel = new JLabel("Initializing...");
