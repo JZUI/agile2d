@@ -33,16 +33,17 @@ public class AgileFrame implements GLEventListener, KeyListener{
 //	private Thread thread;
 	private AnimeBenchmark bench;
 	private int keyPressed;
-	private boolean interactive_antialias = false;
 	private int w, h;
-	
+	private int current_strat=AgileGraphics2D.DEFAULT_STRATEGY;	
 
 	/*public void setRoot(BenchmarkGUI myParent_){
 		myParentRef = myParent_;
 	}*/
 	
 	public void setStrategy(int strat_){
-		jgraphics.setRenderingStrategy(strat_);
+		current_strat=strat_;
+		if(jgraphics!=null)
+			jgraphics.setRenderingStrategy(current_strat);
 	}
 
 	public AnimeBenchmark getRefToBench(){
@@ -94,11 +95,13 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		System.out.println("Number of sample buffers: " + buf[0]);
 		System.out.println("Number of samples: " + samples[0]);
 		// Defines frequency in which buffers (back and front) are changed
-		gl.setSwapInterval(60);
+		//gl.setSwapInterval(60);
 		bench.resetCounter();
 		//System.out.println("End of init");
 		w = AnimeBenchmark.WIN_W;
-		h = AnimeBenchmark.WIN_H;
+		h = AnimeBenchmark.WIN_H;		
+		//jgraphics.setRenderingStrategy(current_strat);
+		
 	}
 	
     @Override
@@ -106,6 +109,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 			w=width;
 			h=height;
 			System.out.println("Resizing window to "+w+" x "+h);
+			
 	}
 	
 	@Override
@@ -137,7 +141,9 @@ public class AgileFrame implements GLEventListener, KeyListener{
 			jgraphics.setFont(bench.getFont(i%AnimeBenchmark.nb_fonts));
 			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*AnimeBenchmark.INIT_FONT_SIZE));
 		}
-		AnimeBenchmark.drawShapes(jgraphics);
+		AnimeBenchmark.drawRects(jgraphics);
+		AnimeBenchmark.drawFullOvals(jgraphics);
+		AnimeBenchmark.drawEmptyOvals(jgraphics);
 		//System.out.println("Before Increment");
 
 		bench.increment();

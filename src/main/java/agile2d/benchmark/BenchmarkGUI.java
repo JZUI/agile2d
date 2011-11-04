@@ -34,15 +34,16 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	private Chrono chrono;
 	private Thread thread;
 	private AnimeBenchmark benchRef=null;
+	private int current_strategy=AgileGraphics2D.DEFAULT_STRATEGY;
 	
 	//final Frame frame = new Frame("Agile2D Demo");
 	AgileFrame agile;
 	GLJPanel glPanel;
 	GLCanvas glCanvas;
 	G2DFrame simplePanel;
-	JPanel mainPanel, radioPanel, canvasRadioPanel;
+	JPanel mainPanel, leftPanel, topPanel, radioPanel, canvasRadioPanel;
 	static Animator animator;
-	JSlider sliderFFamilies, sliderFFRepeat, sliderShapes;
+	JSlider sliderFFamilies, sliderFFRepeat, sliderRects, sliderEmptyOvals, sliderFilledOvals; 
 	JRadioButton defaultStrButton, roughStrButton;
 	JRadioButton gljBut, glcBut, jfBut;
 	ButtonGroup strGroup, canvasGroup;
@@ -121,7 +122,8 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				glPanel.addGLEventListener(agile);
 				animator = new Animator(glPanel);
 				animator.add(glPanel);
-				glPanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));				
+				glPanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
+				glPanel.setBorder(BorderFactory.createLoweredBevelBorder());
 			}	
 			else if (newCanvas_==GLCANVAS_TYPE){
 				glCanvas = new GLCanvas(glCaps);
@@ -131,12 +133,14 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				animator = new Animator(glCanvas);
 				animator.add(glCanvas);
 				glCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
+				//glCanvas.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 				
 			}
 			//Start the animator specific to agile (part of JOGL)
 			animator.start();
 			benchRef=agile.getRefToBench();
 			thread.start();
+			agile.setStrategy(current_strategy);
 		}
 		else if (newCanvas_==JFRAME_TYPE){
 			simplePanel = new G2DFrame();
@@ -145,7 +149,9 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			simplePanel.setVisible(true);
 			simplePanel.start(); //Start the ordinary animator (not specific to JOGL)
 			simplePanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
+			simplePanel.setBorder(BorderFactory.createLoweredBevelBorder());
 		}
+		mainPanel.invalidate();
 	}
 
 	public BenchmarkGUI(){
@@ -153,29 +159,49 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		//chrono = new Chrono();
 		//chrono.start();
 		//Create panels and widgets
-		mainPanel = new JPanel();
-		fpsLabel = new JLabel("Initializing...");
-		sliderFFamilies = new JSlider(0, AnimeBenchmark.MAX_NB_FONTS, 1);
-		sliderFFRepeat = new JSlider(1, AnimeBenchmark.MAX_NB_REPETITIONS, 1);
-		sliderShapes = new JSlider(0, AnimeBenchmark.MAX_NB_SHAPES, 10);
-		radioPanel = new JPanel(new GridLayout(0, 2));
-		canvasRadioPanel = new JPanel(new GridLayout(0, 3));
-
-		//Create the main panel to contain the two sub panels.
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));        
 
-		mainPanel.add(fpsLabel);
-		mainPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
+		topPanel = new JPanel();
+		//topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
+		topPanel.setLayout(new GridLayout(2, 2));
+		leftPanel = new JPanel(new GridLayout(3, 2));
+		mainPanel.add(topPanel,BorderLayout.NORTH);
+		mainPanel.add(leftPanel,BorderLayout.WEST);
 
-		mainPanel.add(canvasRadioPanel, BorderLayout.CENTER);
-		mainPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
-		mainPanel.add(radioPanel, BorderLayout.NORTH);
-		mainPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
-		mainPanel.add(sliderFFamilies, BorderLayout.CENTER);
-		mainPanel.add(sliderFFRepeat, BorderLayout.CENTER);
-		mainPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
-		mainPanel.add(sliderShapes, BorderLayout.CENTER);
+		topPanel.setPreferredSize(new Dimension(CANVAS_W, 100));
+		leftPanel.setPreferredSize(new Dimension(200, CANVAS_H-200));
+
+		//Label
+		fpsLabel = new JLabel("Initializing...");
+		//fpsLabel.setBorder(BorderFactory.createEtchedBorder());
+		//Radio buttons
+		radioPanel = new JPanel(new GridLayout(1, 2));
+		radioPanel.setBorder(BorderFactory.createEtchedBorder());
+		canvasRadioPanel = new JPanel(new GridLayout(1, 3));
+		canvasRadioPanel.setBorder(BorderFactory.createEtchedBorder());
+		//Sliders
+		sliderFFamilies = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_FONTS, 1);
+		sliderFFRepeat = new JSlider(JSlider.VERTICAL, 1, AnimeBenchmark.MAX_NB_REPETITIONS, 1);
+		sliderRects = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
+		sliderEmptyOvals = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
+		sliderFilledOvals = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
+		
+		//TOP PANEL
+		topPanel.add(fpsLabel);
+		topPanel.add(new JLabel());
+		//topPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
+		topPanel.add(canvasRadioPanel);
+		topPanel.add(radioPanel);
+		//
+		//LEFT PANEL
+		leftPanel.add(sliderFFamilies);
+		leftPanel.add(sliderFFRepeat);
+		//leftPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
+		leftPanel.add(sliderEmptyOvals);
+		leftPanel.add(sliderFilledOvals);
+		leftPanel.add(sliderRects);
+
 		
 		//mainPanel.add(sliderFFRepeat, BorderLayout.CENTER);        
 
@@ -223,10 +249,13 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		strGroup = new ButtonGroup();
 		defaultStrButton = new JRadioButton("Default render strategy");
 		defaultStrButton.setActionCommand("DefaultRender");
-		defaultStrButton.setSelected(true);
+		if(current_strategy==AgileGraphics2D.DEFAULT_STRATEGY)
+			defaultStrButton.setSelected(true);
 
 		roughStrButton = new JRadioButton("Rough render strategy");
 		roughStrButton.setActionCommand("RoughRender");
+		if(current_strategy==AgileGraphics2D.ROUGH_SCALE_STRATEGY)
+			roughStrButton.setSelected(true);
 
 		//Group the radio buttons.
 		strGroup.add(defaultStrButton);
@@ -251,7 +280,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		if(currentCanvas==GLCANVAS_TYPE)
 			glcBut.setSelected(true);
 
-		jfBut = new JRadioButton("Standard JFrame (No OpenGL)");
+		jfBut = new JRadioButton("Standard JFrame");
 		jfBut.setActionCommand("JFrame");
 		if(currentCanvas==JFRAME_TYPE)
 			jfBut.setSelected(true);		
@@ -271,7 +300,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		canvasRadioPanel.add(jfBut);		
 
 		//SLiders
-		sliderFFamilies.setBorder(BorderFactory.createTitledBorder("Number of Font Families"));
+		sliderFFamilies.setBorder(BorderFactory.createTitledBorder("Fonts"));
 		sliderFFamilies.setName("FontNumber");
 		sliderFFamilies.addChangeListener(this);
 		sliderFFamilies.setMajorTickSpacing(1);
@@ -279,7 +308,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFFamilies.setSnapToTicks(true);
 		sliderFFamilies.setPaintLabels(true);
 
-		sliderFFRepeat.setBorder(BorderFactory.createTitledBorder("Occurrences of each Font Family"));
+		sliderFFRepeat.setBorder(BorderFactory.createTitledBorder("Repeat Font"));
 		sliderFFRepeat.setName("Repetitions");    
 		sliderFFRepeat.addChangeListener(this);
 		sliderFFRepeat.setMajorTickSpacing(1);
@@ -287,14 +316,26 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFFRepeat.setSnapToTicks(true);
 		sliderFFRepeat.setPaintLabels(true);
 
-		sliderShapes.setBorder(BorderFactory.createTitledBorder("Number of shapes"));
-		sliderShapes.setName("Shapes");    
-		sliderShapes.addChangeListener(this);
-		sliderShapes.setMajorTickSpacing(AnimeBenchmark.tick_interval);
-		sliderShapes.setPaintTicks(true);
-		//sliderShapes.setSnapToTicks(true);
-		sliderShapes.setPaintLabels(true);
-		//radioPanel.setPreferredSize(new Dimension(400, 10));
+		sliderRects.setBorder(BorderFactory.createTitledBorder("Rectangles"));
+		sliderRects.setName("Rects");    
+		sliderRects.addChangeListener(this);
+		sliderRects.setMajorTickSpacing(AnimeBenchmark.tick_interval);
+		sliderRects.setPaintTicks(true);
+		sliderRects.setPaintLabels(true);
+
+		sliderEmptyOvals.setBorder(BorderFactory.createTitledBorder("Empty Ovals"));
+		sliderEmptyOvals.setName("EmptyOvals");    
+		sliderEmptyOvals.addChangeListener(this);
+		sliderEmptyOvals.setMajorTickSpacing(AnimeBenchmark.tick_interval);
+		sliderEmptyOvals.setPaintTicks(true);
+		sliderEmptyOvals.setPaintLabels(true);		
+
+		sliderFilledOvals.setBorder(BorderFactory.createTitledBorder("Full Ovals"));
+		sliderFilledOvals.setName("FilledOvals");    
+		sliderFilledOvals.addChangeListener(this);
+		sliderFilledOvals.setMajorTickSpacing(AnimeBenchmark.tick_interval);
+		sliderFilledOvals.setPaintTicks(true);
+		sliderFilledOvals.setPaintLabels(true);		
 
 	}
 
@@ -307,8 +348,14 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			else if(source.getName().equals("FontNumber")){
 				AnimeBenchmark.setNbFonts((int)source.getValue());
 			}
-			else if(source.getName().equals("Shapes")){
-				AnimeBenchmark.setNbShapes((int)source.getValue());
+			else if(source.getName().equals("Rects")){
+				AnimeBenchmark.setNbRects((int)source.getValue());
+			}				
+			else if(source.getName().equals("EmptyOvals")){
+				AnimeBenchmark.setNbEmptyOvals((int)source.getValue());
+			}				
+			else if(source.getName().equals("FilledOvals")){
+				AnimeBenchmark.setNbFullOvals((int)source.getValue());
 			}				
 			//System.out.println("Slider "+source.getName()+" with value: "+(int)source.getValue());
 		}
