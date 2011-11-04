@@ -25,12 +25,12 @@ import agile2d.AgileGraphics2D;
 import com.sun.opengl.util.Animator;
 
 public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
+	public final static int CANVAS_W = 640;
+	public final static int CANVAS_H = 480;
+	
 	private final static int GLCANVAS_TYPE = 0;
 	private final static int GLJPANEL_TYPE = 1;
 	private final static int JFRAME_TYPE = 2;
-	
-	private final static int CANVAS_W = 640;
-	private final static int CANVAS_H = 480;
 	private Chrono chrono;
 	private Thread thread;
 	private AnimeBenchmark benchRef=null;
@@ -121,10 +121,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				glPanel.addGLEventListener(agile);
 				animator = new Animator(glPanel);
 				animator.add(glPanel);
-				glPanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
-				glPanel.setMinimumSize(new Dimension(CANVAS_W, CANVAS_H));
-				glPanel.setMaximumSize(new Dimension(CANVAS_W, CANVAS_H));
-				
+				glPanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));				
 			}	
 			else if (newCanvas_==GLCANVAS_TYPE){
 				glCanvas = new GLCanvas(glCaps);
@@ -160,7 +157,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		fpsLabel = new JLabel("Initializing...");
 		sliderFFamilies = new JSlider(0, AnimeBenchmark.MAX_NB_FONTS, 1);
 		sliderFFRepeat = new JSlider(1, AnimeBenchmark.MAX_NB_REPETITIONS, 1);
-		sliderShapes = new JSlider();
+		sliderShapes = new JSlider(0, AnimeBenchmark.MAX_NB_SHAPES, 10);
 		radioPanel = new JPanel(new GridLayout(0, 2));
 		canvasRadioPanel = new JPanel(new GridLayout(0, 3));
 
@@ -175,8 +172,11 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		mainPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
 		mainPanel.add(radioPanel, BorderLayout.NORTH);
 		mainPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
-		mainPanel.add(sliderFFamilies, BorderLayout.EAST);
-		mainPanel.add(sliderFFRepeat, BorderLayout.WEST);
+		mainPanel.add(sliderFFamilies, BorderLayout.CENTER);
+		mainPanel.add(sliderFFRepeat, BorderLayout.CENTER);
+		mainPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
+		mainPanel.add(sliderShapes, BorderLayout.CENTER);
+		
 		//mainPanel.add(sliderFFRepeat, BorderLayout.CENTER);        
 
 		/*
@@ -271,7 +271,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		canvasRadioPanel.add(jfBut);		
 
 		//SLiders
-		sliderFFamilies.setBorder(BorderFactory.createTitledBorder("Number of Font families"));
+		sliderFFamilies.setBorder(BorderFactory.createTitledBorder("Number of Font Families"));
 		sliderFFamilies.setName("FontNumber");
 		sliderFFamilies.addChangeListener(this);
 		sliderFFamilies.setMajorTickSpacing(1);
@@ -279,7 +279,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFFamilies.setSnapToTicks(true);
 		sliderFFamilies.setPaintLabels(true);
 
-		sliderFFRepeat.setBorder(BorderFactory.createTitledBorder("Number of Font families occurrences"));
+		sliderFFRepeat.setBorder(BorderFactory.createTitledBorder("Occurrences of each Font Family"));
 		sliderFFRepeat.setName("Repetitions");    
 		sliderFFRepeat.addChangeListener(this);
 		sliderFFRepeat.setMajorTickSpacing(1);
@@ -288,7 +288,12 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFFRepeat.setPaintLabels(true);
 
 		sliderShapes.setBorder(BorderFactory.createTitledBorder("Number of shapes"));
-
+		sliderShapes.setName("Shapes");    
+		sliderShapes.addChangeListener(this);
+		sliderShapes.setMajorTickSpacing(AnimeBenchmark.tick_interval);
+		sliderShapes.setPaintTicks(true);
+		//sliderShapes.setSnapToTicks(true);
+		sliderShapes.setPaintLabels(true);
 		//radioPanel.setPreferredSize(new Dimension(400, 10));
 
 	}
@@ -301,8 +306,11 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			}
 			else if(source.getName().equals("FontNumber")){
 				AnimeBenchmark.setNbFonts((int)source.getValue());
-			}	
-			System.out.println("Slider "+source.getName()+" with value: "+(int)source.getValue());
+			}
+			else if(source.getName().equals("Shapes")){
+				AnimeBenchmark.setNbShapes((int)source.getValue());
+			}				
+			//System.out.println("Slider "+source.getName()+" with value: "+(int)source.getValue());
 		}
 	}
 

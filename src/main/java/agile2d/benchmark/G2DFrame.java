@@ -92,8 +92,8 @@ public class G2DFrame extends JPanel implements Runnable {
 		g2 = (Graphics2D)g;
 		g2.setBackground(Color.WHITE);	
 		g2.clearRect(0, 0, AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
-		
-		bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, g2);		
+		bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, g2);	
+		bench.drawShapes(g2);
 		bench.increment();
 		bench.step();
 		myParentRef.setFpsLabel(bench.getLastFPS());

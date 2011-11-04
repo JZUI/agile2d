@@ -1198,6 +1198,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
          return AgileGraphics2D.instance;
 	}
 
+	public final static void destroyInstance(){
+		if (AgileGraphics2D.instance != null)
+			AgileGraphics2D.instance=null;
+	}
+	
 
 	GLAutoDrawable getDrawable() {
 		return engine.drawable;

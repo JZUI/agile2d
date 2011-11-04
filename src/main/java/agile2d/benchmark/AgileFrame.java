@@ -78,6 +78,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
     	GLU glu = new GLU();
 		chrono = new Chrono();		
 		bench = new AnimeBenchmark(chrono);
+		AgileGraphics2D.destroyInstance();
 		jgraphics = AgileGraphics2D.getInstance(drawable);
 		
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
@@ -136,7 +137,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 			jgraphics.setFont(bench.getFont(i%AnimeBenchmark.nb_fonts));
 			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*AnimeBenchmark.INIT_FONT_SIZE));
 		}
-		
+		AnimeBenchmark.drawShapes(jgraphics);
 		//System.out.println("Before Increment");
 
 		bench.increment();
