@@ -38,7 +38,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	
 	//final Frame frame = new Frame("Agile2D Demo");
 	AgileFrame agile;
-	GLJPanel glPanel;
+	GLJPanel glPanel; 
 	GLCanvas glCanvas;
 	G2DFrame simplePanel;
 	JPanel mainPanel, leftPanel, topPanel, radioPanel, canvasRadioPanel;
@@ -61,8 +61,8 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		Thread me = Thread.currentThread();
 		while (thread == me) {
 			if(benchRef!=null)
-				//this.setFpsLabel(benchRef.getLastFPS());
-				this.setFpsLabel(0);
+				this.setFpsLabel(benchRef.getLastFPS());
+				//this.setFpsLabel(5);
 			else
 				benchRef = agile.getRefToBench();
 			try {
@@ -80,7 +80,9 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	
 	
 	private void removeCurrentCanvas(){
+		//current_strategy = AgileGraphics2D.DEFAULT_STRATEGY;
 		if(this.currentCanvas==GLJPANEL_TYPE){
+			thread.interrupt();
 			mainPanel.remove(glPanel);
 			glPanel.removeGLEventListener(agile);
 			animator.remove(glPanel);
@@ -89,6 +91,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			agile=null;
 		}
 		else if(this.currentCanvas==GLCANVAS_TYPE){
+			thread.interrupt();
 			mainPanel.remove(glCanvas);
 			glCanvas.removeGLEventListener(agile);
 			animator.remove(glCanvas);
@@ -105,6 +108,9 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	
 
 	private void loadCanvas(int newCanvas_){
+		current_strategy = AgileGraphics2D.DEFAULT_STRATEGY;
+		defaultStrButton.setSelected(true);
+		
 		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE){
 			//Prepare creation of viewPanel (GLView)
 			agile = new AgileFrame();
@@ -140,7 +146,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			animator.start();
 			benchRef=agile.getRefToBench();
 			thread.start();
-			agile.setStrategy(current_strategy);
 		}
 		else if (newCanvas_==JFRAME_TYPE){
 			simplePanel = new G2DFrame();
@@ -231,6 +236,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			}
 		}
 		*/
+		addWidgets();
 		loadCanvas(currentCanvas);
 		/*
 		mainPanel.add(glPanel, BorderLayout.SOUTH);		
@@ -240,7 +246,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		 */
 
 		//Add various widgets to the sub panels.
-		addWidgets();
 	}
 
 	private void addWidgets(){
