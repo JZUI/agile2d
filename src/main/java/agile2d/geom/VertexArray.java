@@ -96,6 +96,7 @@ public class VertexArray implements Shape {
 	private java.nio.FloatBuffer dataBuffer;
 	private int top;
 	private transient GeneralPath path;
+	private static int nb_buffers_counter=0;
 
 	/**
 	 * Constructor for VertexArray.
@@ -109,6 +110,9 @@ public class VertexArray implements Shape {
 	}
 
 	public static ByteBuffer newByteBuffer(int numElements) {
+		nb_buffers_counter++;
+		System.out.println("Number of byteBuffers: "+nb_buffers_counter);
+		
 		ByteBuffer bb = ByteBuffer.allocateDirect(numElements);
 		bb.order(ByteOrder.nativeOrder());
 		return bb;
@@ -199,6 +203,8 @@ public class VertexArray implements Shape {
 	 */
 	public void reserve(int size) {
 		if (dataBuffer.capacity() < size) {
+			System.out.println("Trying to reserve a new databuffer for a VertexArray.");
+			//
 			int newSize = dataBuffer.capacity() * 2;
 			if (newSize < size)
 				newSize = size;
@@ -214,6 +220,7 @@ public class VertexArray implements Shape {
 			dataBuffer.position(top);
 			System.out.println("Resizing buffer to " + newSize + " with remaining " + dataBuffer.remaining());
 		}
+
 	}
 
 	/**
