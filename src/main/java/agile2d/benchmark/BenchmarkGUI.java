@@ -80,9 +80,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	
 	
 	private void removeCurrentCanvas(){
+		//thread.interrupt();
 		//current_strategy = AgileGraphics2D.DEFAULT_STRATEGY;
 		if(this.currentCanvas==GLJPANEL_TYPE){
-			thread.interrupt();
+			
 			mainPanel.remove(glPanel);
 			glPanel.removeGLEventListener(agile);
 			animator.remove(glPanel);
@@ -91,7 +92,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			agile=null;
 		}
 		else if(this.currentCanvas==GLCANVAS_TYPE){
-			thread.interrupt();
+
 			mainPanel.remove(glCanvas);
 			glCanvas.removeGLEventListener(agile);
 			animator.remove(glCanvas);
@@ -114,8 +115,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE){
 			//Prepare creation of viewPanel (GLView)
 			agile = new AgileFrame();
-			thread = new Thread(this);
-			thread.setPriority(Thread.MIN_PRIORITY);
+
 			//agile.setRoot(this);
 			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
@@ -145,22 +145,27 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			//Start the animator specific to agile (part of JOGL)
 			animator.start();
 			benchRef=agile.getRefToBench();
-			thread.start();
+			
 		}
 		else if (newCanvas_==JFRAME_TYPE){
 			simplePanel = new G2DFrame();
-			simplePanel.setRoot(this);
+			//simplePanel.setRoot(this);
 			mainPanel.add(simplePanel);
 			simplePanel.setVisible(true);
 			simplePanel.start(); //Start the ordinary animator (not specific to JOGL)
 			simplePanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
 			simplePanel.setBorder(BorderFactory.createLoweredBevelBorder());
+			benchRef=simplePanel.getRefToBench();
 		}
 		mainPanel.invalidate();
+
+		//thread.start();
 	}
 
 	public BenchmarkGUI(){
-		
+		thread = new Thread(this);
+		thread.setPriority(Thread.MIN_PRIORITY);		
+
 		//chrono = new Chrono();
 		//chrono.start();
 		//Create panels and widgets
@@ -238,6 +243,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		*/
 		addWidgets();
 		loadCanvas(currentCanvas);
+		thread.start();
 		/*
 		mainPanel.add(glPanel, BorderLayout.SOUTH);		
 		glPanel.addGLEventListener(agile);

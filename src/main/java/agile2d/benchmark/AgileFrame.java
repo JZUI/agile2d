@@ -108,7 +108,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
 			w=width;
 			h=height;
-			System.out.println("Resizing window to "+w+" x "+h);
+			//System.out.println("Resizing window to "+w+" x "+h);
 			
 	}
 	
@@ -130,28 +130,23 @@ public class AgileFrame implements GLEventListener, KeyListener{
 /*		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
 */		
-		//bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);
-		//System.out.println("Before scale");
-		
-		jgraphics.scale(bench.getZ(), bench.getZ());
-		
-		//System.out.println("AfterScale and before for loop");
-		
+
+		//jgraphics.scale(bench.getZ(), bench.getZ());
+		/*
 		for(int i=0; i<(AnimeBenchmark.nb_repetitions*AnimeBenchmark.nb_fonts); i++){
 			jgraphics.setFont(bench.getFont(i%AnimeBenchmark.nb_fonts));
 			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*AnimeBenchmark.INIT_FONT_SIZE));
-		}
+		}*/
+		
+		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);	
 		AnimeBenchmark.drawRects(jgraphics);
 		AnimeBenchmark.drawFullOvals(jgraphics);
 		AnimeBenchmark.drawEmptyOvals(jgraphics);
-		//System.out.println("Before Increment");
 
 		bench.increment();
-		//System.out.println("Before Step");
 
 		bench.step();
-		//System.out.println("End of display");
-		//myParentRef.setFpsLabel(bench.getLastFPS());
+
 	}
 
 	@Override

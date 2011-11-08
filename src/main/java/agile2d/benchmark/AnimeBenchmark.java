@@ -35,11 +35,11 @@ public class AnimeBenchmark{
 	private static double shapeRotation[] = new double[MAX_NB_SHAPES];
 
 	private Chrono chrono;
-	private double incrementor = 1.0;
-	private double zFactor = 1.00;	
-	//private Thread thread;
+	private double incrementor = 1.0;	
 	private int frame_counter;
 	private long lastFPS;
+	
+	private static double zFactor = 1.00;
 	public static int nb_fonts, nb_repetitions;
 	public static int nb_emptyOvals, nb_fullOvals, nb_rects;
 	public static int tick_interval;
@@ -73,17 +73,19 @@ public class AnimeBenchmark{
 		lastFPS=0;
 	}
 
-
-	private long getFPS(){   	
+	private long getFPS(){
 		chrono.stop();
 		long duration_sec = chrono.getDuration()/1000; 
 		chrono.start();
-		lastFPS = (this.frame_counter/duration_sec);  
+		if(duration_sec>0)
+			lastFPS = (this.frame_counter/duration_sec);  
+		else 
+			lastFPS=0;
 		return lastFPS;
 	}
 
 	public int getLastFPS(){
-		return (int)lastFPS;	
+		return (int)lastFPS;
 	}
 
 	public void step() {
@@ -117,9 +119,9 @@ public class AnimeBenchmark{
 	}
 
 	// Sample display to test text rendering performance during zooming
-	public void drawBigText(int x, int y, Graphics2D g2_) {
+	public static void drawBigText(int x, int y, Graphics2D g2_) {
 
-		g2_.scale(this.zFactor, this.zFactor);
+		g2_.scale(zFactor, zFactor);
 
 		//for(int i=0; i<(NB_REPETITIONS*NB_FONTS); i++){
 		for(int i=0; i<(nb_repetitions*nb_fonts); i++){

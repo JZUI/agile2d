@@ -86,18 +86,24 @@ public class G2DFrame extends JPanel implements Runnable {
 
 	public void reset(int w, int h) {
 	}
-
+	
 	public void doPaint(Graphics g) {
 		// Paint sample primitives
 		g2 = (Graphics2D)g;
 		g2.setBackground(Color.WHITE);	
 		g2.clearRect(0, 0, AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
-		bench.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, g2);	
+		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, g2);	
 		AnimeBenchmark.drawRects(g2);
 		AnimeBenchmark.drawFullOvals(g2);
 		AnimeBenchmark.drawEmptyOvals(g2);
 		bench.increment();
 		bench.step();
-		myParentRef.setFpsLabel(bench.getLastFPS());
+		//myParentRef.setFpsLabel(bench.getLastFPS());
+	}
+	
+	public AnimeBenchmark getRefToBench(){
+		if(bench==null)
+			System.out.println("Warning. Bench is empty");
+		return bench;
 	}
 }
