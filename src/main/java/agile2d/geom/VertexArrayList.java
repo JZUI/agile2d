@@ -184,6 +184,16 @@ public class VertexArrayList implements Shape {
     public boolean intersects(Rectangle2D r) {
         return getArea().intersects(r);
     }
-
+    
+    protected void finalize() throws Throwable {
+        try {
+            for(int i=0; i<list.length; i++){
+            	list[i].clear();
+            	list[i].finalize();
+            }
+        } finally {
+            super.finalize();
+        }
+    }
 }
 

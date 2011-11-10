@@ -96,7 +96,7 @@ public class VertexArray implements Shape {
 	private java.nio.FloatBuffer dataBuffer;
 	private int top;
 	private transient GeneralPath path;
-	private static int nb_buffers_counter=0;
+	private static int nb_buffers_counter=0, nb_elements_in_buffer=0;
 
 	/**
 	 * Constructor for VertexArray.
@@ -111,7 +111,8 @@ public class VertexArray implements Shape {
 
 	public static ByteBuffer newByteBuffer(int numElements) {
 		nb_buffers_counter++;
-		System.out.println("Number of byteBuffers: "+nb_buffers_counter);
+		nb_elements_in_buffer+=numElements;
+		//System.out.println("Number of byteBuffers: "+nb_buffers_counter+"total elements: "+nb_elements_in_buffer);
 		
 		ByteBuffer bb = ByteBuffer.allocateDirect(numElements);
 		bb.order(ByteOrder.nativeOrder());
@@ -548,6 +549,16 @@ public class VertexArray implements Shape {
 	public boolean intersects(Rectangle2D r) {
 		return toGeneralPath().intersects(r);
 	}
+	
+    protected void finalize() throws Throwable {
+        try {
+            //System.out.println("VertexArray. Calling finalize method.");
+            this.dataBuffer.limit(0);
+            this.dataBuffer.clear();
+        } finally {
+            super.finalize();
+        }
+    }
 
 	abstract class VertexArrayIterator implements PathIterator {
 		int index;

@@ -27,7 +27,6 @@ public class G2DFrame extends JPanel implements Runnable {
 	private Thread thread;
 	private Image mImage;	
 	private AnimeBenchmark bench;
-	private BenchmarkGUI myParentRef;
 
 	public void start() {
 		thread = new Thread(this);
@@ -41,9 +40,6 @@ public class G2DFrame extends JPanel implements Runnable {
 		bench.resetCounter();
 	}
 	
-	public void setRoot(BenchmarkGUI myParent_){
-		myParentRef = myParent_;
-	}
 	public void paint(Graphics g) {
 		// Clear the offscreen image.
 		Dimension d = getSize();
@@ -98,7 +94,6 @@ public class G2DFrame extends JPanel implements Runnable {
 		AnimeBenchmark.drawEmptyOvals(g2);
 		bench.increment();
 		bench.step();
-		//myParentRef.setFpsLabel(bench.getLastFPS());
 	}
 	
 	public AnimeBenchmark getRefToBench(){

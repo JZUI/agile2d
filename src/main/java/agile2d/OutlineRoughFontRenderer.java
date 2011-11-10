@@ -104,7 +104,7 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 //	private static final int GLYPHVECTORS_HASHMAP_SIZE = 32;
 	
 	//See documentation of "public SoftHashMap(int retentionSize)"
-	private static final int GLYPHS_HASHMAP_RETENTION_SIZE = 64;
+	private static final int GLYPHS_HASHMAP_RETENTION_SIZE = 16;
 
 	private static int font_size_length;
 	private static int listFontSizes[];

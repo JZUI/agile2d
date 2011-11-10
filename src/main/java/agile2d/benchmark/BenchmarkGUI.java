@@ -1,15 +1,10 @@
 package agile2d.benchmark;
 
-import java.awt.Frame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Dimension;
-import java.awt.Image;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -31,12 +26,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	private final static int GLCANVAS_TYPE = 0;
 	private final static int GLJPANEL_TYPE = 1;
 	private final static int JFRAME_TYPE = 2;
-	private Chrono chrono;
 	private Thread thread;
 	private AnimeBenchmark benchRef=null;
 	private int current_strategy=AgileGraphics2D.DEFAULT_STRATEGY;
 	
-	//final Frame frame = new Frame("Agile2D Demo");
 	AgileFrame agile;
 	GLJPanel glPanel; 
 	GLCanvas glCanvas;
@@ -52,17 +45,11 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	int currentCanvas = GLJPANEL_TYPE;
 	int false_counter=0;
 
-	public synchronized void stop() {
-		thread = null;
-	}
-
-
 	public void run() {
 		Thread me = Thread.currentThread();
 		while (thread == me) {
 			if(benchRef!=null)
 				this.setFpsLabel(benchRef.getLastFPS());
-				//this.setFpsLabel(5);
 			else
 				benchRef = agile.getRefToBench();
 			try {
@@ -80,10 +67,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	
 	
 	private void removeCurrentCanvas(){
-		//thread.interrupt();
-		//current_strategy = AgileGraphics2D.DEFAULT_STRATEGY;
 		if(this.currentCanvas==GLJPANEL_TYPE){
-			
 			mainPanel.remove(glPanel);
 			glPanel.removeGLEventListener(agile);
 			animator.remove(glPanel);
@@ -92,7 +76,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			agile=null;
 		}
 		else if(this.currentCanvas==GLCANVAS_TYPE){
-
 			mainPanel.remove(glCanvas);
 			glCanvas.removeGLEventListener(agile);
 			animator.remove(glCanvas);
@@ -115,15 +98,12 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE){
 			//Prepare creation of viewPanel (GLView)
 			agile = new AgileFrame();
-
-			//agile.setRoot(this);
 			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
 			glCaps.setSampleBuffers(true);
 			glCaps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);
 			if(newCanvas_==GLJPANEL_TYPE){
 				glPanel = new GLJPanel(glCaps);
-
 				mainPanel.add(glPanel);
 				glPanel.addGLEventListener(agile);
 				animator = new Animator(glPanel);
@@ -138,9 +118,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 
 				animator = new Animator(glCanvas);
 				animator.add(glCanvas);
-				glCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
-				//glCanvas.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-				
+				glCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));			
 			}
 			//Start the animator specific to agile (part of JOGL)
 			animator.start();
@@ -149,7 +127,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		}
 		else if (newCanvas_==JFRAME_TYPE){
 			simplePanel = new G2DFrame();
-			//simplePanel.setRoot(this);
 			mainPanel.add(simplePanel);
 			simplePanel.setVisible(true);
 			simplePanel.start(); //Start the ordinary animator (not specific to JOGL)
@@ -158,22 +135,17 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			benchRef=simplePanel.getRefToBench();
 		}
 		mainPanel.invalidate();
-
-		//thread.start();
 	}
 
 	public BenchmarkGUI(){
 		thread = new Thread(this);
 		thread.setPriority(Thread.MIN_PRIORITY);		
 
-		//chrono = new Chrono();
-		//chrono.start();
 		//Create panels and widgets
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));        
 
 		topPanel = new JPanel();
-		//topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.PAGE_AXIS));
 		topPanel.setLayout(new GridLayout(2, 2));
 		leftPanel = new JPanel(new GridLayout(3, 2));
 		mainPanel.add(topPanel,BorderLayout.NORTH);
@@ -184,7 +156,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 
 		//Label
 		fpsLabel = new JLabel("Initializing...");
-		//fpsLabel.setBorder(BorderFactory.createEtchedBorder());
 		//Radio buttons
 		radioPanel = new JPanel(new GridLayout(1, 2));
 		radioPanel.setBorder(BorderFactory.createEtchedBorder());
@@ -200,14 +171,12 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		//TOP PANEL
 		topPanel.add(fpsLabel);
 		topPanel.add(new JLabel());
-		//topPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
 		topPanel.add(canvasRadioPanel);
 		topPanel.add(radioPanel);
 		//
 		//LEFT PANEL
 		leftPanel.add(sliderFFamilies);
 		leftPanel.add(sliderFFRepeat);
-		//leftPanel.add(new JSeparator(JSeparator.HORIZONTAL),BorderLayout.LINE_START);
 		leftPanel.add(sliderEmptyOvals);
 		leftPanel.add(sliderFilledOvals);
 		leftPanel.add(sliderRects);
@@ -368,7 +337,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			else if(source.getName().equals("FilledOvals")){
 				AnimeBenchmark.setNbFullOvals((int)source.getValue());
 			}				
-			//System.out.println("Slider "+source.getName()+" with value: "+(int)source.getValue());
 		}
 	}
 

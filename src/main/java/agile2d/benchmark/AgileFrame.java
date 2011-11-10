@@ -7,6 +7,7 @@
  *****************************************************************************/
 package agile2d.benchmark;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.event.*;
@@ -23,22 +24,15 @@ import agile2d.AgileGraphics2D;
  * <b>AgileCanvas</b>
  * 
  */
-//public class AgileFrame implements GLEventListener, KeyListener, Runnable {
 public class AgileFrame implements GLEventListener, KeyListener{
 	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 
-	//private BenchmarkGUI myParentRef;
 	private Chrono chrono;	
 	private AgileGraphics2D jgraphics;
-//	private Thread thread;
 	private AnimeBenchmark bench;
 	private int keyPressed;
 	private int w, h;
 	private int current_strat=AgileGraphics2D.DEFAULT_STRATEGY;	
-
-	/*public void setRoot(BenchmarkGUI myParent_){
-		myParentRef = myParent_;
-	}*/
 	
 	public void setStrategy(int strat_){
 		current_strat=strat_;
@@ -52,27 +46,6 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		return bench;
 	}
 	
-	/*
-	public void startAnim() {
-        thread = new Thread(this);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        thread.start();
-    }
-
-    public synchronized void stopAnim() {
-        thread = null;
-    }
-
-    public void run() {
-        Thread me = Thread.currentThread();
-        while (thread == me) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) { break; }
-        }
-        thread = null;
-    }
-*/
     @Override
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -95,26 +68,20 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		System.out.println("Number of sample buffers: " + buf[0]);
 		System.out.println("Number of samples: " + samples[0]);
 		// Defines frequency in which buffers (back and front) are changed
-		//gl.setSwapInterval(60);
 		bench.resetCounter();
-		//System.out.println("End of init");
 		w = AnimeBenchmark.WIN_W;
 		h = AnimeBenchmark.WIN_H;		
 		//jgraphics.setRenderingStrategy(current_strat);
-		
 	}
 	
     @Override
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
 			w=width;
-			h=height;
-			//System.out.println("Resizing window to "+w+" x "+h);
-			
+			h=height;			
 	}
 	
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		//System.out.println("Start of display");
 		GL2 gl = drawable.getGL().getGL2();
 
 		// Call the glClear to clear the background
@@ -122,7 +89,8 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
-
+		jgraphics.setStroke(new BasicStroke(0.1f));
+		
 		// Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
 		jgraphics.clearRect(0, 0, w, h);
@@ -130,23 +98,13 @@ public class AgileFrame implements GLEventListener, KeyListener{
 /*		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
 */		
-
-		//jgraphics.scale(bench.getZ(), bench.getZ());
-		/*
-		for(int i=0; i<(AnimeBenchmark.nb_repetitions*AnimeBenchmark.nb_fonts); i++){
-			jgraphics.setFont(bench.getFont(i%AnimeBenchmark.nb_fonts));
-			jgraphics.drawString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 2, ((i+1)*AnimeBenchmark.INIT_FONT_SIZE));
-		}*/
-		
 		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);	
 		AnimeBenchmark.drawRects(jgraphics);
 		AnimeBenchmark.drawFullOvals(jgraphics);
 		AnimeBenchmark.drawEmptyOvals(jgraphics);
 
 		bench.increment();
-
 		bench.step();
-
 	}
 
 	@Override
@@ -175,8 +133,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 	
 	public long getLastFPS(){
 		if(bench!=null)
-			//return bench.getLastFPS();
-			return 1;
+			return 1000;
 		else
 			return 0;
 	}

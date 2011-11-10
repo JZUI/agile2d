@@ -110,10 +110,6 @@ public class AnimeBenchmark{
 		this.frame_counter++;    	
 	}    
 
-	public double getZ(){
-		return this.zFactor;    	
-	}
-
 	public Font getFont(int i_){
 		return someFonts[i_%NB_FONTS];  	
 	}
