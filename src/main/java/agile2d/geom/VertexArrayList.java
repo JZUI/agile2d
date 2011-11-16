@@ -11,11 +11,12 @@ import java.awt.*;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.*;
+import java.io.Serializable;
 
 /**
  * Memorize the result of a tesselation.
  */
-public class VertexArrayList implements Shape {
+public class VertexArrayList implements Shape, Serializable {
 	private VertexArray[] list;
 	private int           top;
 	private transient Area area;
