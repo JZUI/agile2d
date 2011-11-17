@@ -12,22 +12,16 @@ import agile2d.*;
 
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.RenderingHints;
 import java.awt.event.*;
 import java.awt.Component;
-import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.awt.GLCanvas;
-import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLProfile;
 import java.nio.ByteBuffer;
 
 /**
@@ -90,7 +84,6 @@ public class AgileSample implements GLEventListener, KeyListener {
 
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
-		AgileState glState = AgileState.get(gl);
 
 		// Call the glClear to clear the background
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -154,7 +147,6 @@ public class AgileSample implements GLEventListener, KeyListener {
 				int iR = buffer.get(q++);
 				int iG = buffer.get(q++);
 				int iB = buffer.get(q++);
-				int iA = buffer.get(q++);
 				pixelInts[i++] = 0xFF000000 | ((iR & 0x000000FF) << 16) | ((iG & 0x000000FF) << 8) | (iB & 0x000000FF);
 			}			
 		}

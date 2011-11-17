@@ -181,46 +181,9 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		leftPanel.add(sliderFilledOvals);
 		leftPanel.add(sliderRects);
 
-		
-		//mainPanel.add(sliderFFRepeat, BorderLayout.CENTER);        
-
-		/*
-		if(currentCanvas==GLJPANEL_TYPE || currentCanvas==GLCANVAS_TYPE){
-			//Prepare creation of viewPanel (GLView)
-			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
-			glCaps.setDoubleBuffered(true);// request double buffer display mode
-			glCaps.setSampleBuffers(true);
-			glCaps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);
-			if(currentCanvas==GLJPANEL_TYPE){
-				glPanel = new GLJPanel(glCaps);
-
-				mainPanel.add(glPanel);
-				glPanel.addGLEventListener(agile);
-
-				animator = new Animator(glPanel);
-				animator.add(glPanel);
-			}	
-			else if (currentCanvas==GLCANVAS_TYPE){
-				glCanvas = new GLCanvas(glCaps);
-				mainPanel.add(glCanvas);
-				glCanvas.addGLEventListener(agile);
-
-				animator = new Animator(glCanvas);
-				animator.add(glCanvas);	
-			}
-		}
-		*/
 		addWidgets();
 		loadCanvas(currentCanvas);
 		thread.start();
-		/*
-		mainPanel.add(glPanel, BorderLayout.SOUTH);		
-		glPanel.addGLEventListener(agile);
-		animator = new Animator(glPanel);
-		animator.add(glPanel);
-		 */
-
-		//Add various widgets to the sub panels.
 	}
 
 	private void addWidgets(){
@@ -354,36 +317,16 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			agile.setStrategy(AgileGraphics2D.DEFAULT_STRATEGY);
 		}
 		else if ("GLJPanel".equals(e.getActionCommand())) {
-			
-			/*mainPanel.remove(glCanvas);
-			glCanvas.removeGLEventListener(agile);
-			animator.remove(glCanvas);
-			
-			*/
-
-			//this.loadCanvas(GLJPANEL_TYPE);
-			//mainPanel.repaint();
-			//glPanel.repaint();
 			removeCurrentCanvas();
 			currentCanvas=GLJPANEL_TYPE;
 			this.loadCanvas(currentCanvas);
-			//restart();
 			enableAgileOptions(true);
 			benchFrame.setVisible(true);
 		}
 		else if ("GLCanvas".equals(e.getActionCommand())) {
 			
-			/*mainPanel.remove(glPanel);
-			glPanel.removeGLEventListener(agile);
-			animator.remove(glPanel);
-			*/
-
-			//this.loadCanvas(GLCANVAS_TYPE);
-			//mainPanel.repaint();
-			//glCanvas.repaint();
 			removeCurrentCanvas();
 			currentCanvas=GLCANVAS_TYPE;			
-			//restart();
 			this.loadCanvas(currentCanvas);
 			enableAgileOptions(true);
 			benchFrame.setVisible(true);
@@ -391,7 +334,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		else if ("JFrame".equals(e.getActionCommand())) {
 			removeCurrentCanvas();
 			currentCanvas=JFRAME_TYPE;	
-			//restart();
 			this.loadCanvas(currentCanvas);
 			enableAgileOptions(false);
 			benchFrame.setVisible(true);
@@ -410,37 +352,9 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		//
 		benchFrame.setVisible(true); 
 	}
-	
-	private static void restart(){
-		BenchmarkGUI bench = new BenchmarkGUI();
-		benchFrame.setContentPane(bench.mainPanel);
-		benchFrame.setVisible(true);
-	}
-	
-	
-	
-	/*
-	private static void changeGUI(int canvasType_){
-		
-		BenchmarkGUI bench = new BenchmarkGUI(canvasType_);
-		JFrame benchFrame = new JFrame("Agile2D Benchmark");
-		benchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		benchFrame.setContentPane(bench.mainPanel);
-		benchFrame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
-		//benchFrame.pack();
-		//
-		benchFrame.setVisible(true); 
-	}
-	*/
+
 	public static void main(String[] args) {
 		startGUI();
-		
 
-		/*frame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});*/
-		//frame.addKeyListener(agile);
 	}
 }

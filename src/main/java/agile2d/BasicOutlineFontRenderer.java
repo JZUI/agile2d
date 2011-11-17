@@ -9,18 +9,12 @@ package agile2d;
 
 
 import java.awt.Font;
-import java.awt.Shape;
-import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphMetrics;
-import java.awt.font.GlyphVector;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 
-import agile2d.geom.VertexArray;
 import agile2d.geom.VertexArrayList;
 
 

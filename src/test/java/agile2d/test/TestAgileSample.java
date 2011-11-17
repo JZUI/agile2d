@@ -22,19 +22,14 @@ import java.lang.Math;
 
 import java.awt.Graphics2D;
 import java.awt.Frame;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
-import java.awt.image.VolatileImage;
 import java.awt.image.BufferedImage;
-import java.awt.AWTException;
-
 import java.awt.image.WritableRaster;
-import java.awt.image.ColorModel;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -47,8 +42,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
 
 
 public class TestAgileSample {
@@ -461,7 +454,7 @@ public class TestAgileSample {
 		WritableRaster genWR = gen.getRaster();
 		WritableRaster diffWR = diffImg.getRaster();
 
-		int x, y, x_max;
+		int x, y;
 		int [] refPix = null;
 		int [] genPix = null;
 		int [] diffPix = new int[w*4];

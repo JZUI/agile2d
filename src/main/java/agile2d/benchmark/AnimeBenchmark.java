@@ -73,7 +73,7 @@ public class AnimeBenchmark{
 		lastFPS=0;
 	}
 
-	private long getFPS(){
+	private void computeFPS(){
 		chrono.stop();
 		long duration_sec = chrono.getDuration()/1000; 
 		chrono.start();
@@ -81,6 +81,10 @@ public class AnimeBenchmark{
 			lastFPS = (this.frame_counter/duration_sec);  
 		else 
 			lastFPS=0;
+		resetCounter();
+	}
+	
+	private long getFPS(){
 		return lastFPS;
 	}
 
@@ -89,17 +93,16 @@ public class AnimeBenchmark{
 	}
 
 	public void step() {
-		//System.out.println("In step");
 		//Incrementor ]0, 2*PI[
 		incrementor += 0.025;
 		incrementor %= (2*Math.PI);
 		//zFactor ]1.0, MAX_SCALE[ 
 		zFactor = MAX_SCALE*(Math.sin(incrementor)+1.1);
 		//Gets the fps once per cycle (when the angle approaches "0")
-		if(incrementor<0.025){
+		if(incrementor<0.001){
+			computeFPS();
 			System.out.println("FPS: "+this.getFPS());
-			resetCounter();    			
-		}   		
+		}  
 	}
 
 	public void resetCounter(){

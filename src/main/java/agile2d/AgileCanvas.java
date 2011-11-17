@@ -12,7 +12,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.BasicStroke;
-import java.awt.Dimension;
 import java.awt.geom.*;
 import java.awt.font.TextAttribute;
 import java.awt.RenderingHints;
@@ -35,15 +34,12 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
-
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
@@ -59,7 +55,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	private AgileGraphics2D jgraphics;
 	private Component       root;
 	private BufferedImage img_buff = null;
-	private Image img = null;
 	private int keyPressed, exampleNb;
 	private boolean interactive_antialias = false;
 	private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
@@ -67,7 +62,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	private double zFactor = 1.00;
 	private int fontIndex;
 	private Font[] allFonts;
-	private int previousFontSize;
 
 	/**
 	 * Creates an Agile canvas from a Component.
@@ -128,7 +122,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	public void display(GLAutoDrawable drawable) {
 
 		GL2 gl = drawable.getGL().getGL2();
-		AgileState glState = AgileState.get(gl);
 
 		// Call the glClear to clear the background
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -399,7 +392,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 
 	public void drawDemoCurves(int w, int h, AgileGraphics2D glGraphics) {
 
-		int y = 0;
 		glGraphics.setColor(Color.black);
 
 		// draws the word "QuadCurve2D"

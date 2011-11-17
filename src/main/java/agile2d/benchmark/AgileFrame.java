@@ -9,7 +9,6 @@ package agile2d.benchmark;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.RenderingHints;
 import java.awt.event.*;
 
 import javax.media.opengl.GL;
@@ -32,7 +31,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 	private AnimeBenchmark bench;
 	private int keyPressed;
 	private int w, h;
-	private int current_strat=AgileGraphics2D.DEFAULT_STRATEGY;	
+	private int current_strat=AgileGraphics2D.DEFAULT_STRATEGY;
 	
 	public void setStrategy(int strat_){
 		current_strat=strat_;
@@ -71,7 +70,6 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		bench.resetCounter();
 		w = AnimeBenchmark.WIN_W;
 		h = AnimeBenchmark.WIN_H;		
-		//jgraphics.setRenderingStrategy(current_strat);
 	}
 	
     @Override
@@ -94,10 +92,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		// Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
 		jgraphics.clearRect(0, 0, w, h);
-
-/*		if (interactive_antialias == true)
-			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
-*/		
+		
 		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);	
 		AnimeBenchmark.drawRects(jgraphics);
 		AnimeBenchmark.drawFullOvals(jgraphics);
@@ -105,6 +100,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 		bench.increment();
 		bench.step();
+			
 	}
 
 	@Override
