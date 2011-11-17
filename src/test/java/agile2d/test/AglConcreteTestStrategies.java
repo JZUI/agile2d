@@ -12,9 +12,7 @@
  * @version $Revision$
  */
 
-package agile2d;
-
-import agile2d.*;
+package agile2d.test;
 
 import java.lang.Math;
 import java.awt.Color;
@@ -23,7 +21,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 class AglTestStrategyClearRect implements TestStrategy {

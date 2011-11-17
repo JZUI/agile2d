@@ -6,7 +6,7 @@
  * license-agile2d.txt file.                                                 *
  *****************************************************************************/
 
-package agile2d;
+package agile2d.test;
 
 import agile2d.*;
 

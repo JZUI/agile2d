@@ -6,8 +6,9 @@
 * license-agile2d.txt file.                                                 *
 *****************************************************************************/
 
-package agile2d;
-import agile2d.AgileSample;
+package agile2d.test;
+
+import agile2d.test.AgileSample;
 
 /**
 * <b>TestAgileSamples</b>
@@ -357,30 +358,6 @@ public class TestAgileSample {
 			
 		if(all_ok==false){
 			try{					
-
-				//write jittered mask image
-//				outputfile = new File(RESULT_IMG_DIR+"/jit_"+baseName+".png");
-//				ImageIO.write(jit_mask, "png", outputfile);
-
-//				outputfile = new File(RESULT_IMG_DIR+"/masked_"+baseName+".png");
-//				ImageIO.write(img_masked, "png", outputfile);			
-			
-//				outputfile = new File(RESULT_IMG_DIR+"/mask_"+baseName+".png");
-//				ImageIO.write(img_mask, "png", outputfile);
-
-//				outputfile = new File(RESULT_IMG_DIR+"/ag2d_"+baseName+".png");
-//				ImageIO.write(imgAg2d, "png", outputfile);
-				
-//				outputfile = new File(RESULT_IMG_DIR+"/g2d_"+baseName+".png");
-//				ImageIO.write(imgG2d, "png", outputfile);
-				
-//				outputfile = new File(RESULT_IMG_DIR+"/diff_"+baseName+".png");
-//				ImageIO.write(img_diff, "png", outputfile);
-
-//				outputfile = new File(RESULT_IMG_DIR+"/diff_"+baseName+".png");
-//				ImageIO.write(img_diff, "png", outputfile);
-
-
 				if(testShape==false)
 					img_report = buildReport(baseName, imgG2d, imgAg2d, img_diff, null, testShape);					
 				else

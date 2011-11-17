@@ -6,20 +6,13 @@
  * license-agile2d.txt file.                                                 *
  *****************************************************************************/
 
-package agile2d;
+package agile2d.test;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.*;
-import java.awt.Component;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.BasicStroke;
-
-import javax.imageio.ImageIO;
-import java.io.File;
 
 /**
  * <b>G2DSample</b>
@@ -38,10 +31,7 @@ public class G2DSample extends Canvas {
 	Graphics2D g2d_ = (Graphics2D) g;
 	buf_img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-	Graphics2D g2d = (Graphics2D)buf_img.createGraphics();
-	
-	//g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-
+	Graphics2D g2d = (Graphics2D)buf_img.createGraphics();	
 	//Paint sample primitives
 
 	g2d.setBackground(Color.WHITE);

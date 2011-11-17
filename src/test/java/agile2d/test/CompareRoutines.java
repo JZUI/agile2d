@@ -6,13 +6,8 @@
  * license-agile2d.txt file.                                                 		*
  ***************************************************************************************/
 
-package agile2d;
+package agile2d.test;
 
-import agile2d.*;
-
-import java.lang.Math;
-
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.GradientPaint;

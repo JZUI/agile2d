@@ -7,29 +7,18 @@
  *****************************************************************************/
 
 /**
- * <b>AglTestContext</b>
+ * <b>TestStrategy Interface</b>
  * * @author Rodrigo de Almeida
  * @version $Revision$
+ * Based on the STRATEGY pattern
  */
 
-package agile2d;
+package agile2d.test;
 
 import java.awt.Graphics2D;
 
-class AglTestContext {
- 
-    private TestStrategy strategy;
- 
-    // Constructor
-    public AglTestContext(TestStrategy strategy) {
-        this.strategy = strategy;
-    }
- 
-    public void drawStrategy(Graphics2D gSample) {
-        strategy.draw(gSample);
-    }
 
-    public Object[] getObjectsStrategy() {
-        return strategy.getObjects();
-    }
+interface TestStrategy {
+    void draw(Graphics2D gSample); 
+    Object[] getObjects();
 }
