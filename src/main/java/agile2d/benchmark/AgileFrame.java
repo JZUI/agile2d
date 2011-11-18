@@ -97,6 +97,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		AnimeBenchmark.drawRects(jgraphics);
 		AnimeBenchmark.drawFullOvals(jgraphics);
 		AnimeBenchmark.drawEmptyOvals(jgraphics);
+		AnimeBenchmark.drawImages(jgraphics);
 
 		bench.increment();
 		bench.step();

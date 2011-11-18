@@ -90,6 +90,7 @@ public class G2DFrame extends JPanel implements Runnable {
 		AnimeBenchmark.drawRects(g2);
 		AnimeBenchmark.drawFullOvals(g2);
 		AnimeBenchmark.drawEmptyOvals(g2);
+		AnimeBenchmark.drawImages(g2);
 		bench.increment();
 		bench.step();
 	}

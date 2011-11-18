@@ -36,7 +36,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	G2DFrame simplePanel;
 	JPanel mainPanel, leftPanel, topPanel, radioPanel, canvasRadioPanel;
 	static Animator animator;
-	JSlider sliderFFamilies, sliderFFRepeat, sliderRects, sliderEmptyOvals, sliderFilledOvals; 
+	JSlider sliderFFamilies, sliderFFRepeat, sliderRects, sliderEmptyOvals, sliderFilledOvals, sliderImages;
 	JRadioButton defaultStrButton, roughStrButton;
 	JRadioButton gljBut, glcBut, jfBut;
 	ButtonGroup strGroup, canvasGroup;
@@ -167,6 +167,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderRects = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
 		sliderEmptyOvals = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
 		sliderFilledOvals = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
+		sliderImages = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_IMAGES, 0);
 		
 		//TOP PANEL
 		topPanel.add(fpsLabel);
@@ -180,6 +181,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		leftPanel.add(sliderEmptyOvals);
 		leftPanel.add(sliderFilledOvals);
 		leftPanel.add(sliderRects);
+		leftPanel.add(sliderImages);
 
 		addWidgets();
 		loadCanvas(currentCanvas);
@@ -259,13 +261,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFFRepeat.setSnapToTicks(true);
 		sliderFFRepeat.setPaintLabels(true);
 
-		sliderRects.setBorder(BorderFactory.createTitledBorder("Rectangles"));
-		sliderRects.setName("Rects");    
-		sliderRects.addChangeListener(this);
-		sliderRects.setMajorTickSpacing(AnimeBenchmark.tick_interval);
-		sliderRects.setPaintTicks(true);
-		sliderRects.setPaintLabels(true);
-
 		sliderEmptyOvals.setBorder(BorderFactory.createTitledBorder("Empty Ovals"));
 		sliderEmptyOvals.setName("EmptyOvals");    
 		sliderEmptyOvals.addChangeListener(this);
@@ -280,7 +275,21 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFilledOvals.setPaintTicks(true);
 		sliderFilledOvals.setPaintLabels(true);		
 
-	}
+		sliderRects.setBorder(BorderFactory.createTitledBorder("Rectangles"));
+		sliderRects.setName("Rects");    
+		sliderRects.addChangeListener(this);
+		sliderRects.setMajorTickSpacing(AnimeBenchmark.tick_interval);
+		sliderRects.setPaintTicks(true);
+		sliderRects.setPaintLabels(true);
+
+		sliderImages.setBorder(BorderFactory.createTitledBorder("Images"));
+		sliderImages.setName("Images");    
+		sliderImages.addChangeListener(this);
+		sliderImages.setMajorTickSpacing(1);
+		sliderImages.setPaintTicks(true);
+		sliderImages.setPaintLabels(true);
+		sliderImages.setSnapToTicks(true);
+}
 
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider)e.getSource();
@@ -290,16 +299,20 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			}
 			else if(source.getName().equals("FontNumber")){
 				AnimeBenchmark.setNbFonts((int)source.getValue());
-			}
-			else if(source.getName().equals("Rects")){
-				AnimeBenchmark.setNbRects((int)source.getValue());
-			}				
+			}			
 			else if(source.getName().equals("EmptyOvals")){
 				AnimeBenchmark.setNbEmptyOvals((int)source.getValue());
 			}				
 			else if(source.getName().equals("FilledOvals")){
 				AnimeBenchmark.setNbFullOvals((int)source.getValue());
-			}				
+			}
+			else if(source.getName().equals("Rects")){
+				AnimeBenchmark.setNbRects((int)source.getValue());
+			}
+			else if(source.getName().equals("Images")){
+				System.out.println("Setting image number to: "+(int)source.getValue());
+				AnimeBenchmark.setNbImages((int)source.getValue());
+			}	
 		}
 	}
 
