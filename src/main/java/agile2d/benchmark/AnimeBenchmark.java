@@ -54,7 +54,8 @@ public class AnimeBenchmark{
 	private static Font[] allFonts;
 	private static Font[] someFonts = new Font[MAX_NB_FONTS];
 	private static BufferedImage[] bufferedImages = new BufferedImage[MAX_NB_IMAGES];
-	private static String[] imageNames = {"imgBench1.jpg", "imgBench2.jpg", "imgBench3.jpg", "imgBench4.jpg", "imgBench5.jpg", "imgBench6.jpg", "imgBench7.jpg", "imgBench8.jpg", "imgBench9.jpg", "imgBench10.jpg", "imgBench11.jpg", "imgBench12.jpg", "imgBench13.jpg", "imgBench14.jpg", "imgBench15.jpg"};
+	private static String[] availableNames = {"imgBench1.jpg", "imgBench2.jpg", "imgBench3.jpg", "imgBench4.jpg", "imgBench5.jpg", "imgBench6.jpg", "imgBench7.jpg", "imgBench8.jpg", "imgBench9.jpg", "imgBench10.jpg", "imgBench11.jpg", "imgBench12.jpg", "imgBench13.jpg", "imgBench14.jpg", "imgBench15.jpg"};
+	private static String[] imageNames = new String[MAX_NB_IMAGES]; 
 	private final static AffineTransform idTransform = new AffineTransform();
 	
 	private int frame_counter;
@@ -86,6 +87,7 @@ public class AnimeBenchmark{
 
 		Random imgRand = new Random();
 		for(int i=0; i<MAX_NB_IMAGES; i++){
+			imageNames[i]= availableNames[i];
 			imgCoord[i][0] = imgRand.nextInt(30)+10;
 			imgCoord[i][1] = imgRand.nextInt(30)+10;
 			imgCoord[i][2] = 0;//width. the actual width&height of the image will be attributed as soon an image is loaded 
