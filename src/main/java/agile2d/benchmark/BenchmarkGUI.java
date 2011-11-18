@@ -310,7 +310,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				AnimeBenchmark.setNbRects((int)source.getValue());
 			}
 			else if(source.getName().equals("Images")){
-				System.out.println("Setting image number to: "+(int)source.getValue());
 				AnimeBenchmark.setNbImages((int)source.getValue());
 			}	
 		}

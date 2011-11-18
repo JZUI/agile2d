@@ -62,7 +62,6 @@ public class AnimeBenchmark{
 	private long lastFPS;
 	private double incrementor = 1.0;	
 	private Chrono chrono;
-	
 
 	static{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -145,6 +144,7 @@ public class AnimeBenchmark{
 
 	// Sample display to test text rendering performance during zooming
 	public static void drawBigText(int x, int y, Graphics2D g2) {
+		g2.setColor(Color.BLACK);
 		g2.scale(zFactor, zFactor);
 		for(int i=0; i<(nb_repetitions*nb_fonts); i++){
 			g2.setFont(someFonts[i%nb_fonts]);
@@ -226,7 +226,6 @@ public class AnimeBenchmark{
 			return;
 		//Check either if images have to be unloaded and un-set width/height vars
 		else if(n<nbImages){
-			System.out.println("Unload images");
 			for(int i=n; i<nbImages; i++){
 				bufferedImages[i] = null;
 				imgCoord[i][2] = 0;
@@ -234,8 +233,7 @@ public class AnimeBenchmark{
 			}
 		}
 		//or if images have to be loaded and set width/height vars
-		else if(n>nbImages){
-			System.out.println("Load images");			
+		else if(n>nbImages){		
 			for(int i=nbImages; i<n; i++){
 				try {
 					bufferedImages[i] = ImageIO.read(new File(PATH_TO_IMAGES+imageNames[i]));

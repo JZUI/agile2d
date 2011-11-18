@@ -86,11 +86,11 @@ public class G2DFrame extends JPanel implements Runnable {
 		g2 = (Graphics2D)g;
 		g2.setBackground(Color.WHITE);	
 		g2.clearRect(0, 0, AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
-		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, g2);	
-		AnimeBenchmark.drawRects(g2);
 		AnimeBenchmark.drawFullOvals(g2);
-		AnimeBenchmark.drawEmptyOvals(g2);
+		AnimeBenchmark.drawRects(g2);
 		AnimeBenchmark.drawImages(g2);
+		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, g2);
+		AnimeBenchmark.drawEmptyOvals(g2);
 		bench.increment();
 		bench.step();
 	}
