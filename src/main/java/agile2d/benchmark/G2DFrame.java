@@ -20,6 +20,7 @@ import javax.swing.*;
  * 
  */
 public class G2DFrame extends JPanel implements Runnable {
+	private static final long serialVersionUID = 9044699885885527920L;
 	private static Graphics2D g2;
 	private static Chrono chrono;	
 	private Thread thread;

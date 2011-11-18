@@ -111,9 +111,7 @@ public class VertexArray implements Shape {
 
 	public static ByteBuffer newByteBuffer(int numElements) {
 		nb_buffers_counter++;
-		nb_elements_in_buffer+=numElements;
-		//System.out.println("Number of byteBuffers: "+nb_buffers_counter+"total elements: "+nb_elements_in_buffer);
-		
+		nb_elements_in_buffer+=numElements;		
 		ByteBuffer bb = ByteBuffer.allocateDirect(numElements);
 		bb.order(ByteOrder.nativeOrder());
 		return bb;

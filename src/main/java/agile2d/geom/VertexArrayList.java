@@ -17,6 +17,7 @@ import java.io.Serializable;
  * Memorize the result of a tesselation.
  */
 public class VertexArrayList implements Shape, Serializable {
+	private static final long serialVersionUID = -22386521332422441L;
 	private VertexArray[] list;
 	private int           top;
 	private transient Area area;
