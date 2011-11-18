@@ -25,6 +25,7 @@ public class AnimeBenchmark{
 	public final static int MAX_NB_SHAPES=3000;
 	public final static float INIT_FONT_SIZE = 6.0f;
 	public final static float MAX_SCALE = 9.0f;
+	private final static long DURATION_FPS= 10000;
 
 	private static Font[] allFonts;
 	private static Font[] someFonts = new Font[MAX_NB_FONTS];
@@ -99,7 +100,9 @@ public class AnimeBenchmark{
 		//zFactor ]1.0, MAX_SCALE[ 
 		zFactor = MAX_SCALE*(Math.sin(incrementor)+1.1);
 		//Gets the fps once per cycle (when the angle approaches "0")
-		if(incrementor<0.001){
+		long temp_duration= chrono.getTempDuration();
+		//if(incrementor<0.001){
+		if(temp_duration>DURATION_FPS){
 			computeFPS();
 			System.out.println("FPS: "+this.getFPS());
 		}  

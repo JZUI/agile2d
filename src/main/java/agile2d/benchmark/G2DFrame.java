@@ -25,7 +25,7 @@ public class G2DFrame extends JPanel implements Runnable {
 	private Thread thread;
 	private Image mImage;	
 	private AnimeBenchmark bench;
-
+	
 	public void start() {
 		thread = new Thread(this);
 		thread.setPriority(Thread.MIN_PRIORITY);

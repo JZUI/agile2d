@@ -17,4 +17,8 @@ public final class Chrono{
     public long getDuration() {
         return end-begin;
     }
+    
+    public long getTempDuration() {
+        return System.currentTimeMillis()-begin;
+    }
 }
