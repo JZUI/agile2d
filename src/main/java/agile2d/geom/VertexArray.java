@@ -202,7 +202,6 @@ public class VertexArray implements Shape {
 	 */
 	public void reserve(int size) {
 		if (dataBuffer.capacity() < size) {
-			System.out.println("Trying to reserve a new databuffer for a VertexArray.");
 			//
 			int newSize = dataBuffer.capacity() * 2;
 			if (newSize < size)

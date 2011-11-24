@@ -312,7 +312,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			float lineWidthGranularity[] = new float[1];
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE, maxLineRange, 0);
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_GRANULARITY, lineWidthGranularity, 0);
-			//			System.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
+						System.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
 			minLineWidth = maxLineRange[0];
 			maxLineWidth = maxLineRange[1];
 
@@ -661,8 +661,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			if (projectionMatrix == null) {
 				gl.glLoadIdentity();
-				glu.gluOrtho2D(0, windowBounds.width,
-						windowBounds.height, 0);
+				glu.gluOrtho2D(0, windowBounds.width,windowBounds.height, 0);
+				//gl.glViewport(20, 20, 300, 300);
 			} else {
 				gl.glLoadMatrixd(projectionMatrix, 0);
 			}
@@ -913,6 +913,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 			if (useFastShapes) {
 				if (absLineWidth < maxLineWidth) {
+					
 					// For 4 vertices, glBegin/glEnd is faster than vertex arrays
 					gl.glBegin(GL.GL_LINE_LOOP);
 					gl.glVertex2i(x1, y1);
@@ -921,6 +922,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 					gl.glVertex2i(x4, y4);
 					gl.glEnd();
 				} else {
+					System.out.println("Absline: "+absLineWidth);
 					float lw = (float)(lineWidth / 2.0);
 					if (lw >= width || lw >= height) {
 						gl.glRectf(x1-lw, y1-lw, x3+lw, y3+lw);

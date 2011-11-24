@@ -87,7 +87,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
-		jgraphics.setStroke(new BasicStroke(0.1f));
+		//jgraphics.setStroke(new BasicStroke(0.1f));
 		
 		// Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
