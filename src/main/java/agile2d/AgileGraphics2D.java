@@ -910,19 +910,34 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			int y3 = y1 + height;
 			int x4 = x1;
 			int y4 = y1 + height;
-
+			
+			
 			if (useFastShapes) {
 				if (absLineWidth < maxLineWidth) {
-					
 					// For 4 vertices, glBegin/glEnd is faster than vertex arrays
-					gl.glBegin(GL.GL_LINE_LOOP);
+					if(absLineWidth>1.0){ // && ROUND_CORNERS==true){
+						gl.glEnable(GL2.GL_LINE_SMOOTH);
+						gl.glEnable(GL2.GL_POINT_SMOOTH);
+						gl.glPointSize((float)absLineWidth);
+						//Draw lines on the corners of the rectangle 
+						gl.glBegin(GL2.GL_POINTS);
+						gl.glVertex2i(x1, y1);
+						gl.glVertex2i(x2, y2);
+						gl.glVertex2i(x3, y3);
+						gl.glVertex2i(x4, y4);
+						gl.glEnd();
+					}
+					gl.glBegin(GL2.GL_LINE_LOOP);
 					gl.glVertex2i(x1, y1);
 					gl.glVertex2i(x2, y2);
 					gl.glVertex2i(x3, y3);
 					gl.glVertex2i(x4, y4);
 					gl.glEnd();
+					if(absLineWidth>1.0){
+						gl.glDisable(GL2.GL_LINE_SMOOTH);
+						gl.glDisable(GL2.GL_POINT_SMOOTH);
+					}
 				} else {
-					System.out.println("Absline: "+absLineWidth);
 					float lw = (float)(lineWidth / 2.0);
 					if (lw >= width || lw >= height) {
 						gl.glRectf(x1-lw, y1-lw, x3+lw, y3+lw);
