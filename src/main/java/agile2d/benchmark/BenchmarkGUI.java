@@ -17,7 +17,7 @@ import javax.media.opengl.awt.GLJPanel;
 
 import agile2d.AgileGraphics2D;
 
-import com.sun.opengl.util.Animator;
+import com.jogamp.opengl.util.Animator;
 
 public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	public final static int CANVAS_W = 640;
