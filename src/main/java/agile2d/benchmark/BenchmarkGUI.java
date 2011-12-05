@@ -98,7 +98,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE){
 			//Prepare creation of viewPanel (GLView)
 			agile = new AgileFrame();
-			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+			GLCapabilities glCaps = new GLCapabilities(GLProfile.getDefault()); 
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
 			glCaps.setSampleBuffers(true);
 			glCaps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);

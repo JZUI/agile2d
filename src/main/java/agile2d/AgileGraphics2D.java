@@ -312,7 +312,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			float lineWidthGranularity[] = new float[1];
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE, maxLineRange, 0);
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_GRANULARITY, lineWidthGranularity, 0);
-						System.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
+			//system.out.println("Max Line min: "+maxLineRange[0]+" and max: "+maxLineRange[1]+" with a granularity of "+lineWidthGranularity[0]);
 			minLineWidth = maxLineRange[0];
 			maxLineWidth = maxLineRange[1];
 
