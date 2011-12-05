@@ -29,29 +29,42 @@
 	  <url>http://rodrigoalmeida.free.fr/maven2</url>
 	</repository>
 	</repositories>
+ 	<profiles>
+    <profile>
+      <id>osx</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <build.type>macosx-universal</build.type>
+      </properties>
+    </profile>
+    <profile>
+      <id>lin32</id>
+      <properties>
+        <build.type>linux-i586</build.type>
+      </properties>
+    </profile>
+    <profile>
+      <id>lin64</id>
+      <properties>
+        <build.type>linux-amd64</build.type>
+      </properties>
+    </profile>
+    <profile>
+      <id>win32</id>
+      <properties>
+        <build.type>windows-i586</build.type>
+      </properties>
+    </profile>
+    <profile>
+      <id>win64</id>
+      <properties>
+        <build.type>windows-amd64</build.type>
+      </properties>
+    </profile>
+    </profiles>
    <dependencies>
-	    <!--
-	    <dependency>
-		<groupId>jogl2</groupId>
-		<artifactId>jogl.all</artifactId>
-		<version>2.0</version>
-	    </dependency>
-	    <dependency>
-		<groupId>jogl2</groupId>
-		<artifactId>gluegen</artifactId>
-		<version>2.0</version>
-	    </dependency>
-	    <dependency>
-		<groupId>jogl2</groupId>
-		<artifactId>nativewindow.all</artifactId>
-		<version>2.0</version>
-	    </dependency>
-	    <dependency>
-		<groupId>jogl2</groupId>
-		<artifactId>newt.all</artifactId>
-		<version>2.0</version>
-	    </dependency>
-	    -->
 	<dependency>
     	<groupId>org.jogamp.jogl</groupId>
     	<artifactId>jogl.all</artifactId>
@@ -77,58 +90,7 @@
  	<artifactId>slf4j-simple</artifactId>
  	<version>1.6.1</version>
  	</dependency>    
-	    </dependencies>
-  <profiles>
-  	<!-- Windows -->
-	<profile>
-		<!-- mvn -P win ... -->
-		<id>win</id>
-	    <dependencies>
-	    </dependencies>
-	</profile>
-	<!-- Mac OS X -->
-	<profile>
-		<!-- mvn -P osx ... -->
-		<id>osx</id>
-		<activation>
-		  <activeByDefault>true</activeByDefault>
-		</activation>
-	    <dependencies>
-			<dependency>
-				<groupId>org.jogamp.jogl</groupId>
-				<artifactId>jogl-all-natives</artifactId>
-				<version>v2.0-rc4</version>
-				<classifier>macosx-universal</classifier>
-			</dependency>
-			<dependency>
-				<groupId>org.jogamp.gluegen</groupId>
-				<artifactId>gluegen-rt-natives</artifactId>
-				<version>v2.0-rc4</version>
-				<classifier>macosx-universal</classifier>
-			</dependency>
-	    </dependencies>
-	</profile>
-	<!-- Linux -->
-	<profile>
-		<!-- mvn -P lin ... -->
-		<id>lin</id>
-	    <dependencies>
-	    <dependency>
-		<groupId>download.java.net</groupId>
-		<artifactId>nativewindow.x11</artifactId>
-		<version>2.0</version>
-	    </dependency>
-	    </dependencies>
-	</profile>
-  </profiles>
-  <!--
-<distributionManagement>
-  <repository>
-    <id>internal-jogl-repository</id>
-    <url>ftp://ftpperso.free.fr</url>
-  </repository>
-</distributionManagement>  
--->
+	</dependencies>
   <build>
   <extensions>
   <!-- Enabling the use of FTP -->
@@ -155,9 +117,9 @@
 			  <groupId>org.jogamp.jogl</groupId>
 			  <artifactId>jogl-all-natives</artifactId>
 			  <version>v2.0-rc4</version>
-			  <classifier>macosx-universal</classifier>
+ 			  <classifier>${build.type}</classifier>
 			  <type>jar</type>
-			  <includes>*.jnilib</includes>
+			  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
 			  <overWrite>true</overWrite>
 			  <outputDirectory>${project.build.directory}/lib</outputDirectory>
 			</artifactItem>
@@ -165,9 +127,9 @@
 			  <groupId>org.jogamp.gluegen</groupId>
 			  <artifactId>gluegen-rt-natives</artifactId>
 			  <version>v2.0-rc4</version>
-			  <classifier>macosx-universal</classifier>
+ 			  <classifier>${build.type}</classifier>
 			  <type>jar</type>
-			  <includes>*.jnilib</includes>
+			  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
 			  <overWrite>true</overWrite>
 			  <outputDirectory>${project.build.directory}/lib</outputDirectory>
 			</artifactItem>
@@ -181,10 +143,8 @@
         <artifactId>maven-jar-plugin</artifactId>
 	<version>2.3.1</version>
         <configuration>
-   <!--       <classifier>Benchmark</classifier> -->
           <archive>
             <manifest>
-    <!--              <mainClass>agile2d.benchmark.Benchmark</mainClass> -->
               <packageName>agile2d.benchmark</packageName>
               <addClasspath>true</addClasspath>
             </manifest>
