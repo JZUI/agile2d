@@ -45,6 +45,8 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	int currentCanvas = GLJPANEL_TYPE;
 	int false_counter=0;
 
+	static { GLProfile.initSingleton(true); }
+	
 	public void run() {
 		Thread me = Thread.currentThread();
 		while (thread == me) {
