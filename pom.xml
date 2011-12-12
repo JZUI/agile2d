@@ -129,7 +129,9 @@
 			  <version>v2.0-rc4</version>
  			  <classifier>${build.type}</classifier>
 			  <type>jar</type>
-			  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
+              <includes>*.jnilib,*.lib,*.so,*.dll</includes>
+			  <!-- Exclude native library files of jogl for mobile platforms -->
+              <!-- <excludes>%ant[*mobile*]</excludes> -->
 			  <overWrite>true</overWrite>
 			  <outputDirectory>${project.build.directory}/lib</outputDirectory>
 			</artifactItem>

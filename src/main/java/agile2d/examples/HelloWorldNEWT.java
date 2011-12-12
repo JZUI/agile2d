@@ -1,12 +1,5 @@
 package agile2d.examples;
 
-/*
-
-
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-*/
 import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Font;

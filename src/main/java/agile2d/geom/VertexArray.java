@@ -216,7 +216,6 @@ public class VertexArray implements Shape {
 			// the old buffer is disposed and the new one starts with position at top and limit as the size
 			dataBuffer = newBuffer;
 			dataBuffer.position(top);
-			System.out.println("Resizing buffer to " + newSize + " with remaining " + dataBuffer.remaining());
 		}
 
 	}

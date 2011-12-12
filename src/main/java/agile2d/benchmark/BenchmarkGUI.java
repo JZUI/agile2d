@@ -44,8 +44,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	static JFrame benchFrame;
 	int currentCanvas = GLJPANEL_TYPE;
 	int false_counter=0;
-
-	static { GLProfile.initSingleton(true); }
 	
 	public void run() {
 		Thread me = Thread.currentThread();
@@ -368,6 +366,8 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	}
 
 	public static void main(String[] args) {
+		//System.out.println("Before initSingleton");
+		GLProfile.initSingleton(true);
 		startGUI();
 
 	}

@@ -34,6 +34,7 @@ public class AgileExample implements GLEventListener, KeyListener {
 	
 	public AgileExample(Component root) {
 		this.root = root;
+		System.out.println("Constructor of AgileExample");
 	}
 
     public void reset(int w, int h) {
@@ -48,15 +49,9 @@ public class AgileExample implements GLEventListener, KeyListener {
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
 
-		// Check if MULTISAMPLE is available
-		int[] buf = new int[2];
-		int[] samples = new int[2];
-		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
-		gl.glGetIntegerv(GL2.GL_SAMPLES, samples, 0);
-		System.out.println("Number of sample buffers: " + buf[0]);
-		System.out.println("Number of samples: " + samples[0]);
+
 		// Defines frequency in which buffers (back and front) are changed
-		gl.setSwapInterval(1);
+		//gl.setSwapInterval(1);
 	}
 
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
@@ -67,7 +62,6 @@ public class AgileExample implements GLEventListener, KeyListener {
 	}
 
 	public void display(GLAutoDrawable drawable) {
-
 		GL2 gl = drawable.getGL().getGL2();
 
 		// Call the glClear to clear the background
