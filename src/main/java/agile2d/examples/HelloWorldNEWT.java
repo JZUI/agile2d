@@ -26,18 +26,22 @@ public class HelloWorldNEWT {
 	static{
 		WIN_W = 800;
 		WIN_H = 640;
-        GLProfile glp = GLProfile.get(GLProfile.GL2);
+        GLProfile glp = GLProfile.getDefault();
         caps = new GLCapabilities(glp);
 	}
 	
     public static void main(String[] args) {
-        GLWindow window = GLWindow.create(caps);
+        GLWindow window = GLWindow.create(caps); 
     	final AgileExample agile = new AgileExample(null);
-    	window.setSize(WIN_W, WIN_H);        
-        window.setTitle("NEWT Window Test");
-        window.addGLEventListener(agile);
-        window.setVisible(true);
+        window.addGLEventListener(agile);        
+        NewtCanvasAWT canvas = new NewtCanvasAWT(window);
+        Frame frame = new Frame("Agile2D HelloWorld using NEWT Components");        
+        frame.add(canvas);
+        frame.setSize(WIN_W, WIN_H);
+		frame.setVisible(true);			
+		frame.addKeyListener(agile);
     }
+    
 	public static void drawHelloWorld(Graphics2D g_){
 		System.out.println("\n\n\nBegin of Hello World\n\n\n");
 		Font font_ = new Font("SansSerif", Font.BOLD, 48);
