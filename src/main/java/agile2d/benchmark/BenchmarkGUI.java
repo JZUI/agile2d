@@ -15,39 +15,44 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 
-import agile2d.AgileGraphics2D;
-
+import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.opengl.util.Animator;
+
+import agile2d.AgileGraphics2D;
 
 public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	public final static int CANVAS_W = 640;
 	public final static int CANVAS_H = 480;
-	
+
 	private final static int GLCANVAS_TYPE = 0;
 	private final static int GLJPANEL_TYPE = 1;
-	private final static int JFRAME_TYPE = 2;
+	private final static int NEWT_TYPE = 2;
+	private final static int JFRAME_TYPE = 3;
 	private Thread thread;
 	private AnimeBenchmark benchRef=null;
 	private int current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
-	
-	
+
+
 	static JFrame benchFrame;
 	static Animator animator;
-	
+
 	AgileFrame agile;
 	GLJPanel glPanel; 
 	GLCanvas glCanvas;
+	NewtCanvasAWT newtCanvas;
+	GLWindow glWindow;
 	G2DFrame simplePanel;
 	JPanel mainPanel, leftPanel, topPanel, radioPanel, canvasRadioPanel;
 	JSlider sliderFFamilies, sliderFFRepeat, sliderRects, sliderEmptyOvals, sliderFilledOvals, sliderImages;
 	JRadioButton bestStrButton, roughStrButton;
-	JRadioButton gljBut, glcBut, jfBut;
+	JRadioButton gljBut, glcBut, newtBut, jfBut;
 	ButtonGroup strGroup, canvasGroup;
 	JLabel fpsLabel;
-	
+
 	int currentCanvas = GLJPANEL_TYPE;
 	int false_counter=0;
-	
+
 	public void run() {
 		Thread me = Thread.currentThread();
 		while (thread == me) {
@@ -61,14 +66,14 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		}
 		thread = null;
 	}
-	
-	
+
+
 	private void enableAgileOptions(boolean b_){			
 		this.roughStrButton.setEnabled(b_);
 		this.bestStrButton.setEnabled(b_);
 	}
-	
-	
+
+
 	private void removeCurrentCanvas(){
 		if(this.currentCanvas==GLJPANEL_TYPE){
 			mainPanel.remove(glPanel);
@@ -86,28 +91,35 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			glCanvas=null;
 			agile=null;
 		}
+		else if(this.currentCanvas==NEWT_TYPE){
+			mainPanel.remove(newtCanvas);
+			glWindow.removeGLEventListener(agile);
+			animator.remove(glWindow);
+			agile.dispose(glWindow);
+			newtCanvas.destroy();
+			newtCanvas=null;
+			agile=null;
+		}
 		else if(this.currentCanvas==JFRAME_TYPE){
 			mainPanel.remove(simplePanel);
 			simplePanel.stop();
 			simplePanel=null;
 		}		
 	}
-	
+
 
 	private void loadCanvas(int newCanvas_){
-		//current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;;
-		//bestStrButton.setSelected(true);
-		
-		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE){
+
+		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE || newCanvas_==NEWT_TYPE){
 			//Prepare creation of viewPanel (GLView)
 			agile = new AgileFrame();
-			GLCapabilities glCaps = new GLCapabilities(GLProfile.getDefault()); 
-			glCaps.setDoubleBuffered(true);// request double buffer display mode
-			glCaps.setSampleBuffers(true);
-			glCaps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);
+			GLCapabilities caps = new GLCapabilities(GLProfile.getDefault()); 
+			caps.setDoubleBuffered(true);// request double buffer display mode
+			caps.setSampleBuffers(true);
+			caps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);
 			current_strategy = agile.current_strat;
 			if(newCanvas_==GLJPANEL_TYPE){
-				glPanel = new GLJPanel(glCaps);
+				glPanel = new GLJPanel(caps);
 				mainPanel.add(glPanel);
 				glPanel.addGLEventListener(agile);
 				animator = new Animator(glPanel);
@@ -116,7 +128,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				glPanel.setBorder(BorderFactory.createLoweredBevelBorder());
 			}	
 			else if (newCanvas_==GLCANVAS_TYPE){
-				glCanvas = new GLCanvas(glCaps);
+				glCanvas = new GLCanvas(caps);
 				mainPanel.add(glCanvas);
 				glCanvas.addGLEventListener(agile);
 
@@ -124,10 +136,18 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				animator.add(glCanvas);
 				glCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));			
 			}
+			else if (newCanvas_==NEWT_TYPE){
+				glWindow = GLWindow.create(caps);
+				glWindow.addGLEventListener(agile);
+				animator = new Animator(glWindow);
+				newtCanvas = new NewtCanvasAWT(glWindow);
+				mainPanel.add(newtCanvas);
+				newtCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
+			}			
 			//Start the animator specific to agile (part of JOGL)
 			animator.start();
 			benchRef=agile.getRefToBench();
-			
+
 		}
 		else if (newCanvas_==JFRAME_TYPE){
 			simplePanel = new G2DFrame();
@@ -144,7 +164,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	public BenchmarkGUI(){
 		thread = new Thread(this);
 		thread.setPriority(Thread.MIN_PRIORITY);		
-		
+
 		//Create panels and widgets
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));        
@@ -172,7 +192,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderEmptyOvals = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
 		sliderFilledOvals = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_SHAPES/AnimeBenchmark.NB_SHAPE_TYPES, 0);
 		sliderImages = new JSlider(JSlider.VERTICAL, 0, AnimeBenchmark.MAX_NB_IMAGES, 0);
-		
+
 		//TOP PANEL
 		topPanel.add(fpsLabel);
 		topPanel.add(new JLabel());
@@ -186,9 +206,9 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		leftPanel.add(sliderFilledOvals);
 		leftPanel.add(sliderRects);
 		leftPanel.add(sliderImages);
-		
+
 		loadCanvas(currentCanvas);
-		
+
 		addWidgets();
 		thread.start();
 	}
@@ -224,29 +244,37 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		gljBut.setActionCommand("GLJPanel");
 		if(currentCanvas==GLJPANEL_TYPE)
 			gljBut.setSelected(true);
-		
+
 		glcBut = new JRadioButton("GLCanvas");
 		glcBut.setActionCommand("GLCanvas");
 		if(currentCanvas==GLCANVAS_TYPE)
 			glcBut.setSelected(true);
 
-		jfBut = new JRadioButton("Standard JFrame");
+		newtBut = new JRadioButton("NEWT");
+		newtBut.setActionCommand("NEWT");
+		if(currentCanvas==NEWT_TYPE)
+			newtBut.setSelected(true);
+		
+		jfBut = new JRadioButton("JPanel");
 		jfBut.setActionCommand("JFrame");
 		if(currentCanvas==JFRAME_TYPE)
 			jfBut.setSelected(true);		
-		
+
 		//Group the radio buttons.
 		canvasGroup.add(gljBut);
 		canvasGroup.add(glcBut);
+		canvasGroup.add(newtBut);
 		canvasGroup.add(jfBut);
 
 		//Register a listener for the radio buttons.
 		gljBut.addActionListener(this);
 		glcBut.addActionListener(this);
+		newtBut.addActionListener(this);
 		jfBut.addActionListener(this);
 
 		canvasRadioPanel.add(gljBut);
 		canvasRadioPanel.add(glcBut);
+		canvasRadioPanel.add(newtBut);		
 		canvasRadioPanel.add(jfBut);		
 
 		//SLiders
@@ -294,7 +322,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderImages.setPaintTicks(true);
 		sliderImages.setPaintLabels(true);
 		sliderImages.setSnapToTicks(true);
-}
+	}
 
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider)e.getSource();
@@ -341,9 +369,16 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			benchFrame.setVisible(true);
 		}
 		else if ("GLCanvas".equals(e.getActionCommand())) {
-			
+
 			removeCurrentCanvas();
 			currentCanvas=GLCANVAS_TYPE;			
+			this.loadCanvas(currentCanvas);
+			enableAgileOptions(true);
+			benchFrame.setVisible(true);
+		}
+		else if ("NEWT".equals(e.getActionCommand())) {
+			removeCurrentCanvas();
+			currentCanvas=NEWT_TYPE;			
 			this.loadCanvas(currentCanvas);
 			enableAgileOptions(true);
 			benchFrame.setVisible(true);

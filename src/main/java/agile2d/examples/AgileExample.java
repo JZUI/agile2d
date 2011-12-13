@@ -34,7 +34,6 @@ public class AgileExample implements GLEventListener, KeyListener {
 	
 	public AgileExample(Component root) {
 		this.root = root;
-		System.out.println("Constructor of AgileExample");
 	}
 
     public void reset(int w, int h) {
@@ -48,7 +47,6 @@ public class AgileExample implements GLEventListener, KeyListener {
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
-
 
 		// Defines frequency in which buffers (back and front) are changed
 		//gl.setSwapInterval(1);

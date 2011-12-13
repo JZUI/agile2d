@@ -11,8 +11,6 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 
-//import com.jogamp.newt.event.WindowAdapter;
-//import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 

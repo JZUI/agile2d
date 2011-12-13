@@ -89,13 +89,9 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		int[] samples = new int[2];
 		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
 		gl.glGetIntegerv(GL2.GL_SAMPLES, samples, 0);
-		System.out.println("Number of sample buffers: " + buf[0]);
-		System.out.println("Number of samples: " + samples[0]);
 
-
-		//Defines frequency in which buffers (back and front) are changed
+		//Defines frequency at which buffers (back and front) are changed
 		gl.setSwapInterval(1);
-
 
 		try {
 			img_buff = ImageIO.read(new File("world.jpg"));
@@ -294,7 +290,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 
 		if(args.length == 0){
 			System.out.println("\nBad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).");
-			System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
 			System.exit(0);
 		}
 		Frame frame = new Frame("Agile2D Demo");
@@ -311,7 +306,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			frame.add(canvas);
 			canvas.addGLEventListener(agile);
 			agile.setRoot(canvas);
-			System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
+			System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
 		}
 		else if(args[0].equals("GLJPanel")){
 			final GLJPanel panel = new GLJPanel(glCaps);

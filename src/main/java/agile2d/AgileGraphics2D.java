@@ -293,8 +293,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			int nb_stencil_bits[] = new int[1];
 			nb_stencil_bits[0] = 500;
 			gl.glGetIntegerv(GL2.GL_STENCIL_BITS, nb_stencil_bits, 0);
-			System.out.println("Gl STENCIL BITS:"+ nb_stencil_bits[0]);
-
 
 			// For images
 			maxTexSize = glState.getState(GL.GL_MAX_TEXTURE_SIZE);

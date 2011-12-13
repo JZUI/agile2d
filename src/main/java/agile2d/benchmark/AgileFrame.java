@@ -67,8 +67,6 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		int[] samples = new int[2];
 		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
 		gl.glGetIntegerv(GL2.GL_SAMPLES, samples, 0);
-		System.out.println("Number of sample buffers: " + buf[0]);
-		System.out.println("Number of samples: " + samples[0]);
 		// Defines frequency in which buffers (back and front) are changed
 		bench.resetCounter();
 		w = AnimeBenchmark.WIN_W;
