@@ -11,42 +11,51 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.awt.GLJPanel;
 
+//import com.jogamp.newt.event.WindowAdapter;
+//import com.jogamp.newt.event.WindowEvent;
+import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.newt.awt.NewtCanvasAWT;
+
+
 public class HelloWorld {
 	public final static int WIN_W = 800;
 	public final static int WIN_H = 640;
-	
-	private static final String ARG_ERROR = "Bad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (Agile2D with AWT component) or 'GLJPanel' (Agile2D with Swing component) or 'JFrame' (pure Graphics2D implementation, i.e., no Agile2D)";
-	private static final String GLJPANEL_OBSERVATION = "Observation: 'GLJPanel' enables antialiasing thru multisampling.";
-	
+
+	private static final String ARG_ERROR = "Bad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (Agile2D with AWT component) or 'GLJPanel' (Agile2D with Swing component) or 'NEWT' (Agile2D with NEWT component) or 'JFrame' (pure Graphics2D implementation, i.e., no Agile2D)";
+
 	public static void main(String[] args) {
 
 		if (args.length == 0) {
 			System.out.println("\n"+ARG_ERROR);
-			System.out.println(GLJPANEL_OBSERVATION+"\n\n");
 			System.exit(0);
 		}
 
-		if(args[0].equals("GLCanvas") || args[0].equals("GLJPanel") ){
+		if(args[0].equals("GLCanvas") || args[0].equals("GLJPanel") || args[0].equals("NEWT")){
 			final Frame frame = new Frame("Agile2D Demo");
 			final AgileExample agile = new AgileExample(null);
-			
+
 			GLProfile myGLProfile = GLProfile.get(GLProfile.GL2);
-			GLCapabilities glCaps = new GLCapabilities(myGLProfile);
-			glCaps.setDoubleBuffered(true);// request double buffer display mode
-			glCaps.setSampleBuffers(true);
-			glCaps.setNumSamples(AgileExample.NB_OF_SAMPLES_FOR_MULTISAMPLE);
+			GLCapabilities caps = new GLCapabilities(myGLProfile);
+			caps.setDoubleBuffered(true);// request double buffer display mode
+			caps.setSampleBuffers(true);
+			caps.setNumSamples(AgileExample.NB_OF_SAMPLES_FOR_MULTISAMPLE);
 
 			if (args[0].equals("GLCanvas")) {
-				final GLCanvas canvas = new GLCanvas(glCaps);
+				final GLCanvas canvas = new GLCanvas(caps);
 				frame.add(canvas);
 				canvas.addGLEventListener(agile);
 				agile.setRoot(canvas);
-				System.out.println(GLJPANEL_OBSERVATION+"\n\n");
 			} else if (args[0].equals("GLJPanel")) {
-				final GLJPanel panel = new GLJPanel(glCaps);
+				final GLJPanel panel = new GLJPanel(caps);
 				frame.add(panel);
 				panel.addGLEventListener(agile);
 				agile.setRoot(panel);
+			}
+			else if (args[0].equals("NEWT")) {
+				GLWindow window = GLWindow.create(caps); 
+				window.addGLEventListener(agile);        
+				NewtCanvasAWT canvas = new NewtCanvasAWT(window);
+				frame.add(canvas);
 			}
 			//Frame settings
 			frame.setSize(HelloWorld.WIN_W, HelloWorld.WIN_H);
@@ -72,7 +81,7 @@ public class HelloWorld {
 			System.exit(0);
 		}
 	}
-	
+
 	public static void drawHelloWorld(Graphics2D g_){
 		Font font_ = new Font("SansSerif", Font.BOLD, 48);
 		g_.setFont(font_);		
