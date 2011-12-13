@@ -32,7 +32,8 @@ public class AgileFrame implements GLEventListener, KeyListener{
 	private AnimeBenchmark bench;
 	private int keyPressed;
 	private int w, h;
-	private int current_strat=AgileGraphics2D.DEFAULT_STRATEGY;
+	//We set to a known strategy just in case the getCurrentStrategy fails
+	public int current_strat = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;;
 	
 	public void setStrategy(int strat_){
 		current_strat=strat_;
@@ -42,7 +43,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 	public AnimeBenchmark getRefToBench(){
 		if(bench==null)
-			System.out.println("Warning. Bench is empty");
+			System.out.println("GL Context still doesn't exist.\nTrying again...");
 		return bench;
 	}
 	
@@ -54,7 +55,8 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		bench = new AnimeBenchmark(chrono);
 		AgileGraphics2D.destroyInstance();
 		jgraphics = AgileGraphics2D.getInstance(drawable);
-		
+		current_strat = jgraphics.getRenderingStrategy();
+				
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
@@ -88,7 +90,6 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
-		//jgraphics.setStroke(new BasicStroke(0.1f));
 		
 		// Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
@@ -116,17 +117,8 @@ public class AgileFrame implements GLEventListener, KeyListener{
 	public void keyTyped(KeyEvent e) {
 	}
 
+	
 	public void keyPressed(KeyEvent e) {
-		keyPressed = e.getKeyCode();
-		switch (keyPressed) {
-		case KeyEvent.VK_SPACE:
-			System.out.println("Change strategy");
-			if(jgraphics.getRenderingStrategy() == AgileGraphics2D.DEFAULT_STRATEGY)
-				jgraphics.setRenderingStrategy(AgileGraphics2D.ROUGH_SCALE_STRATEGY);
-			else if(jgraphics.getRenderingStrategy() == AgileGraphics2D.ROUGH_SCALE_STRATEGY)
-				jgraphics.setRenderingStrategy(AgileGraphics2D.DEFAULT_STRATEGY);
-			break;
-		}
 	}
 	
 	public long getLastFPS(){

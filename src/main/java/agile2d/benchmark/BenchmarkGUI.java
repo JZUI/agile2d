@@ -28,20 +28,23 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	private final static int JFRAME_TYPE = 2;
 	private Thread thread;
 	private AnimeBenchmark benchRef=null;
-	private int current_strategy=AgileGraphics2D.DEFAULT_STRATEGY;
+	private int current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
+	
+	
+	static JFrame benchFrame;
+	static Animator animator;
 	
 	AgileFrame agile;
 	GLJPanel glPanel; 
 	GLCanvas glCanvas;
 	G2DFrame simplePanel;
 	JPanel mainPanel, leftPanel, topPanel, radioPanel, canvasRadioPanel;
-	static Animator animator;
 	JSlider sliderFFamilies, sliderFFRepeat, sliderRects, sliderEmptyOvals, sliderFilledOvals, sliderImages;
-	JRadioButton defaultStrButton, roughStrButton;
+	JRadioButton bestStrButton, roughStrButton;
 	JRadioButton gljBut, glcBut, jfBut;
 	ButtonGroup strGroup, canvasGroup;
 	JLabel fpsLabel;
-	static JFrame benchFrame;
+	
 	int currentCanvas = GLJPANEL_TYPE;
 	int false_counter=0;
 	
@@ -62,7 +65,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	
 	private void enableAgileOptions(boolean b_){			
 		this.roughStrButton.setEnabled(b_);
-		this.defaultStrButton.setEnabled(b_);
+		this.bestStrButton.setEnabled(b_);
 	}
 	
 	
@@ -92,8 +95,8 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	
 
 	private void loadCanvas(int newCanvas_){
-		current_strategy = AgileGraphics2D.DEFAULT_STRATEGY;
-		defaultStrButton.setSelected(true);
+		//current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;;
+		//bestStrButton.setSelected(true);
 		
 		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE){
 			//Prepare creation of viewPanel (GLView)
@@ -102,6 +105,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			glCaps.setDoubleBuffered(true);// request double buffer display mode
 			glCaps.setSampleBuffers(true);
 			glCaps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);
+			current_strategy = agile.current_strat;
 			if(newCanvas_==GLJPANEL_TYPE){
 				glPanel = new GLJPanel(glCaps);
 				mainPanel.add(glPanel);
@@ -140,7 +144,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	public BenchmarkGUI(){
 		thread = new Thread(this);
 		thread.setPriority(Thread.MIN_PRIORITY);		
-
+		
 		//Create panels and widgets
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));        
@@ -182,9 +186,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		leftPanel.add(sliderFilledOvals);
 		leftPanel.add(sliderRects);
 		leftPanel.add(sliderImages);
-
-		addWidgets();
+		
 		loadCanvas(currentCanvas);
+		
+		addWidgets();
 		thread.start();
 	}
 
@@ -192,25 +197,25 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 
 		//Strategy group buttons
 		strGroup = new ButtonGroup();
-		defaultStrButton = new JRadioButton("Default render strategy");
-		defaultStrButton.setActionCommand("DefaultRender");
-		if(current_strategy==AgileGraphics2D.DEFAULT_STRATEGY)
-			defaultStrButton.setSelected(true);
+		bestStrButton = new JRadioButton("Best Text Render Strategy");
+		bestStrButton.setActionCommand("BestRender");
+		if(current_strategy==AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY)
+			bestStrButton.setSelected(true);
 
-		roughStrButton = new JRadioButton("Rough render strategy");
+		roughStrButton = new JRadioButton("Rough Text Render Strategy");
 		roughStrButton.setActionCommand("RoughRender");
-		if(current_strategy==AgileGraphics2D.ROUGH_SCALE_STRATEGY)
+		if(current_strategy==AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY)
 			roughStrButton.setSelected(true);
 
 		//Group the radio buttons.
-		strGroup.add(defaultStrButton);
+		strGroup.add(bestStrButton);
 		strGroup.add(roughStrButton);
 
 		//Register a listener for the radio buttons.
-		defaultStrButton.addActionListener(this);
+		bestStrButton.addActionListener(this);
 		roughStrButton.addActionListener(this);
 
-		radioPanel.add(defaultStrButton);
+		radioPanel.add(bestStrButton);
 		radioPanel.add(roughStrButton);
 
 		//Canvas group buttons
@@ -323,10 +328,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 
 	public void actionPerformed(ActionEvent e) {
 		if ("RoughRender".equals(e.getActionCommand())) {
-			agile.setStrategy(AgileGraphics2D.ROUGH_SCALE_STRATEGY);
+			agile.setStrategy(AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY);
 		}
-		else if ("DefaultRender".equals(e.getActionCommand())) {
-			agile.setStrategy(AgileGraphics2D.DEFAULT_STRATEGY);
+		else if ("BestRender".equals(e.getActionCommand())) {
+			agile.setStrategy(AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY);
 		}
 		else if ("GLJPanel".equals(e.getActionCommand())) {
 			removeCurrentCanvas();
@@ -366,9 +371,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	}
 
 	public static void main(String[] args) {
-		//System.out.println("Before initSingleton");
 		GLProfile.initSingleton(true);
 		startGUI();
-
 	}
 }

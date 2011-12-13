@@ -153,8 +153,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	static final int PAINT_GRADIENT = 1;
 	static final int PAINT_TEXTURE = 2;
 
-	public final static int ROUGH_SCALE_STRATEGY = 0;
-	public final static int DEFAULT_STRATEGY = 1;
+	public final static int ROUGH_TEXT_RENDERING_STRATEGY = 0;
+	public final static int BEST_TEXT_RENDERING_STRATEGY = 1;
 
 	// GraphicsEngine class
 	//
@@ -189,7 +189,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private FontManager fontManager;
 		private Font              font;
 		private FontRenderContext frc;
-		private int preferedGlyphDrawStrategy;
 		private int currentRenderingStrategy;
 
 		//		private Shape             shapeClip;
@@ -274,7 +273,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			//this.gl = new IndirectGL(drawable.getGL());
 			this.glu = new GLU();
 			this.glState = AgileState.get(gl);
-			//			glState.glSetShadeModel(GL2.GL_FLAT);
+			//glState.glSetShadeModel(GL2.GL_FLAT);
 			//glState.glSetShadeModel(GL2.GL_SMOOTH);
 
 			glState.glEnableClientState(GL2.GL_VERTEX_ARRAY);
@@ -305,9 +304,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			buf = new BufferedImage(maxTexSize, maxTexSize, BufferedImage.TYPE_INT_ARGB);
 			bg = (Graphics2D)buf.getGraphics();
 
+			/*
 			//The glState.getState(GL_LINE_WIDTH_RANGE) call would crash the
 			//application since it doesn't return the state the value, instead we must
 			//pass a pointer to a float[] so that the two state values be transmitted
+			 */
 			float maxLineRange[] = new float[2];
 			float lineWidthGranularity[] = new float[1];
 			gl.glGetFloatv(GL2.GL_LINE_WIDTH_RANGE, maxLineRange, 0);
@@ -334,18 +335,16 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			imageManager = new ImageManager(gl, buf, bg);
 			stencilManager = new StencilManager(gl);
 			textureFont = new TextureFontRenderer();
-			//			TextureFontRenderer.setMaxTextureSize(maxTexSize);
+			//TextureFontRenderer.setMaxTextureSize(maxTexSize);
 			outlineFont = new OutlineFontRenderer(tesselator);
 			outlineRoughFont = new OutlineRoughFontRenderer(tesselator);
 			fontManager = new FontManager(gl, textureFont, outlineFont, outlineRoughFont);
 			//Strategy can be defined elsewhere as well
 			//The important thin is to remember that it will impact both drawString and drawGlyphVector methods
 			//That's why we call setStrategy() every time in the beginning of this methods
-			//preferedGlyphDrawStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
-			preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;
+			currentRenderingStrategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
 			//The quality hint can be set only once
 			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
-			currentRenderingStrategy = AgileGraphics2D.DEFAULT_STRATEGY;
 
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
@@ -417,11 +416,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		void doEnableAntialiasing() {
 			if (! antiAliasingHint)
 				return;
-			glState.glEnable(GL.GL_MULTISAMPLE);
+			glState.glEnable(GL2.GL_MULTISAMPLE);
 		}
 
 		void doDisableAntialiasing() {
-			glState.glDisable(GL.GL_MULTISAMPLE);
+			glState.glDisable(GL2.GL_MULTISAMPLE);
 		}
 
 		// PAINT AND COMPOSITE
@@ -1070,7 +1069,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslated(x, y, 0);
 
-			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
+			fontManager.setStrategy(this.currentRenderingStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frc, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawString(string);
 
@@ -1088,7 +1087,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
 
-			fontManager.setStrategy(this.preferedGlyphDrawStrategy);
+			fontManager.setStrategy(this.currentRenderingStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frc_gv, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawGlyphVector(g);
 
@@ -1250,20 +1249,18 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 * Set glyph rendering strategy.
 	 */
 	public void setRenderingStrategy(int strat_) {
-		if(engine.currentRenderingStrategy != strat_){
-			engine.currentRenderingStrategy = strat_;
-			switch(strat_){
-			case DEFAULT_STRATEGY:
-				engine.preferedGlyphDrawStrategy = FontManager.OUTLINE_STRATEGY;
-				//enable high-precision scaling in texture font rendering
-				engine.textureFont.setHighQuality(true);
-				break;
-			case ROUGH_SCALE_STRATEGY:
-				engine.preferedGlyphDrawStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
-				//disable high-precision scaling in texture font rendering
-				engine.textureFont.setHighQuality(false);
-				break;
-			}
+		engine.currentRenderingStrategy = strat_;
+		switch(strat_){
+		case BEST_TEXT_RENDERING_STRATEGY:
+			engine.currentRenderingStrategy = FontManager.OUTLINE_STRATEGY;
+			//enable high-precision scaling in texture font rendering
+			engine.textureFont.setHighQuality(true);
+			break;
+		case ROUGH_TEXT_RENDERING_STRATEGY:
+			engine.currentRenderingStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
+			//disable high-precision scaling in texture font rendering
+			engine.textureFont.setHighQuality(false);
+			break;
 		}
 	}
 
