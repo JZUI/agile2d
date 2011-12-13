@@ -33,7 +33,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	private AnimeBenchmark benchRef=null;
 	private int current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
 
-
 	static JFrame benchFrame;
 	static Animator animator;
 
