@@ -8,6 +8,8 @@
 package agile2d;
 
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Implements more efficient Rectangle operations than are defined in AWT.
@@ -64,5 +66,15 @@ class RectUtils {
 		int y2 = max(y + height, rect.y + rect.height);
 
 		rect.setBounds(x1, y1, x2-x1, y2-y1);
+	}
+	
+	static Rectangle2D transform(Rectangle2D r, AffineTransform at) {
+		double coords[] = {
+				r.getMinX(), r.getMinY(),
+				r.getMaxX(), r.getMaxY()
+		};
+		
+		at.transform(coords, 0, coords, 0, 2);
+		return new Rectangle2D.Double(coords[0], coords[1], coords[2], coords[3]);
 	}
 }

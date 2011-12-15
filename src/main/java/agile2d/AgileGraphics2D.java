@@ -957,6 +957,12 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		void doDrawShape(Shape shape) {
+			Rectangle2D bounds = shape.getBounds2D();
+			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
+			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
+			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
+			if ( (active.clipArea != null) && !( active.clipArea.intersects(tBounds)))
+				return;
 			if (useFastShapes && absLineWidth < maxLineWidth) {
 				// Fastest route - flatten the shape in object space and
 				// draw the vertices using GL Lines.
@@ -1235,11 +1241,10 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		setFont(DEFAULT_FONT);
 		setComposite(AlphaComposite.SrcOver);
 		setPaintMode();
-		setClip(null);
+		setClip((Shape)engine.windowBounds);
 		clearRenderingHints();
 		engine.doSetRenderingHints(renderingHints);
 		engine.doReset();
-
 		this.setRenderingStrategy(engine.currentRenderingStrategy);
 	}
 
