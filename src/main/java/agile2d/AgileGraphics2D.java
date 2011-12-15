@@ -1034,6 +1034,13 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		// All fill methods come here
 		private void fillShape(Shape shape, VertexAttributes attributes, boolean immutable, boolean convex) {
+			Rectangle2D bounds = shape.getBounds2D();
+			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
+			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
+			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
+			if ( (active.clipArea != null) && !( active.clipArea.intersects(tBounds)))
+				return;
+			
 			switch (paintMode) {
 			case PAINT_SOLID:
 				// Just fill the shape
