@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Font;
 
 import javax.media.opengl.*;
-import com.jogamp.newt.event.WindowAdapter;
-import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 
@@ -17,6 +15,10 @@ public class HelloWorldNEWT {
 	private static GLCapabilities caps;
 
 	static{
+		//Set this property to avoid "java.util.zip.ZipException" error messages
+		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
+		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
+		//
 		WIN_W = 800;
 		WIN_H = 640;
         GLProfile glp = GLProfile.getDefault();

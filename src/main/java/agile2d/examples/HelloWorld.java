@@ -20,9 +20,12 @@ public class HelloWorld {
 	public final static int WIN_H = 640;
 
 	private static final String ARG_ERROR = "Bad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (Agile2D with AWT component) or 'GLJPanel' (Agile2D with Swing component) or 'NEWT' (Agile2D with NEWT component) or 'JFrame' (pure Graphics2D implementation, i.e., no Agile2D)";
-
+	
 	public static void main(String[] args) {
-
+		//Set this property here to avoid "java.util.zip.ZipException" error messages
+		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
+		System.setProperty("jogamp.gluegen.UseTempJarCache","false");		
+		
 		if (args.length == 0) {
 			System.out.println("\n"+ARG_ERROR);
 			System.exit(0);

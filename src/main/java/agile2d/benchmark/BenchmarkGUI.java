@@ -405,6 +405,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	}
 
 	public static void main(String[] args) {
+		//Set this property to avoid "java.util.zip.ZipException" error messages
+		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
+		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
+		
 		GLProfile.initSingleton(true);
 		startGUI();
 	}

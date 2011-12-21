@@ -1,22 +1,22 @@
 /*****************************************************************************
-* Copyright (C) 2011, Jean-Daniel Fekete, Emmanuel Pietriga, Rodrigo Almeida*
-* ------------------------------------------------------------------------- *
-* This software is published under the terms of the BSD Software License    *
-* a copy of which has been included with this distribution in the           *
-* license-agile2d.txt file.                                                 *
-*****************************************************************************/
+ * Copyright (C) 2011, Jean-Daniel Fekete, Emmanuel Pietriga, Rodrigo Almeida*
+ * ------------------------------------------------------------------------- *
+ * This software is published under the terms of the BSD Software License    *
+ * a copy of which has been included with this distribution in the           *
+ * license-agile2d.txt file.                                                 *
+ *****************************************************************************/
 
 package agile2d.test;
 
 import agile2d.test.AgileSample;
 
 /**
-* <b>TestAgileSamples</b>
-* Inspired from the test of TestGearsAWT.java in JOGL
-* @author Rodrigo de Almeida
-* @version $Revision$
-*//**
-**/
+ * <b>TestAgileSamples</b>
+ * Inspired from the test of TestGearsAWT.java in JOGL
+ * @author Rodrigo de Almeida
+ * @version $Revision$
+ *//**
+ **/
 
 import java.lang.Math;
 
@@ -43,7 +43,6 @@ import org.junit.BeforeClass;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-
 public class TestAgileSample {
 	static GLProfile glp;
 	static Frame frame;
@@ -58,237 +57,238 @@ public class TestAgileSample {
 	final static private int RGB_TOLERANCE = 15;
 
 	@BeforeClass
-		public static void initClass() {
-			width = 512;
-			height = 512;
-			win_x=80;
-			win_y=120;
-			glp = GLProfile.getDefault();
-			Assert.assertNotNull(glp);
-			GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
-			glCaps.setDoubleBuffered(true);// request double buffer display mode
-				glCaps.setSampleBuffers(false);
-				glCaps.setNumSamples(2);
-				glCaps.setStencilBits(1);
-				
-				frame = new Frame("AgileCanvas Test");
-				Assert.assertNotNull(frame);
-				
-				glCanvas = new GLCanvas(glCaps);
-				
-				Assert.assertNotNull(glCanvas);
-				frame.add(glCanvas);
-				frame.setLocation(win_x, win_y);
-				frame.setSize(width, height);				
-				
-				sample = new AgileSample(null);
-				glCanvas.addGLEventListener(sample);
-				
-				frame.setUndecorated(true);
-				frame.setVisible(true);
-				
-				glCanvas.repaint();
-				
-				Assert.assertNotNull(frame);
-				Assert.assertNotNull(glCanvas);				
-				
-				//Normal Frame
-				frameg2d = new Frame("G2DCanvas Test");
-				g2dCanvas = new G2DSample();
-				frameg2d.add(g2dCanvas);
-				frameg2d.setLocation(win_x+width+50, win_y);
-				frameg2d.setSize(width, height);
-				frameg2d.setUndecorated(true);
-				frameg2d.setVisible(true);
-				
-				g2dCanvas.repaint();
-				System.out.println("Number of tolerated dirty pixels when comparing the reference rendering with the Agile rendering: "+TOLERANCE_PIXELS);
-		}
-	
+	public static void initClass() {
+		width = 512;
+		height = 512;
+		win_x=80;
+		win_y=120;
+		glp = GLProfile.getDefault();
+		Assert.assertNotNull(glp);
+		GLCapabilities glCaps = new GLCapabilities(GLProfile.get(GLProfile.GL2));
+		glCaps.setDoubleBuffered(true);// request double buffer display mode
+		glCaps.setSampleBuffers(false);
+		glCaps.setNumSamples(2);
+		glCaps.setStencilBits(1);
+
+		frame = new Frame("AgileCanvas Test");
+		Assert.assertNotNull(frame);
+
+		glCanvas = new GLCanvas(glCaps);
+
+		Assert.assertNotNull(glCanvas);
+		frame.add(glCanvas);
+		frame.setLocation(win_x, win_y);
+		frame.setSize(width, height);				
+
+		sample = new AgileSample(null);
+		glCanvas.addGLEventListener(sample);
+
+		frame.setUndecorated(true);
+		frame.setVisible(true);
+
+		glCanvas.repaint();
+
+		Assert.assertNotNull(frame);
+		Assert.assertNotNull(glCanvas);				
+
+		//Normal Frame
+		frameg2d = new Frame("G2DCanvas Test");
+		g2dCanvas = new G2DSample();
+		frameg2d.add(g2dCanvas);
+		frameg2d.setLocation(win_x+width+50, win_y);
+		frameg2d.setSize(width, height);
+		frameg2d.setUndecorated(true);
+		frameg2d.setVisible(true);
+
+		g2dCanvas.repaint();
+		System.out.println("Number of tolerated dirty pixels when comparing the reference rendering with the Agile rendering: "+TOLERANCE_PIXELS);
+
+	}
+
 	@AfterClass
-		public static void releaseClass() {
-			
-		}
-	
-	
+	public static void releaseClass() {
+
+	}
+
+
 	// TESTS SEQUENCE
 
 	@Test
-		public void testDrawRect() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawRect());
-			endUnit(context, true, 600, "rect", true, false);
-		}
+	public void testDrawRect() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawRect());
+		endUnit(context, true, 600, "rect", true, false);
+	}
 
 	@Test
-		public void prepareCanvas() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyClearRect());
-			endUnit(context, true, 600, "clearRect", true, false);
-		}
-	
-	@Test
-		public void testDrawRoundRect() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawRoundRect());
-			endUnit(context, true, 600, "roundRect", true, false);
-		}
-	
-	@Test
-		public void testDrawLine() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawLine());
-			endUnit(context, true, 600, "line", true, false);
-		}
-	
-	@Test
-		public void testDrawOval() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawOval());
-			endUnit(context, true, 600, "oval", true, false);
-		}
+	public void prepareCanvas() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyClearRect());
+		endUnit(context, true, 600, "clearRect", true, false);
+	}
 
 	@Test
-		public void transforms() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyTransforms());
-			endUnit(context, true, 1500, "transforms", true, false);
-		}
-	
-	@Test
-		public void testDrawString() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
-			endUnit(context, true, 5000, "string", true, false);
-		}
+	public void testDrawRoundRect() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawRoundRect());
+		endUnit(context, true, 600, "roundRect", true, false);
+	}
 
 	@Test
-		public void testDrawStringSize() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawStringSize());
-			endUnit(context, true, 5000, "stringSize", true, false);
-		}
-	
+	public void testDrawLine() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawLine());
+		endUnit(context, true, 600, "line", true, false);
+	}
+
+	@Test
+	public void testDrawOval() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawOval());
+		endUnit(context, true, 600, "oval", true, false);
+	}
+
+	@Test
+	public void transforms() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyTransforms());
+		endUnit(context, true, 1500, "transforms", true, false);
+	}
+
+	@Test
+	public void testDrawString() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawString());
+		endUnit(context, true, 5000, "string", true, false);
+	}
+
+	@Test
+	public void testDrawStringSize() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawStringSize());
+		endUnit(context, true, 5000, "stringSize", true, false);
+	}
+
 	@Test
 	public void testDrawStringScale() throws InterruptedException {
 		AglTestContext context = new AglTestContext(new AglTestStrategyDrawStringScale());
 		endUnit(context, true, 3000, "stringScale", true, false);
 	}
-	
-	@Test
-		public void testDrawGlyphVector() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVector());
-			endUnit(context, true, 4000, "glyphVector", true, false);
-		}
 
 	@Test
-		public void testDrawGlyphVectorSize() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVectorSize());
-			endUnit(context, true, 4000, "glyphVectorSize", true, false);
-		}
-	
+	public void testDrawGlyphVector() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVector());
+		endUnit(context, true, 4000, "glyphVector", true, false);
+	}
+
+	@Test
+	public void testDrawGlyphVectorSize() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVectorSize());
+		endUnit(context, true, 4000, "glyphVectorSize", true, false);
+	}
+
 	@Test
 	public void testDrawGlyphVectorScale() throws InterruptedException {
 		AglTestContext context = new AglTestContext(new AglTestStrategyDrawGlyphVectorScale());
 		endUnit(context, true, 3000, "glyphVectorScale", true, false);
 	}
-	
-	@Test
-		public void testFillOval() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyFillOval());
-			endUnit(context, true, 600, "fillOval", true, false);
-		}
-	
-	@Test
-		public void testDrawAlpha() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyDrawAlpha());
-			endUnit(context, true, 3500, "alpha", false, true);
-		}
-	
-	@Test
-		public void testGradient() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyGradient());
-			endUnit(context, true, 1500, "gradient", false, true);
-		}
-	
-	@Test
-		public void testStrokes() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyStrokes());
-			endUnit(context, true, 1500, "strokes", true, false);
-		}
 
 	@Test
-		public void testCurves() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyCurves());
-			endUnit(context, true, 1500, "curves", true, false);
-		}
+	public void testFillOval() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyFillOval());
+		endUnit(context, true, 600, "fillOval", true, false);
+	}
 
 	@Test
-		public void testSetGetColor() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategySetGetColor());
-			endUnit(context, false, 150, "", false, false);
-			Color[] color_tmp = (Color[])context.getObjectsStrategy();
-			Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
-		}
-	
-	
+	public void testDrawAlpha() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyDrawAlpha());
+		endUnit(context, true, 3500, "alpha", false, true);
+	}
+
 	@Test
-		public void testSetGetBackground() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategySetGetBackground());
-			endUnit(context, false, 150, "", false, false);
-			Color[] color_tmp = (Color[])context.getObjectsStrategy();
-			Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
-		}
-	
+	public void testGradient() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyGradient());
+		endUnit(context, true, 1500, "gradient", false, true);
+	}
+
 	@Test
-		public void testSetGetClipRect() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategySetGetClipRect());
-			endUnit(context, false, 150, "", false, false);
-			Rectangle[] clip_tmp = (Rectangle[])context.getObjectsStrategy();
-			Assert.assertEquals(clip_tmp[0], clip_tmp[1]);
-		}
-	
+	public void testStrokes() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyStrokes());
+		endUnit(context, true, 1500, "strokes", true, false);
+	}
+
 	@Test
-		public void testSetGetFont() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategySetGetFont());
-			endUnit(context, false, 150, "", false, false);
-			Font[] font_tmp = (Font[])context.getObjectsStrategy();
-			Assert.assertEquals(font_tmp[0], font_tmp[1]);
-		}
-	
+	public void testCurves() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyCurves());
+		endUnit(context, true, 1500, "curves", true, false);
+	}
+
 	@Test
-		public void testGetFontMetrics() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategyGetFontMetrics());
-			endUnit(context, false, 200, "", false, false);
-			FontMetrics[] fontM_tmp = (FontMetrics[])context.getObjectsStrategy();
-			Assert.assertNotNull(fontM_tmp[0]);
-		}
-	
+	public void testSetGetColor() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategySetGetColor());
+		endUnit(context, false, 150, "", false, false);
+		Color[] color_tmp = (Color[])context.getObjectsStrategy();
+		Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
+	}
+
+
 	@Test
-		public void testSetGetTransform() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategySetGetTransform());
-			endUnit(context, false, 400, "", false, false);
-			AffineTransform[] transf_tmp = (AffineTransform[])context.getObjectsStrategy();
-			Assert.assertEquals(transf_tmp[0], transf_tmp[1]);
-		}
-	
+	public void testSetGetBackground() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategySetGetBackground());
+		endUnit(context, false, 150, "", false, false);
+		Color[] color_tmp = (Color[])context.getObjectsStrategy();
+		Assert.assertEquals(color_tmp[0].getRGB(), color_tmp[1].getRGB());
+	}
+
 	@Test
-		public void testSetGetStroke() throws InterruptedException {
-			AglTestContext context = new AglTestContext(new AglTestStrategySetGetStroke());
-			endUnit(context, false, 150, "", false, false);
-			BasicStroke[] strk_tmp = (BasicStroke[])context.getObjectsStrategy();
-			Assert.assertEquals(strk_tmp[0], strk_tmp[1]);
-		}
-	
+	public void testSetGetClipRect() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategySetGetClipRect());
+		endUnit(context, false, 150, "", false, false);
+		Rectangle[] clip_tmp = (Rectangle[])context.getObjectsStrategy();
+		Assert.assertEquals(clip_tmp[0], clip_tmp[1]);
+	}
+
+	@Test
+	public void testSetGetFont() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategySetGetFont());
+		endUnit(context, false, 150, "", false, false);
+		Font[] font_tmp = (Font[])context.getObjectsStrategy();
+		Assert.assertEquals(font_tmp[0], font_tmp[1]);
+	}
+
+	@Test
+	public void testGetFontMetrics() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategyGetFontMetrics());
+		endUnit(context, false, 200, "", false, false);
+		FontMetrics[] fontM_tmp = (FontMetrics[])context.getObjectsStrategy();
+		Assert.assertNotNull(fontM_tmp[0]);
+	}
+
+	@Test
+	public void testSetGetTransform() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategySetGetTransform());
+		endUnit(context, false, 400, "", false, false);
+		AffineTransform[] transf_tmp = (AffineTransform[])context.getObjectsStrategy();
+		Assert.assertEquals(transf_tmp[0], transf_tmp[1]);
+	}
+
+	@Test
+	public void testSetGetStroke() throws InterruptedException {
+		AglTestContext context = new AglTestContext(new AglTestStrategySetGetStroke());
+		endUnit(context, false, 150, "", false, false);
+		BasicStroke[] strk_tmp = (BasicStroke[])context.getObjectsStrategy();
+		Assert.assertEquals(strk_tmp[0], strk_tmp[1]);
+	}
+
 	//End test : must be ***THE LAST ONE*** to be called in the list of tests
 	@Test
-		public void testMustBeLastOne() throws InterruptedException {
-			frame.setVisible(false);
-			Assert.assertEquals(false, frame.isVisible());
-			frame.remove(glCanvas);
-			frame.dispose();
-			frame=null;
-			glCanvas=null;
-		}
-	
+	public void testMustBeLastOne() throws InterruptedException {
+		frame.setVisible(false);
+		Assert.assertEquals(false, frame.isVisible());
+		frame.remove(glCanvas);
+		frame.dispose();
+		frame=null;
+		glCanvas=null;
+	}
+
 	private void endUnit(AglTestContext _context, boolean updateBothContexts, int delay, String basename, boolean testShape, boolean testColor) throws InterruptedException {
-		
+
 		//do what must be done in the Agile2D (opengl) context and call its drawing routines
 		sample.setContext(_context);
 		glCanvas.repaint();
-		
+
 		if(updateBothContexts==true){
 			//do what must be done in the Graphics2D context and call its drawing routines
 			g2dCanvas.setContext(_context);	
@@ -302,8 +302,8 @@ public class TestAgileSample {
 		if(testShape==true || testColor==true)
 			compareRenderings(basename, testShape, testColor);		
 	}
-	
-	
+
+
 	private void compareRenderings(String baseName, boolean testShape, boolean testColor){
 		System.out.println("Comparing "+baseName);
 		BufferedImage imgG2d, imgAg2d, img_mask, jit_mask, img_masked, img_diff, img_report;
@@ -328,7 +328,7 @@ public class TestAgileSample {
 			shape_ok=true;
 		else
 			shape_ok = all_ok = false;
-		
+
 
 		//Set variable build_diff (get diff image only when there's an error or when we should compare pixel rgb values)
 		if(!shape_ok || testColor==true)
@@ -342,13 +342,13 @@ public class TestAgileSample {
 
 			img_diff = buildDiff(imgG2d, imgAg2d, maxRGB);
 		}
-		
+
 		if(testColor && build_diff){
 			color_ok=true;
 			if(maxRGB[0]>RGB_TOLERANCE)
 				color_ok = all_ok = false;
 		}
-			
+
 		if(all_ok==false){
 			try{					
 				if(testShape==false)
@@ -376,9 +376,9 @@ public class TestAgileSample {
 		if(build_diff)
 			img_diff.flush();
 	}
-	
 
-        private BufferedImage buildReport(String testName, BufferedImage ref, BufferedImage gen, BufferedImage diff, BufferedImage afterMask, boolean testShape){
+
+	private BufferedImage buildReport(String testName, BufferedImage ref, BufferedImage gen, BufferedImage diff, BufferedImage afterMask, boolean testShape){
 		BufferedImage report = new BufferedImage((2*ref.getWidth())+100, 2*(ref.getHeight())+200, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d_ = (Graphics2D)report.createGraphics();
 		g2d_.setColor(Color.BLACK);
@@ -407,7 +407,7 @@ public class TestAgileSample {
 		int w=ref.getWidth();
 		int h=ref.getHeight();
 		BufferedImage mask = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);				
-		
+
 		for (y=0; y<h; y++) {
 			//get a row of pixels from the reference image
 			for(x=0; x<w; x++){
@@ -489,7 +489,7 @@ public class TestAgileSample {
 	private int distRGB(int r1, int g1, int b1, int r2, int g2, int b2){
 		int dist = (int)Math.sqrt(
 				(double)( Math.pow(r2-r1, 2.0) + Math.pow(g2-g1, 2.0) + Math.pow(b2-b1, 2.0) )
-				);
+		);
 		return dist;		
 	}
 

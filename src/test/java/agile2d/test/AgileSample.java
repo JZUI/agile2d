@@ -72,6 +72,10 @@ public class AgileSample implements GLEventListener, KeyListener {
 
 		//Defines frequency in which buffers (back and front) are changed
 		//gl.setSwapInterval(1);
+		
+		//Set text rendering strategy to the best one since we are looking for render quality
+		//ROUGH_TEXT_RENDERING_STRATEGY is the default one in order to obtain performance gains when zooming and animating text
+		jgraphics.setRenderingStrategy(AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY);
 	}
 
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {

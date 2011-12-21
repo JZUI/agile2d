@@ -287,7 +287,10 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	 *            arg list
 	 */
 	public static void main(String[] args) {
-
+		//Set this property here to avoid "java.util.zip.ZipException" error messages
+		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
+		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
+		
 		if(args.length == 0){
 			System.out.println("\nBad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).");
 			System.exit(0);
