@@ -31,13 +31,12 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	private final static int JFRAME_TYPE = 3;
 	private Thread thread;
 	private AnimeBenchmark benchRef=null;
-	private int current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
 
 	static JFrame benchFrame;
 	static Animator animator;
 
 	AgileFrame agile;
-	GLJPanel glPanel; 
+	GLJPanel glPanel;
 	GLCanvas glCanvas;
 	NewtCanvasAWT newtCanvas;
 	GLWindow glWindow;
@@ -67,7 +66,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 	}
 
 
-	private void enableAgileOptions(boolean b_){			
+	private void enableAgileOptions(boolean b_){
 		this.roughStrButton.setEnabled(b_);
 		this.bestStrButton.setEnabled(b_);
 	}
@@ -103,7 +102,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			mainPanel.remove(simplePanel);
 			simplePanel.stop();
 			simplePanel=null;
-		}		
+		}
 	}
 
 
@@ -112,11 +111,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		if(newCanvas_==GLJPANEL_TYPE || newCanvas_==GLCANVAS_TYPE || newCanvas_==NEWT_TYPE){
 			//Prepare creation of viewPanel (GLView)
 			agile = new AgileFrame();
-			GLCapabilities caps = new GLCapabilities(GLProfile.getDefault()); 
+			GLCapabilities caps = new GLCapabilities(GLProfile.getDefault());
 			caps.setDoubleBuffered(true);// request double buffer display mode
 			caps.setSampleBuffers(true);
 			caps.setNumSamples(AgileFrame.NB_OF_SAMPLES_FOR_MULTISAMPLE);
-			current_strategy = agile.current_strat;
 			if(newCanvas_==GLJPANEL_TYPE){
 				glPanel = new GLJPanel(caps);
 				mainPanel.add(glPanel);
@@ -125,7 +123,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				animator.add(glPanel);
 				glPanel.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
 				glPanel.setBorder(BorderFactory.createLoweredBevelBorder());
-			}	
+			}
 			else if (newCanvas_==GLCANVAS_TYPE){
 				glCanvas = new GLCanvas(caps);
 				mainPanel.add(glCanvas);
@@ -133,7 +131,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 
 				animator = new Animator(glCanvas);
 				animator.add(glCanvas);
-				glCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));			
+				glCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
 			}
 			else if (newCanvas_==NEWT_TYPE){
 				glWindow = GLWindow.create(caps);
@@ -142,11 +140,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 				newtCanvas = new NewtCanvasAWT(glWindow);
 				mainPanel.add(newtCanvas);
 				newtCanvas.setPreferredSize(new Dimension(CANVAS_W, CANVAS_H));
-			}			
+			}
 			//Start the animator specific to agile (part of JOGL)
 			animator.start();
 			benchRef=agile.getRefToBench();
-
 		}
 		else if (newCanvas_==JFRAME_TYPE){
 			simplePanel = new G2DFrame();
@@ -158,15 +155,16 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			benchRef=simplePanel.getRefToBench();
 		}
 		mainPanel.invalidate();
+
 	}
 
 	public BenchmarkGUI(){
 		thread = new Thread(this);
-		thread.setPriority(Thread.MIN_PRIORITY);		
+		thread.setPriority(Thread.MIN_PRIORITY);
 
 		//Create panels and widgets
 		mainPanel = new JPanel(new BorderLayout());
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));        
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 		topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(2, 2));
@@ -218,12 +216,12 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		strGroup = new ButtonGroup();
 		bestStrButton = new JRadioButton("Best Text Render Strategy");
 		bestStrButton.setActionCommand("BestRender");
-		if(current_strategy==AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY)
+		if(agile.getStrategy()==AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY)
 			bestStrButton.setSelected(true);
 
 		roughStrButton = new JRadioButton("Rough Text Render Strategy");
 		roughStrButton.setActionCommand("RoughRender");
-		if(current_strategy==AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY)
+		if(agile.getStrategy()==AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY)
 			roughStrButton.setSelected(true);
 
 		//Group the radio buttons.
@@ -253,11 +251,11 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		newtBut.setActionCommand("NEWT");
 		if(currentCanvas==NEWT_TYPE)
 			newtBut.setSelected(true);
-		
+
 		jfBut = new JRadioButton("JPanel");
 		jfBut.setActionCommand("JFrame");
 		if(currentCanvas==JFRAME_TYPE)
-			jfBut.setSelected(true);		
+			jfBut.setSelected(true);
 
 		//Group the radio buttons.
 		canvasGroup.add(gljBut);
@@ -273,8 +271,8 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 
 		canvasRadioPanel.add(gljBut);
 		canvasRadioPanel.add(glcBut);
-		canvasRadioPanel.add(newtBut);		
-		canvasRadioPanel.add(jfBut);		
+		canvasRadioPanel.add(newtBut);
+		canvasRadioPanel.add(jfBut);
 
 		//SLiders
 		sliderFFamilies.setBorder(BorderFactory.createTitledBorder("Fonts"));
@@ -286,7 +284,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFFamilies.setPaintLabels(true);
 
 		sliderFFRepeat.setBorder(BorderFactory.createTitledBorder("Repeat Font"));
-		sliderFFRepeat.setName("Repetitions");    
+		sliderFFRepeat.setName("Repetitions");
 		sliderFFRepeat.addChangeListener(this);
 		sliderFFRepeat.setMajorTickSpacing(1);
 		sliderFFRepeat.setPaintTicks(true);
@@ -294,28 +292,28 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		sliderFFRepeat.setPaintLabels(true);
 
 		sliderEmptyOvals.setBorder(BorderFactory.createTitledBorder("Empty Ovals"));
-		sliderEmptyOvals.setName("EmptyOvals");    
+		sliderEmptyOvals.setName("EmptyOvals");
 		sliderEmptyOvals.addChangeListener(this);
 		sliderEmptyOvals.setMajorTickSpacing(AnimeBenchmark.tick_interval);
 		sliderEmptyOvals.setPaintTicks(true);
-		sliderEmptyOvals.setPaintLabels(true);		
+		sliderEmptyOvals.setPaintLabels(true);
 
 		sliderFilledOvals.setBorder(BorderFactory.createTitledBorder("Full Ovals"));
-		sliderFilledOvals.setName("FilledOvals");    
+		sliderFilledOvals.setName("FilledOvals");
 		sliderFilledOvals.addChangeListener(this);
 		sliderFilledOvals.setMajorTickSpacing(AnimeBenchmark.tick_interval);
 		sliderFilledOvals.setPaintTicks(true);
-		sliderFilledOvals.setPaintLabels(true);		
+		sliderFilledOvals.setPaintLabels(true);
 
 		sliderRects.setBorder(BorderFactory.createTitledBorder("Rectangles"));
-		sliderRects.setName("Rects");    
+		sliderRects.setName("Rects");
 		sliderRects.addChangeListener(this);
 		sliderRects.setMajorTickSpacing(AnimeBenchmark.tick_interval);
 		sliderRects.setPaintTicks(true);
 		sliderRects.setPaintLabels(true);
 
 		sliderImages.setBorder(BorderFactory.createTitledBorder("Images"));
-		sliderImages.setName("Images");    
+		sliderImages.setName("Images");
 		sliderImages.addChangeListener(this);
 		sliderImages.setMajorTickSpacing(1);
 		sliderImages.setPaintTicks(true);
@@ -331,10 +329,10 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			}
 			else if(source.getName().equals("FontNumber")){
 				AnimeBenchmark.setNbFonts((int)source.getValue());
-			}			
+			}
 			else if(source.getName().equals("EmptyOvals")){
 				AnimeBenchmark.setNbEmptyOvals((int)source.getValue());
-			}				
+			}
 			else if(source.getName().equals("FilledOvals")){
 				AnimeBenchmark.setNbFullOvals((int)source.getValue());
 			}
@@ -343,7 +341,7 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 			}
 			else if(source.getName().equals("Images")){
 				AnimeBenchmark.setNbImages((int)source.getValue());
-			}	
+			}
 		}
 	}
 
@@ -370,45 +368,46 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		else if ("GLCanvas".equals(e.getActionCommand())) {
 
 			removeCurrentCanvas();
-			currentCanvas=GLCANVAS_TYPE;			
+			currentCanvas=GLCANVAS_TYPE;
 			this.loadCanvas(currentCanvas);
 			enableAgileOptions(true);
 			benchFrame.setVisible(true);
 		}
 		else if ("NEWT".equals(e.getActionCommand())) {
 			removeCurrentCanvas();
-			currentCanvas=NEWT_TYPE;			
+			currentCanvas=NEWT_TYPE;
 			this.loadCanvas(currentCanvas);
 			enableAgileOptions(true);
 			benchFrame.setVisible(true);
 		}
 		else if ("JFrame".equals(e.getActionCommand())) {
 			removeCurrentCanvas();
-			currentCanvas=JFRAME_TYPE;	
+			currentCanvas=JFRAME_TYPE;
 			this.loadCanvas(currentCanvas);
 			enableAgileOptions(false);
 			benchFrame.setVisible(true);
 		}
 
-	} 
+	}
 
 	private static void startGUI(){
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		//Frame settings
 		BenchmarkGUI bench = new BenchmarkGUI();
 		benchFrame = new JFrame("Agile2D Benchmark");
-		benchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		benchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		benchFrame.setContentPane(bench.mainPanel);
 		benchFrame.setSize(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
 		//
-		benchFrame.setVisible(true); 
+		benchFrame.setVisible(true);
+
 	}
 
 	public static void main(String[] args) {
 		//Set this property to avoid "java.util.zip.ZipException" error messages
 		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
 		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
-		
+
 		GLProfile.initSingleton(true);
 		startGUI();
 	}

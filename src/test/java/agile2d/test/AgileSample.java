@@ -51,7 +51,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 		else{
 			System.err.println("Error.\nAgileGraphics2D Object has not yet been created.");
 			return null;
-		}	
+		}
 	}
 
 	public void init(GLAutoDrawable drawable) {
@@ -62,7 +62,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: " + glu.gluGetString(GLU.GLU_VERSION));
 
-		//Check if MULTISAMPLE is avaiable	
+		//Check if MULTISAMPLE is avaiable
 		int[] buf = new int[2];
 		int[] samples = new int[2];
 		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
@@ -72,10 +72,10 @@ public class AgileSample implements GLEventListener, KeyListener {
 
 		//Defines frequency in which buffers (back and front) are changed
 		//gl.setSwapInterval(1);
-		
+
 		//Set text rendering strategy to the best one since we are looking for render quality
 		//ROUGH_TEXT_RENDERING_STRATEGY is the default one in order to obtain performance gains when zooming and animating text
-		jgraphics.setRenderingStrategy(AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY);
+		jgraphics.setFontRenderingStrategy(AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY);
 	}
 
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
@@ -91,7 +91,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 
 		// Call the glClear to clear the background
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-		
+
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
 
@@ -102,12 +102,12 @@ public class AgileSample implements GLEventListener, KeyListener {
 		//If gl_line_smooth is not enabled, stroke widths on java and opengl are identical
 		//whereas if smooth is activated, opengl is equivalent to javaStroke+1
 		//jgraphics.setStroke(new BasicStroke(1));
-		
+
 		//get the "default" font configuration (type and metrics)
 		jgraphics.setFont(g2d_sample.getFont());
 
 		//ANTIALIASING
-		//By the time this test was written, agile2d antialiasing was difficult to handle in a generic way since: 
+		//By the time this test was written, agile2d antialiasing was difficult to handle in a generic way since:
 		//1. to work on Linux, we must use GLJpanel instead of GLCanvas and we must set glCaps.setSampleBuffers(true)
 		//2. to work on OSX, we must set glCaps.setSampleBuffers(false) but we can't desactivate it by the HINTS
 		// jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
@@ -116,7 +116,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 		jgraphics.clearRect(0, 0, width, height);
 
 		//
-		//call test methods if context has been created		
+		//call test methods if context has been created
 		if(context!=null){
 			//Paint sample primitives
 			context.drawStrategy(jgraphics);
@@ -130,8 +130,8 @@ public class AgileSample implements GLEventListener, KeyListener {
 	}
 
 	public BufferedImage getBufferedImage(){
-		return buf_img;	
-	} 
+		return buf_img;
+	}
 
 	private BufferedImage createImageFromBuffer(GL2 gl){
 		ByteBuffer buffer = ByteBuffer.allocateDirect(width*height*4);
@@ -140,7 +140,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 		int[] pixelInts = new int[ width*height ];
 
 		//Points to first byte (red) in each row.
-		int p = width * height * 4; 
+		int p = width * height * 4;
 		int q; // Index into ByteBuffer
 		int i = 0; // Index into target int[]
 		int w4 = width * 4; // Number of bytes in each row
@@ -152,7 +152,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 				int iG = buffer.get(q++);
 				int iB = buffer.get(q++);
 				pixelInts[i++] = 0xFF000000 | ((iR & 0x000000FF) << 16) | ((iG & 0x000000FF) << 8) | (iB & 0x000000FF);
-			}			
+			}
 		}
 		bImage.setRGB( 0, 0, width, height, pixelInts, 0, width);
 		return bImage;

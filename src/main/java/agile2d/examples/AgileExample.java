@@ -22,7 +22,7 @@ import agile2d.AgileGraphics2D;
 
 /**
  * <b>AgileCanvas</b>
- * 
+ *
  */
 public class AgileExample implements GLEventListener, KeyListener {
 	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 2;
@@ -31,7 +31,7 @@ public class AgileExample implements GLEventListener, KeyListener {
 	private Component root;
 	private int keyPressed;
 	private boolean interactive_antialias = false;
-	
+
 	public AgileExample(Component root) {
 		this.root = root;
 	}
@@ -40,10 +40,10 @@ public class AgileExample implements GLEventListener, KeyListener {
     }
 
 	public void init(GLAutoDrawable drawable) {
-		GLU glu = new GLU();		
+		GLU glu = new GLU();
 		jgraphics = AgileGraphics2D.getInstance(drawable);
 		GL2 gl = drawable.getGL().getGL2();
-		
+
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
@@ -55,7 +55,7 @@ public class AgileExample implements GLEventListener, KeyListener {
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
 		if (root != null) {
 			root.setSize(width, height);
-			System.out.println("Resizing window to "+width+" x "+height);			
+			System.out.println("Resizing window to "+width+" x "+height);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class AgileExample implements GLEventListener, KeyListener {
 
 		if (interactive_antialias == true)
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
-		
+
 		HelloWorld.drawHelloWorld(jgraphics);
 	}
 

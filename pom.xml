@@ -22,7 +22,7 @@
       <url>http://repo1.maven.org/maven2</url>
     </repository>
     <!-- This repository puts in a maven repository the JOGL and Gluegen jar files
-    available on http://jogamp.org/deployment/v2.0-rc4/jar/ -->
+    available on http://jogamp.org/deployment/v2.0-rc5/jar/ -->
 	<repository>
 	  <id>internal</id>
 	  <name>Internal Third-party Repository for JOGL Libraries</name>
@@ -68,12 +68,12 @@
 	<dependency>
     	<groupId>org.jogamp.jogl</groupId>
     	<artifactId>jogl.all</artifactId>
-    	<version>v2.0-rc4</version>
+    	<version>v2.0-rc5</version>
 	</dependency>
 	<dependency>
 		<groupId>org.jogamp.gluegen</groupId>
 		<artifactId>gluegen-rt</artifactId>
-		<version>v2.0-rc4</version>
+		<version>v2.0-rc5</version>
 	</dependency>
 	<dependency>
 	    <groupId>junit</groupId>
@@ -116,7 +116,7 @@
 			<artifactItem>
 			  <groupId>org.jogamp.jogl</groupId>
 			  <artifactId>jogl-all-natives</artifactId>
-			  <version>v2.0-rc4</version>
+			  <version>v2.0-rc5</version>
  			  <classifier>${build.type}</classifier>
 			  <type>jar</type>
 			  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
@@ -126,7 +126,7 @@
 			<artifactItem>
 			  <groupId>org.jogamp.gluegen</groupId>
 			  <artifactId>gluegen-rt-natives</artifactId>
-			  <version>v2.0-rc4</version>
+			  <version>v2.0-rc5</version>
  			  <classifier>${build.type}</classifier>
 			  <type>jar</type>
               <includes>*.jnilib,*.lib,*.so,*.dll</includes>

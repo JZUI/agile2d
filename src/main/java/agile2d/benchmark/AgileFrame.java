@@ -22,45 +22,50 @@ import agile2d.AgileGraphics2D;
 
 /**
  * <b>AgileCanvas</b>
- * 
+ *
  */
 public class AgileFrame implements GLEventListener, KeyListener{
 	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
-
-	private Chrono chrono;	
+	private Chrono chrono;
 	private AgileGraphics2D jgraphics;
 	private AnimeBenchmark bench;
 	private int keyPressed;
 	private int w, h;
-	//We set to a known strategy just in case the getCurrentStrategy fails
-	public int current_strat = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;;
-	
-	public void setStrategy(int strat_){
-		current_strat=strat_;
+	private static int current_strategy = AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY;
+
+	public void setStrategy(int strat){
+		current_strategy = strat;
 		if(jgraphics!=null)
-			jgraphics.setRenderingStrategy(current_strat);
+			jgraphics.setFontRenderingStrategy(current_strategy);
+	}
+
+	public int getStrategy(){
+		if(jgraphics!=null)
+			return jgraphics.getFontRenderingStrategy();
+		else
+			return current_strategy;
 	}
 
 	public AnimeBenchmark getRefToBench(){
 		if(bench==null)
-			System.out.println("GL Context still doesn't exist.\nTrying again...");
+			System.out.println("GL Context not yet created.\nTrying agin.");
 		return bench;
 	}
-	
+
     @Override
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
     	GLU glu = new GLU();
-		chrono = new Chrono();		
+		chrono = new Chrono();
 		bench = new AnimeBenchmark(chrono);
 		AgileGraphics2D.destroyInstance();
 		jgraphics = AgileGraphics2D.getInstance(drawable);
-		current_strat = jgraphics.getRenderingStrategy();
-				
+		jgraphics.setFontRenderingStrategy(current_strategy);
+
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
-		
+
 
 		// Check if MULTISAMPLE is available
 		int[] buf = new int[2];
@@ -70,15 +75,16 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		// Defines frequency in which buffers (back and front) are changed
 		bench.resetCounter();
 		w = AnimeBenchmark.WIN_W;
-		h = AnimeBenchmark.WIN_H;		
+		h = AnimeBenchmark.WIN_H;
+
 	}
-	
+
     @Override
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
 			w=width;
-			h=height;			
+			h=height;
 	}
-	
+
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -88,26 +94,26 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
-		
+
 		// Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
 		jgraphics.clearRect(0, 0, w, h);
-		
+
 		AnimeBenchmark.drawFullOvals(jgraphics);
 		AnimeBenchmark.drawRects(jgraphics);
 		AnimeBenchmark.drawImages(jgraphics);
-		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);	
+		AnimeBenchmark.drawBigText(AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H, jgraphics);
 		AnimeBenchmark.drawEmptyOvals(jgraphics);
-		
+
 		bench.increment();
 		bench.step();
-			
+
 	}
 
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
 	}
-	
+
 	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
 			boolean deviceChanged) {
 	}
@@ -115,17 +121,17 @@ public class AgileFrame implements GLEventListener, KeyListener{
 	public void keyTyped(KeyEvent e) {
 	}
 
-	
+
 	public void keyPressed(KeyEvent e) {
 	}
-	
+
 	public long getLastFPS(){
 		if(bench!=null)
 			return 1000;
 		else
 			return 0;
 	}
-	
+
 	public void keyReleased(KeyEvent e) {
 	}
 }

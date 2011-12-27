@@ -189,7 +189,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private FontManager fontManager;
 		private Font              font;
 		private FontRenderContext frc;
-		private int currentRenderingStrategy;
+		//private int currentRenderingStrategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
+		//private int currentRenderingStrategy = AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY;
+
 
 		//		private Shape             shapeClip;
 		private TexturePaint      texturePaint;
@@ -251,6 +253,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		GraphicsEngine(GLAutoDrawable drawable) {
 			this.drawable = drawable;
+			FontManager.setInitRenderingStrategy(ROUGH_TEXT_RENDERING_STRATEGY);
 		}
 
 		private void checkForErrors() {
@@ -337,12 +340,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			outlineFont = new OutlineFontRenderer(tesselator);
 			outlineRoughFont = new OutlineRoughFontRenderer(tesselator);
 			fontManager = new FontManager(gl, textureFont, outlineFont, outlineRoughFont);
+			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
+
 			//Strategy can be defined elsewhere as well
 			//The important thin is to remember that it will impact both drawString and drawGlyphVector methods
 			//That's why we call setStrategy() every time in the beginning of this methods
-			currentRenderingStrategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
-			//The quality hint can be set only once
-			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
 
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
@@ -356,7 +358,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			inited = true;
 			if (DEBUG_CHECK_GL)
 				checkForErrors();
-			
 		}
 
 		void doActivate(AgileGraphics2D g) {
@@ -907,8 +908,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			int y3 = y1 + height;
 			int x4 = x1;
 			int y4 = y1 + height;
-			
-			
+
+
 			if (useFastShapes) {
 				if (absLineWidth < maxLineWidth) {
 					// For 4 vertices, glBegin/glEnd is faster than vertex arrays
@@ -916,7 +917,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 						gl.glEnable(GL2.GL_LINE_SMOOTH);
 						gl.glEnable(GL2.GL_POINT_SMOOTH);
 						gl.glPointSize((float)absLineWidth);
-						//Draw lines on the corners of the rectangle 
+						//Draw lines on the corners of the rectangle
 						gl.glBegin(GL2.GL_POINTS);
 						gl.glVertex2i(x1, y1);
 						gl.glVertex2i(x2, y2);
@@ -1040,7 +1041,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
 			if ( (active.clipArea != null) && !( active.clipArea.intersects(tBounds)))
 				return;
-			
+
 			switch (paintMode) {
 			case PAINT_SOLID:
 				// Just fill the shape
@@ -1080,7 +1081,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslated(x, y, 0);
 
-			fontManager.setStrategy(this.currentRenderingStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frc, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawString(string);
 
@@ -1098,7 +1098,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			gl.glPushMatrix();
 			gl.glTranslatef(x, y, 0);
 
-			fontManager.setStrategy(this.currentRenderingStrategy);
 			fontManager.updateStates(active, drawable, font, scale, frc_gv, frcAntialiasing, frcUsesFractionalMetrics, useFastShapes);
 			fontManager.drawGlyphVector(g);
 
@@ -1229,7 +1228,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		if (AgileGraphics2D.instance != null)
 			AgileGraphics2D.instance=null;
 	}
-	
+
 
 	GLAutoDrawable getDrawable() {
 		return engine.drawable;
@@ -1252,14 +1251,26 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		clearRenderingHints();
 		engine.doSetRenderingHints(renderingHints);
 		engine.doReset();
-		this.setRenderingStrategy(engine.currentRenderingStrategy);
+		//setTextRenderingStrategy(engine.currentRenderingStrategy);
 	}
 
 	/**
 	 * Set glyph rendering strategy.
 	 */
-	public void setRenderingStrategy(int strat_) {
+	public void setFontRenderingStrategy(int strat) {
+		if(engine.fontManager != null)
+			engine.fontManager.setRenderingStrategy(strat);
+		else
+			FontManager.setInitRenderingStrategy(strat);
+	}
+	/*public void setTextRenderingStrategy(int strat_) {
 		engine.currentRenderingStrategy = strat_;
+
+		//Check if textureFont renderer is ready
+		if(engine.textureFont == null)
+			return;
+
+		System.out.println("Trying strategy "+strat_);
 		switch(strat_){
 		case BEST_TEXT_RENDERING_STRATEGY:
 			engine.currentRenderingStrategy = FontManager.OUTLINE_STRATEGY;
@@ -1273,9 +1284,10 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			break;
 		}
 	}
+	*/
 
-	public int getRenderingStrategy() {
-		return engine.currentRenderingStrategy;
+	public int getFontRenderingStrategy() {
+		return engine.fontManager.getRenderingStrategy();
 	}
 
 	/**
