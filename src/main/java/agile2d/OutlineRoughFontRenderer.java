@@ -73,12 +73,12 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	private static final int MAX_PRE_RENDER_FONT_SIZE = 2048;
 	private static final int INIT_FONT_SIZE_LENGTH = 64;
 	private static final int GLYPHS_CACHE_MAX_SIZE = 5000;
-	
+
 	/** Memory Cache*/
 	private static Cache glyphCache;
 	private static int listFontSizes[];
 	private VertexArrayList currentGlyphVAL;
-	
+
 	//Static block to create list of font sizes that can be rendered in vertex arrays
 	static{
 		listFontSizes = new int[INIT_FONT_SIZE_LENGTH];
@@ -91,13 +91,13 @@ class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 			listFontSizes[i]=(int)Math.round(size_);
 			i++;
 		}while( (i<INIT_FONT_SIZE_LENGTH) && (size_ < MAX_PRE_RENDER_FONT_SIZE) );
-		
+
 		/** Memory Cache*/
 		glyphCache = new Cache(new CacheConfiguration("roughGlyphsCache",GLYPHS_CACHE_MAX_SIZE).eternal(true).memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LRU));
 		glyphCache.initialise();
 	}
 
-		
+
 	/** Reset memory cache, calling removeAll() Cache method */
 	public static void resetCache(){
 		glyphCache.removeAll();

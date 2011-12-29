@@ -32,8 +32,8 @@ class RectUtils {
             // Width or height is negative. No intersection.
             result.x = result.y = result.width = result.height = 0;
         else {
-	        result.x = x1; 
-            result.y = y1; 
+	        result.x = x1;
+            result.y = y1;
             result.width = x2 - x1;
             result.height = y2 - y1;
         }
@@ -55,7 +55,7 @@ class RectUtils {
 		        (inner.y+inner.height) <= y + height);
     }
 
-    /** 
+    /**
 	 * Computes union of rect and (x,y,width,height) without having to
 	 * allocate a new Rectangle instance.
 	 */
@@ -67,13 +67,13 @@ class RectUtils {
 
 		rect.setBounds(x1, y1, x2-x1, y2-y1);
 	}
-	
+
 	static Rectangle2D transform(Rectangle2D r, AffineTransform at) {
 		double coords[] = {
 				r.getMinX(), r.getMinY(),
 				r.getMaxX(), r.getMaxY()
 		};
-		
+
 		at.transform(coords, 0, coords, 0, 2);
 		return new Rectangle2D.Double(coords[0], coords[1], coords[2], coords[3]);
 	}

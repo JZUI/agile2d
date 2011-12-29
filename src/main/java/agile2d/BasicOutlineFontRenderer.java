@@ -21,7 +21,7 @@ import agile2d.geom.VertexArrayList;
 /**
  * Render Fonts from their outlines
  *
- * @author 
+ * @author
  * @version $Revision: 1.4 $
  */
 
@@ -29,12 +29,13 @@ public abstract class BasicOutlineFontRenderer extends BasicFontRenderer {
 
 	protected GlyphMetrics metrics[];
 	protected Tesselator tesselator;
+	protected AgileGraphics2D activeCopy;
 
 	static class CacheInfo {
 		Font font;
 		GlyphMetrics metrics[];
 		VertexArrayList vertices[];
-	
+
 		CacheInfo(Font font_) {
 			this.font = font_;
 			metrics = new GlyphMetrics[256];
@@ -84,6 +85,10 @@ public abstract class BasicOutlineFontRenderer extends BasicFontRenderer {
 			cache.removeLast();
 	}
 
+	public void updateActiveCopy(AgileGraphics2D active){
+		activeCopy = active;
+	}
+
 	public abstract boolean installFont(GLAutoDrawable drawable, Font font_, double scale, boolean aa, boolean ufm);
 	protected abstract boolean addTesselation(GLAutoDrawable drawable, int c);
-} 
+}

@@ -81,6 +81,8 @@ class FontManager {
 		this.frcUsesFractionalMetrics = frcUsesFractionalMetrics;
 		this.useFastShapes = useFastShapes;
 		this.ag2d_active = ag2d_active;
+		roughOutlineFont.updateActiveCopy(ag2d_active);
+		outlineFont.updateActiveCopy(ag2d_active);
 	}
 
 	public void setRenderingStrategy(int strategy){

@@ -176,32 +176,6 @@ class OutlineFontRenderer extends BasicOutlineFontRenderer {
 		}
 	}
 
-	/*
-    public void render(GLAutoDrawable drawable, GlyphVector g, double scale) {
-        if (!installed)
-            return;
-        int i;
-
-        GL2 gl = drawable.getGL().getGL2();
-
-        for (i = 0; i < g.getNumGlyphs(); i++) {
-            int c = g.getGlyphCode(i);
-
-	    System.out.println("Code in renderGlyph: "+c);
-            if (c > metrics.length)
-                continue;
-            if (installChar(drawable, c, listBaseGlyphs, verticesGlyphs)) {
-   	        System.out.println("Dans installChar of renderGlyph");
-                GlyphMetrics m = metrics[c];
-                gl.glCallList(listBaseGlyphs + c);
-//              gl.glCallList(listBase+c);
-                gl.glTranslated(m.getAdvanceX(), m.getAdvanceY(), 0);
-            }
-        }
-        installed = false;
-    }
-	 */
-
 
 	protected boolean addTesselation(GLAutoDrawable drawable, int c) {
 		int charIndex = latin1Chars[c];

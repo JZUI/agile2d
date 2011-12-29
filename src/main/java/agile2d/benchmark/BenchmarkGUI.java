@@ -408,8 +408,6 @@ public class BenchmarkGUI implements ActionListener, ChangeListener, Runnable{
 		//set the property below on the head of a static block or on the head of main() call
 		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
 		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
-
-		GLProfile.initSingleton(true);
 		startGUI();
 	}
 }

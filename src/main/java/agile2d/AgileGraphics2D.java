@@ -167,6 +167,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	// The Engine owns all the GL specific code. The rest of the
 	// AgileGraphics2D class contains only calls to the engine.
 	//
+
 	private static final class GraphicsEngine {
 		AgileGraphics2D active; // Indicates which Graphics object is currently active
 
@@ -895,6 +896,12 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		void doDrawRect(int x1, int y1, int width, int height) {
+
+			//Check if rectangle is outside and, in that case, abort routine
+			if( isOutside(new Rectangle2D.Double(x1, y1, width, height)) ){
+				return;
+			}
+
 			int x2 = x1 + width;
 			int y2 = y1;
 			int x3 = x1 + width;
@@ -934,13 +941,21 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 				checkForErrors();
 		}
 
-		void doDrawShape(Shape shape) {
-			Rectangle2D bounds = shape.getBounds2D();
+		boolean isOutside(Rectangle2D bounds){
 			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
 			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
-			//The Shape.intersects() method is faster although less precise than its Rectangle2D.intersects() counterpart
+			//The Shape.intersects() method is faster, although less precise, than its Area.intersects() counterpart
+			//See http://docs.oracle.com/javase/1.4.2/docs/api/java/awt/Shape.html#intersects(java.awt.geom.Rectangle2D)
 			if ( (active.clipArea != null) && !( ((Shape)active.clipArea).intersects(tBounds)))
+				return true;
+			else
+				return false;
+		}
+
+		void doDrawShape(Shape shape) {
+			//Check if shape is outside and, in this case, abort routine
+			if(isOutside(shape.getBounds2D()))
 				return;
 
 			if (useFastShapes && absLineWidth < maxLineWidth) {
@@ -1014,13 +1029,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		// All fill methods come here
 		private void fillShape(Shape shape, VertexAttributes attributes, boolean immutable, boolean convex) {
-			Rectangle2D bounds = shape.getBounds2D();
-			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
-			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
-			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
-
-			//The Shape.intersects() method is faster although less precise than its Rectangle2D.intersects() counterpart
-			if ( (active.clipArea != null) && !( ((Shape)active.clipArea).intersects(tBounds)))
+			//Check if shape is outside and, in this case, abort routine
+			if(isOutside(shape.getBounds2D()))
 				return;
 
 			switch (paintMode) {
@@ -2027,6 +2037,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			Color bgcolor, ImageObserver observer) {
 
 		makeCurrent();
+
+		//Check if image rectangle is outside and, in that case, abort routine
+		if( engine.isOutside(new Rectangle2D.Double(dx1, dy1, (dx2-dx1), (dy2-dy1))) ){
+			return false;
+		}
 
 		// Ensure that sx/sy are positive (dx/dy can be negative)
 		if (sx2 < sx1) {
