@@ -24,7 +24,7 @@ import javax.imageio.ImageIO;
 
 public class AnimeBenchmark{
 	public final static int WIN_W = 960;
-	public final static int WIN_H = 900;		
+	public final static int WIN_H = 900;
 	public final static int NB_FONTS=6;
 	public final static int NB_REPETITIONS=2;
 	public final static int MAX_NB_FONTS=12;
@@ -49,18 +49,18 @@ public class AnimeBenchmark{
 	private static double shapeRotation[] = new double[MAX_NB_SHAPES];
 	private static int[][] imgCoord = new int[MAX_NB_IMAGES][4];
 	private static double imgRotation[] = new double[MAX_NB_IMAGES];
-	private static double zFactor = 1.00;	
+	private static double zFactor = 1.00;
 	private static Color[] shapeColor = new Color[MAX_NB_SHAPES];
 	private static Font[] allFonts;
 	private static Font[] someFonts = new Font[MAX_NB_FONTS];
 	private static BufferedImage[] bufferedImages = new BufferedImage[MAX_NB_IMAGES];
 	private static String[] availableNames = {"imgBench1.jpg", "imgBench2.jpg", "imgBench3.jpg", "imgBench4.jpg", "imgBench5.jpg", "imgBench6.jpg", "imgBench7.jpg", "imgBench8.jpg", "imgBench9.jpg", "imgBench10.jpg", "imgBench11.jpg", "imgBench12.jpg", "imgBench13.jpg", "imgBench14.jpg", "imgBench15.jpg"};
-	private static String[] imageNames = new String[MAX_NB_IMAGES]; 
+	private static String[] imageNames = new String[MAX_NB_IMAGES];
 	private final static AffineTransform idTransform = new AffineTransform();
-	
+
 	private int frame_counter;
 	private long lastFPS;
-	private double incrementor = 1.0;	
+	private double incrementor = 1.0;
 	private Chrono chrono;
 
 	static{
@@ -77,7 +77,7 @@ public class AnimeBenchmark{
 		Random rotateRand = new Random();
 		for(int i=0; i<MAX_NB_SHAPES; i++){
 			shapeCoord[i][0] = shapeRand.nextInt(BenchmarkGUI.CANVAS_W)-50;
-			shapeCoord[i][1] = shapeRand.nextInt(BenchmarkGUI.CANVAS_H)-50;			
+			shapeCoord[i][1] = shapeRand.nextInt(BenchmarkGUI.CANVAS_H)-50;
 			shapeCoord[i][2] = shapeRand.nextInt(120)+20;
 			shapeCoord[i][3] = shapeRand.nextInt(120)+20;
 			shapeColor[i] = new Color(colorRand.nextInt(255), colorRand.nextInt(255), colorRand.nextInt(255));
@@ -85,11 +85,13 @@ public class AnimeBenchmark{
 		}
 
 		Random imgRand = new Random();
+		int init_img_xy = 5;
+		int img_xy_step = 10;
 		for(int i=0; i<MAX_NB_IMAGES; i++){
 			imageNames[i]= availableNames[i];
-			imgCoord[i][0] = imgRand.nextInt(30)+10;
-			imgCoord[i][1] = imgRand.nextInt(30)+10;
-			imgCoord[i][2] = 0;//width. the actual width&height of the image will be attributed as soon an image is loaded 
+			imgCoord[i][0] = init_img_xy+(img_xy_step*i);
+			imgCoord[i][1] = init_img_xy+(img_xy_step*i);
+			imgCoord[i][2] = 0;//width. the actual width&height of the image will be attributed as soon an image is loaded
 			imgCoord[i][3] = 0;//height
 			imgRotation[i] = imgRand.nextDouble()*(Math.PI/4);
 			bufferedImages[i]=null;
@@ -104,11 +106,11 @@ public class AnimeBenchmark{
 
 	private void computeFPS(){
 		chrono.stop();
-		long duration_sec = chrono.getDuration()/1000; 
+		long duration_sec = chrono.getDuration()/1000;
 		chrono.start();
 		if(duration_sec>0)
-			lastFPS = (this.frame_counter/duration_sec);  
-		else 
+			lastFPS = (this.frame_counter/duration_sec);
+		else
 			lastFPS=0;
 		resetCounter();
 	}
@@ -121,25 +123,25 @@ public class AnimeBenchmark{
 		//Incrementor ]0, 2*PI[
 		incrementor += 0.025;
 		incrementor %= (2*Math.PI);
-		//zFactor ]1.0, MAX_SCALE[ 
+		//zFactor ]1.0, MAX_SCALE[
 		zFactor = MAX_SCALE*(Math.sin(incrementor)+1.1);
 		//Gets the fps every DURATION_FPS (i.e., 10 secs)
 		long temp_duration= chrono.getTempDuration();
 		if(temp_duration>DURATION_FPS){
 			computeFPS();
-		}  
+		}
 	}
 
 	public void resetCounter(){
-		this.frame_counter = 0;    	
+		this.frame_counter = 0;
 	}
 
 	public void increment(){
-		this.frame_counter++;    	
-	}    
+		this.frame_counter++;
+	}
 
 	public Font getFont(int i){
-		return someFonts[i%NB_FONTS];  	
+		return someFonts[i%NB_FONTS];
 	}
 
 	// Sample display to test text rendering performance during zooming
@@ -157,12 +159,12 @@ public class AnimeBenchmark{
 	public static void drawRects(Graphics2D g2){
 		for(int i=0; i<nbRects; i+=2){
 			g2.setColor(shapeColor[i]);
-			g2.rotate(shapeRotation[i]);
+			//g2.rotate(shapeRotation[i]);
 			g2.scale(zFactor, zFactor);
 			g2.drawRect(shapeCoord[i][0], shapeCoord[i][1], shapeCoord[i][2], shapeCoord[i][3]);
 			g2.setTransform(idTransform);
 			g2.setColor(shapeColor[i+1]);
-			g2.rotate(shapeRotation[i+1]);
+			//g2.rotate(shapeRotation[i+1]);
 			g2.scale(zFactor, zFactor);
 			g2.fillRect(shapeCoord[i+1][0], shapeCoord[i+1][1], shapeCoord[i+1][2], shapeCoord[i+1][3]);
 			g2.setTransform(idTransform);
@@ -171,7 +173,6 @@ public class AnimeBenchmark{
 
 	public static void drawImages(Graphics2D g2){
 		for(int i=0; i<nbImages; i++){
-			g2.rotate(imgRotation[i]);
 			g2.scale(zFactor, zFactor);
 			g2.drawImage((Image)bufferedImages[i], imgCoord[i][0], imgCoord[i][1], imgCoord[i][2], imgCoord[i][3], null);
 			g2.setTransform(idTransform);
@@ -182,7 +183,6 @@ public class AnimeBenchmark{
 		int first_emptyOval = (MAX_NB_SHAPES/3);
 		for(int i=first_emptyOval; i<(first_emptyOval+nb_emptyOvals); i++){
 			g2.setColor(shapeColor[i]);
-			g2.rotate(shapeRotation[i]);
 			g2.scale(zFactor, zFactor);
 			g2.drawOval(shapeCoord[i][0], shapeCoord[i][1], shapeCoord[i][2], shapeCoord[i][3]);
 			g2.setTransform(idTransform);
@@ -193,7 +193,6 @@ public class AnimeBenchmark{
 		int first_fillOval = 2*(MAX_NB_SHAPES/3);
 		for(int i=first_fillOval; i<(first_fillOval+nb_fullOvals); i++){
 			g2.setColor(shapeColor[i]);
-			g2.rotate(shapeRotation[i]);
 			g2.scale(zFactor, zFactor);
 			g2.fillOval(shapeCoord[i][0], shapeCoord[i][1], shapeCoord[i][2], shapeCoord[i][3]);
 			g2.setTransform(idTransform);
@@ -201,23 +200,23 @@ public class AnimeBenchmark{
 	}
 
 	public static void setNbFonts(int n){
-		nb_fonts = n;		
+		nb_fonts = n;
 	}
 
 	public static void setNbRepetitions(int n){
-		nb_repetitions = n;		
+		nb_repetitions = n;
 	}
 
 	public static void setNbRects(int n){
-		nbRects = n;		
+		nbRects = n;
 	}
 
 	public static void setNbFullOvals(int n){
-		nb_fullOvals = n;		
-	}	
+		nb_fullOvals = n;
+	}
 
 	public static void setNbEmptyOvals(int n){
-		nb_emptyOvals = n;		
+		nb_emptyOvals = n;
 	}
 
 	public static void setNbImages(int n){
@@ -233,7 +232,7 @@ public class AnimeBenchmark{
 			}
 		}
 		//or if images have to be loaded and set width/height vars
-		else if(n>nbImages){		
+		else if(n>nbImages){
 			for(int i=nbImages; i<n; i++){
 				try {
 					bufferedImages[i] = ImageIO.read(new File(PATH_TO_IMAGES+imageNames[i]));
@@ -241,7 +240,7 @@ public class AnimeBenchmark{
 					imgCoord[i][3] = bufferedImages[i].getHeight();
 				} catch (IOException e) {
 					System.out.println("Problem while loading image file: "+imageNames[i]);
-					
+
 				}
 			}
 		}

@@ -29,6 +29,8 @@ class FontManager {
 	public static final int MIN_QUALITY = 0;
 	public static final int MEDIUM_QUALITY = 1;
 	public static final int MAX_QUALITY = 2;
+
+	//We set a "by default" strategy
 	private static int current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
 
 	private TextureFontRenderer textureFont;
@@ -106,30 +108,6 @@ class FontManager {
 		return roughOutlineQuality;
 	}
 
-
-	/*
-	//check if a given strategy is working in a given state (in the context of a given set of state variables)
-	//updateState must be called just before calling this function
-	private boolean checkStrategy(int strategy_type_){
-		switch(strategy_type_){
-		case TEXTURE_STRATEGY:
-			if (useFastShapes && textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics))
-				return true;
-			else
-				return false;
-		case OUTLINE_STRATEGY:
-			//Nothing to check
-			return true;
-		case ROUGH_OUTLINE_STRATEGY:
-			//Nothing to check
-			return true;
-		default:
-			System.err.println("Unknow strategy.\n Can't switch strategy.");
-			return false;
-		}
-	}
-	 */
-
 	//check if a texture_strategy is working in a given state (in the context of a given set of state variables)
 	//updateState must be called just before calling this
 	private boolean isTextureModeSupported(){
@@ -142,35 +120,22 @@ class FontManager {
 
 	public void drawString(String string_){
 		//By default, agile always try to use the texture strategy
-		//if(checkStrategy(TEXTURE_STRATEGY))
-		//	setStrategy(TEXTURE_STRATEGY);
 		if(isTextureModeSupported())
 			current_mode = TEXTURE_MODE;
 		else
 			current_mode = OUTLINE_MODE;
 		//then, check which strategy is on and call it
 		switch(current_mode){
-		case TEXTURE_MODE:
-			_drawTextureString(string_);
-			break;
-		case OUTLINE_MODE:
-			if(current_outline_option==PRECISE_OUTLINE_OPTION)
-				_drawOutlineString(string_);
-			else if(current_outline_option==ROUGH_OUTLINE_OPTION)
-				_drawRoughOutlineString(string_);
-			//_drawOutlineString(string_);
-			//System.out.println("\nDrawing new string with outline strategy");
+			case TEXTURE_MODE:
+				_drawTextureString(string_);
+				break;
 			//Too big to fit in a texture - draw from outlines instead
-			//_drawOutlineString(string_);
-			break;
-			/*
-			case ROUGH_OUTLINE_STRATEGY:
-				//System.out.println("\nDrawing new string with a rough outline strategy");
-				//Too big to fit in a texture - draw from ROUGH outline of the shapes
-				_drawRoughOutlineString(string_);
-			break;
-			default:
-			 */
+			case OUTLINE_MODE:
+				if(current_outline_option==PRECISE_OUTLINE_OPTION)
+					_drawOutlineString(string_);
+				else if(current_outline_option==ROUGH_OUTLINE_OPTION)
+					_drawRoughOutlineString(string_);
+				break;
 		}
 	}
 
@@ -191,7 +156,6 @@ class FontManager {
 	}
 
 	private void _drawOutlineString(String string) {
-		//System.out.println("Outline.");
 		//the block below temporarily cancel effect of the global scale transformation
 		if(scale != 1.0){
 			double scaledSize = font.getSize()*scale;
@@ -213,7 +177,6 @@ class FontManager {
 	}
 
 	private void _drawRoughOutlineString(String string) {
-		//System.out.println("Rough.");
 		double interScale, finalSize, aboveSize;
 		//scale to shrink the outline (nearest upper available font size) to the demanded font size
 		interScale=1.0;
@@ -243,7 +206,7 @@ class FontManager {
 			//	roughOutlineFont.render(drawable, string, interScale, font);
 		}
 		gl.glPopMatrix();
-		//End of temporary cancelling of global scale transformation
+		//End of temporary canceling of global scale transformation
 
 		if (DEBUG_CHECK_GL)
 			checkForErrors();
@@ -275,37 +238,6 @@ class FontManager {
 		}
 	}
 
-	/*
-	public void drawGlyphVector(GlyphVector gV){
-		//By default, agile always try to use the texture strategy
-		if(checkStrategy(TEXTURE_STRATEGY))
-			setStrategy(TEXTURE_STRATEGY);
-		//if not, check if the current strategy(required) is valid
-		else if(!checkStrategy(present_strategy)){
-			System.err.println("Warning. Cannot call drawGlyphVector since current drawGlyphVector strategy cannot be supported.");
-			return;
-		}
-		//then, check which strategy is on and call it
-		switch(present_strategy){
-			case TEXTURE_STRATEGY:
-				//System.out.println("\nDrawing new glyphVector with texture strategy");
-				_drawTextureGlyphVector(gV);
-			break;
-			case OUTLINE_STRATEGY:
-				//System.out.println("\nDrawing new glyphVector with outline strategy");
-				//Too big to fit in a texture - draw from outlines instead
-				_drawOutlineGlyphVector(gV);
-			break;
-			case ROUGH_OUTLINE_STRATEGY:
-				//System.out.println("\nDrawing new glyphVector with a rough outline strategy");
-				//Too big to fit in a texture - draw from ROUGH outline of the shapes
-				_drawRoughOutlineGlyphVector(gV, 1.0);
-			break;
-			default:
-			break;
-		}
-	}
-	 */
 
 	private void _drawTextureGlyphVector(GlyphVector g) {
 		textureFont.setIncremental(incrementalFontHint);
@@ -338,56 +270,3 @@ class FontManager {
 			checkForErrors();
 	}
 }
-
-/*
-//
-//Original routines in AgileGraphics2D.java
-//
-		void doDrawString(String string, float x, float y) {
-			if (font == null)
-				return;
-			gl.glPushMatrix();
-			gl.glTranslated(x, y, 0);
-
-			if (useFastShapes && textureFont.install(drawable, font, scale, frcAntialiasing, frcUsesFractionalMetrics)) {
-				// Fits in font cache - draw using texture memory
-					textureFont.setIncremental(incrementalFontHint);
-
-				drawTextureString(string);
-			//	System.out.println("Draw String on Texture");
-			} else {
-				// Too big to fit in a texture - draw from outlines instead
-				drawOutlineString(string);
-			//	System.out.println("Draw String as an outline... then tesselate");
-			}
-
-
-			gl.glPopMatrix();
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
-		}
-
-
-		void doDrawGlyphVector(GlyphVector g, float x, float y) {
-			Font font = g.getFont();
-			FontRenderContext frc = g.getFontRenderContext();
-
-			gl.glPushMatrix();
-			gl.glTranslatef(x, y, 0);
-
-			if (useFastShapes &&
-				textureFont.install(drawable, font, scale, frc.isAntiAliased(), frc.usesFractionalMetrics())) {
-				// Fits in font cache - draw using texture memory
-				textureFont.setIncremental(incrementalFontHint);
-				_drawTextureGlyphVector(g);
-			} else {
-				// Too big to fit in a texture - draw from outlines instead
-				_drawOutlineGlyphVector(g);
-			}
-
-			gl.glPopMatrix();
-			if (DEBUG_CHECK_GL)
-				checkForErrors();
-
-		}
- */

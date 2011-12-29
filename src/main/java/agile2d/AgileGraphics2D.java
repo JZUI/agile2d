@@ -189,8 +189,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private FontManager fontManager;
 		private Font              font;
 		private FontRenderContext frc;
-		//private int currentRenderingStrategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
-		//private int currentRenderingStrategy = AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY;
 
 
 		//		private Shape             shapeClip;
@@ -253,7 +251,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		GraphicsEngine(GLAutoDrawable drawable) {
 			this.drawable = drawable;
-			FontManager.setInitRenderingStrategy(ROUGH_TEXT_RENDERING_STRATEGY);
 		}
 
 		private void checkForErrors() {
@@ -341,10 +338,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			outlineRoughFont = new OutlineRoughFontRenderer(tesselator);
 			fontManager = new FontManager(gl, textureFont, outlineFont, outlineRoughFont);
 			fontManager.setRoughOutlineQuality(FontManager.MIN_QUALITY);
-
-			//Strategy can be defined elsewhere as well
-			//The important thin is to remember that it will impact both drawString and drawGlyphVector methods
-			//That's why we call setStrategy() every time in the beginning of this methods
 
 			frcAntialiasing = false;
 			frcUsesFractionalMetrics = false;
@@ -913,28 +906,12 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			if (useFastShapes) {
 				if (absLineWidth < maxLineWidth) {
 					// For 4 vertices, glBegin/glEnd is faster than vertex arrays
-					if(absLineWidth>1.0){ // && ROUND_CORNERS==true){
-						gl.glEnable(GL2.GL_LINE_SMOOTH);
-						gl.glEnable(GL2.GL_POINT_SMOOTH);
-						gl.glPointSize((float)absLineWidth);
-						//Draw lines on the corners of the rectangle
-						gl.glBegin(GL2.GL_POINTS);
-						gl.glVertex2i(x1, y1);
-						gl.glVertex2i(x2, y2);
-						gl.glVertex2i(x3, y3);
-						gl.glVertex2i(x4, y4);
-						gl.glEnd();
-					}
 					gl.glBegin(GL2.GL_LINE_LOOP);
 					gl.glVertex2i(x1, y1);
 					gl.glVertex2i(x2, y2);
 					gl.glVertex2i(x3, y3);
 					gl.glVertex2i(x4, y4);
 					gl.glEnd();
-					if(absLineWidth>1.0){
-						gl.glDisable(GL2.GL_LINE_SMOOTH);
-						gl.glDisable(GL2.GL_POINT_SMOOTH);
-					}
 				} else {
 					float lw = (float)(lineWidth / 2.0);
 					if (lw >= width || lw >= height) {
@@ -962,8 +939,10 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
 			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
-			if ( (active.clipArea != null) && !( active.clipArea.intersects(tBounds)))
+			//The Shape.intersects() method is faster although less precise than its Rectangle2D.intersects() counterpart
+			if ( (active.clipArea != null) && !( ((Shape)active.clipArea).intersects(tBounds)))
 				return;
+
 			if (useFastShapes && absLineWidth < maxLineWidth) {
 				// Fastest route - flatten the shape in object space and
 				// draw the vertices using GL Lines.
@@ -982,7 +961,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		}
 
-		// All drawn shapes go through this primative method (unless faster methods for drawing exist)
+		// All drawn shapes go through this primitive method (unless faster methods for drawing exist)
 		//
 		private void drawShape(Shape shape, VertexAttributes attributes, boolean immutable, boolean convex) {
 			if (paintMode != PAINT_SOLID) {
@@ -1039,7 +1018,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
 			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
-			if ( (active.clipArea != null) && !( active.clipArea.intersects(tBounds)))
+
+			//The Shape.intersects() method is faster although less precise than its Rectangle2D.intersects() counterpart
+			if ( (active.clipArea != null) && !( ((Shape)active.clipArea).intersects(tBounds)))
 				return;
 
 			switch (paintMode) {
@@ -1251,7 +1232,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		clearRenderingHints();
 		engine.doSetRenderingHints(renderingHints);
 		engine.doReset();
-		//setTextRenderingStrategy(engine.currentRenderingStrategy);
 	}
 
 	/**
@@ -1263,28 +1243,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		else
 			FontManager.setInitRenderingStrategy(strat);
 	}
-	/*public void setTextRenderingStrategy(int strat_) {
-		engine.currentRenderingStrategy = strat_;
-
-		//Check if textureFont renderer is ready
-		if(engine.textureFont == null)
-			return;
-
-		System.out.println("Trying strategy "+strat_);
-		switch(strat_){
-		case BEST_TEXT_RENDERING_STRATEGY:
-			engine.currentRenderingStrategy = FontManager.OUTLINE_STRATEGY;
-			//enable high-precision scaling in texture font rendering
-			engine.textureFont.setHighQuality(true);
-			break;
-		case ROUGH_TEXT_RENDERING_STRATEGY:
-			engine.currentRenderingStrategy = FontManager.ROUGH_OUTLINE_STRATEGY;
-			//disable high-precision scaling in texture font rendering
-			engine.textureFont.setHighQuality(false);
-			break;
-		}
-	}
-	*/
 
 	public int getFontRenderingStrategy() {
 		return engine.fontManager.getRenderingStrategy();
@@ -1694,7 +1652,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	}
 
 	/**
-	 * @see         java.awt.Graphics#setClip(int,int,int,int)
+	 * @see java.awt.Graphics#setClip(int,int,int,int)
 	 */
 	public void setClip(int x, int y, int width, int height) {
 		tmpRect.setBounds(x, y, width, height);
