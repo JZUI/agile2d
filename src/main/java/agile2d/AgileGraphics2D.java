@@ -945,6 +945,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
 			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
+				
+			//System.out.println("tbounds: "+tBounds);
+			//System.out.println("clip: "+active.clipArea.getBounds());
 			//The Shape.intersects() method is faster, although less precise, than its Area.intersects() counterpart
 			//See http://docs.oracle.com/javase/1.4.2/docs/api/java/awt/Shape.html#intersects(java.awt.geom.Rectangle2D)
 			if ( (active.clipArea != null) && !( ((Shape)active.clipArea).intersects(tBounds)))
