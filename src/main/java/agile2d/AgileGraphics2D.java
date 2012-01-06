@@ -2038,10 +2038,12 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		makeCurrent();
 
+		/*
 		//Check if image rectangle is outside and, in that case, abort routine
 		if( engine.isOutside(new Rectangle2D.Double(dx1, dy1, (dx2-dx1), (dy2-dy1))) ){
 			return false;
 		}
+		*/
 
 		// Ensure that sx/sy are positive (dx/dy can be negative)
 		if (sx2 < sx1) {

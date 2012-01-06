@@ -7,7 +7,6 @@
  *****************************************************************************/
 package agile2d.benchmark;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.event.*;
 
@@ -16,7 +15,6 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
 
 import agile2d.AgileGraphics2D;
 
@@ -29,9 +27,8 @@ public class AgileFrame implements GLEventListener, KeyListener{
 	private Chrono chrono;
 	private AgileGraphics2D jgraphics;
 	private AnimeBenchmark bench;
-	private int keyPressed;
 	private int w, h;
-	private static int current_strategy = AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY;
+	private static int current_strategy = AgileGraphics2D.ROUGH_TEXT_RENDERING_STRATEGY;
 
 	public void setStrategy(int strat){
 		current_strategy = strat;

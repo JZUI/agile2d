@@ -32,14 +32,11 @@ public class HelloWorld {
 		}
 
 		if(args[0].equals("GLCanvas") || args[0].equals("GLJPanel") || args[0].equals("NEWT")){
+	        GLProfile glp = GLProfile.getDefault();
+			GLCapabilities caps = new GLCapabilities(glp);
+
 			final Frame frame = new Frame("Agile2D Demo");
 			final AgileExample agile = new AgileExample(null);
-
-			GLProfile myGLProfile = GLProfile.get(GLProfile.GL2);
-			GLCapabilities caps = new GLCapabilities(myGLProfile);
-			caps.setDoubleBuffered(true);// request double buffer display mode
-			caps.setSampleBuffers(true);
-			caps.setNumSamples(AgileExample.NB_OF_SAMPLES_FOR_MULTISAMPLE);
 
 			if (args[0].equals("GLCanvas")) {
 				final GLCanvas canvas = new GLCanvas(caps);

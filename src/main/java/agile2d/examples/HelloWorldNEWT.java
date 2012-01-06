@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Font;
 
 import javax.media.opengl.*;
+
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 
@@ -12,21 +13,16 @@ import com.jogamp.newt.awt.NewtCanvasAWT;
 public class HelloWorldNEWT {
 	public static int WIN_W = 800;
 	public static int WIN_H = 640;
-	private static GLCapabilities caps;
 
-	static{
-		//Set this property to avoid "java.util.zip.ZipException" error messages
-		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
-		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
-		//
-		WIN_W = 800;
-		WIN_H = 640;
-        GLProfile glp = GLProfile.getDefault();
-        caps = new GLCapabilities(glp);
-	}
 	
     public static void main(String[] args) {
-        GLWindow window = GLWindow.create(caps); 
+		//Set this property here to avoid "java.util.zip.ZipException" error messages
+		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
+		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
+        GLProfile glp = GLProfile.getDefault();
+		GLCapabilities caps = new GLCapabilities(glp);
+		//
+    	GLWindow window = GLWindow.create(caps); 
     	final AgileExample agile = new AgileExample(null);
         window.addGLEventListener(agile);        
         NewtCanvasAWT canvas = new NewtCanvasAWT(window);

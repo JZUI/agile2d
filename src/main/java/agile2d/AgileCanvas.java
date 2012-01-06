@@ -52,17 +52,23 @@ import javax.media.opengl.GLProfile;
  * @version $Revision$
  */
 public class AgileCanvas implements GLEventListener, KeyListener {
+	private final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
+	private final static int WIN_W=800;
+	private final static int WIN_H=600;
+	private final static String PATH_TO_IMAGE = "src/main/resources/blue_marble.jpg";	
+	private static int camera_x = 0;
+	private static int camera_y = 0;
+	
 	private AgileGraphics2D jgraphics;
 	private Component       root;
 	private BufferedImage img_buff = null;
 	private int keyPressed, exampleNb;
 	private boolean interactive_antialias = false;
-	private static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 	private double rTheta = 1.0;
 	private double zFactor = 1.00;
 	private int fontIndex;
 	private Font[] allFonts;
-
+	
 	/**
 	 * Creates an Agile canvas from a Component.
 	 * 
@@ -94,7 +100,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		gl.setSwapInterval(1);
 
 		try {
-			img_buff = ImageIO.read(new File("world.jpg"));
+			img_buff = ImageIO.read(new File(PATH_TO_IMAGE));
 		} catch (IOException e) {}
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -122,12 +128,13 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		// Call the glClear to clear the background
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
+
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
 
 		//Paint sample primitives
 		jgraphics.setBackground(Color.WHITE);
-		jgraphics.clearRect(0, 0, 400, 300);
+		jgraphics.clearRect(0, 0, WIN_W, WIN_H);
 
 		if(interactive_antialias==true){
 			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);			
@@ -150,19 +157,19 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			break;
 
 		case 2:
-			drawDemoFonts(400, 300, jgraphics);
+			drawDemoFonts(WIN_W, WIN_H, jgraphics);
 			break;
 
 		case 3:
-			drawDemoAlpha(400, 300, jgraphics);
+			drawDemoAlpha(WIN_W, WIN_H, jgraphics);
 			break;
 
 		case 4:
-			drawDemoStrokes(400, 300, jgraphics);
+			drawDemoStrokes(WIN_W, WIN_H, jgraphics);
 			break;
 
 		case 5:
-			drawDemoCurves(400, 300, jgraphics);
+			drawDemoCurves(WIN_W, WIN_H, jgraphics);
 			break;
 
 		case 6:
@@ -174,7 +181,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			switchFont(fontIndex, jgraphics);
 
 		case 7:
-			drawBigText(400, 300, zFactor, jgraphics);
+			drawBigText(WIN_W, WIN_H, zFactor, jgraphics);
 			break;
 
 		case 8:
@@ -185,7 +192,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			break;
 
 		default:
-			drawSimpleCurves(400, 300, jgraphics);
+			drawSimpleCurves(WIN_W, WIN_H, jgraphics);
 			break;
 		}
 	}
@@ -225,23 +232,23 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	public void keyPressed(KeyEvent e){
 		keyPressed = e.getKeyCode();
 		switch(keyPressed){
-		case KeyEvent.VK_F1:
+		case KeyEvent.VK_1:
 			exampleNb=1;break;
-		case KeyEvent.VK_F2:
+		case KeyEvent.VK_2:
 			exampleNb=2;break;
-		case KeyEvent.VK_F3:
+		case KeyEvent.VK_3:
 			exampleNb=3;break;
-		case KeyEvent.VK_F4:
+		case KeyEvent.VK_4:
 			exampleNb=4;break;
-		case KeyEvent.VK_F5:
+		case KeyEvent.VK_5:
 			exampleNb=5;break;
-		case KeyEvent.VK_F6:
+		case KeyEvent.VK_6:
 			exampleNb=6;break;
-		case KeyEvent.VK_F7:
+		case KeyEvent.VK_7:
 			exampleNb=7;break;
-		case KeyEvent.VK_F8:
+		case KeyEvent.VK_8:
 			exampleNb=8;break;
-		case KeyEvent.VK_F9:
+		case KeyEvent.VK_9:
 			exampleNb=9;break;
 			//Switch fonts
 		case KeyEvent.VK_F:
@@ -272,7 +279,18 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		case KeyEvent.VK_O:
 			zFactor -= 0.1;
 			break;
-
+		case KeyEvent.VK_LEFT:
+			camera_x -= 5;
+			break;
+		case KeyEvent.VK_RIGHT:
+			camera_x += 5;
+			break;
+		case KeyEvent.VK_DOWN:
+			camera_y += 5;
+			break;
+		case KeyEvent.VK_UP:
+			camera_y -= 5;
+			break;
 		}
 		root.repaint();	
 	}
@@ -322,7 +340,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			System.exit(0);
 		}
 
-		frame.setSize(400, 300);
+		frame.setSize(WIN_W, WIN_H);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
@@ -335,7 +353,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 
 	//Sample display to test tesselation while rotating an arc 
 	void drawBigImage(int x, int y, AgileGraphics2D glGraphics){
-		//		glGraphics.drawImage((Image)img_buff, 100, 100, 400, 300, 1000, 1000, 3000, 2000, null);
+		glGraphics.translate(camera_x, camera_y);
 		glGraphics.drawImage((Image)img_buff, 0, 0, 1200, 800, null);
 	}
 

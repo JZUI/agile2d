@@ -8,7 +8,6 @@
 package agile2d.examples;
 
 import java.awt.Color;
-import java.awt.RenderingHints;
 import java.awt.event.*;
 import java.awt.Component;
 
@@ -25,12 +24,9 @@ import agile2d.AgileGraphics2D;
  *
  */
 public class AgileExample implements GLEventListener, KeyListener {
-	public final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 2;
-
 	private AgileGraphics2D jgraphics;
 	private Component root;
 	private int keyPressed;
-	private boolean interactive_antialias = false;
 
 	public AgileExample(Component root) {
 		this.root = root;
@@ -47,9 +43,6 @@ public class AgileExample implements GLEventListener, KeyListener {
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: "
 				+ glu.gluGetString(GLU.GLU_VERSION));
-
-		// Defines frequency in which buffers (back and front) are changed
-		//gl.setSwapInterval(1);
 	}
 
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
@@ -68,13 +61,11 @@ public class AgileExample implements GLEventListener, KeyListener {
 		// Restore all the Java2D Graphics defaults
 		jgraphics.resetAll(drawable);
 
-		// Paint sample primitives
+		// Clear background
 		jgraphics.setBackground(Color.WHITE);
 		jgraphics.clearRect(0, 0, HelloWorld.WIN_W, HelloWorld.WIN_H);
 
-		if (interactive_antialias == true)
-			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,	RenderingHints.VALUE_ANTIALIAS_ON);
-
+		//Actually draw 'Hello World' string
 		HelloWorld.drawHelloWorld(jgraphics);
 	}
 
@@ -100,7 +91,7 @@ public class AgileExample implements GLEventListener, KeyListener {
 		keyPressed = e.getKeyCode();
 		switch (keyPressed) {
 		case KeyEvent.VK_SPACE:
-			System.out.println("Stop thread");
+			System.out.println("Do something");
 			break;
 		}
 		root.repaint();
