@@ -72,6 +72,7 @@ import agile2d.ImageUtils;
  */
 public final class AgileGraphics2D extends Graphics2D implements Cloneable, VertexArraySupport {
 	private static volatile AgileGraphics2D instance = null;
+	private static boolean displayTilesGrid = false;
 	//
 	// GRAPHICS STATE
 	//
@@ -87,6 +88,19 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	private Area            clipArea = null;
 	private SavedClip       relClipArea = null;
 	private Rectangle       tmpRect = new Rectangle();
+
+
+	public static int getMaxTileSize(){
+		return ImageUtils.MAX_TEX_SIZE;
+	}
+
+	public static void setMaxTileSize(int newMaxTexSize){
+		ImageUtils.MAX_TEX_SIZE = newMaxTexSize;
+	}
+
+	public static void displayTilesGrid(boolean displayStatus){
+		displayTilesGrid = displayStatus;
+	}
 
 	private class SavedClip extends Area {
 		Area absClipArea;
@@ -945,7 +959,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
 			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
-				
+
 			//System.out.println("tbounds: "+tBounds);
 			//System.out.println("clip: "+active.clipArea.getBounds());
 			//The Shape.intersects() method is faster, although less precise, than its Area.intersects() counterpart
@@ -2116,7 +2130,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 					sx2_ = sx1+delta_x;
 					dx2_ = dx1 + ((delta_x * dst_w) / src_w);//delta_x must be deformed if src_w != dst_w
 					drawImage(img, dx1_, dy1_, dx2_, dy2_, sx1_, sy1_, sx2_, sy2_, bgcolor, observer);
-					//					drawRect(dx1_, dy1_, dx2_-dx1_, dy2_-dy1_);//uncoment this line to see the layout of the tiles
+					if(AgileGraphics2D.displayTilesGrid)
+						drawRect(dx1_, dy1_, dx2_-dx1_, dy2_-dy1_);//display the layout of the tiles
 					sx1_ = sx2_;
 					dx1_ = dx2_;
 				}

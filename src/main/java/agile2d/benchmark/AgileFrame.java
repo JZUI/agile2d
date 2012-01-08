@@ -84,6 +84,8 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
+		//AgileGraphics2D.setMaxTileSize(32);
+		//AgileGraphics2D.displayTilesGrid(true);
 		GL2 gl = drawable.getGL().getGL2();
 
 		// Call the glClear to clear the background

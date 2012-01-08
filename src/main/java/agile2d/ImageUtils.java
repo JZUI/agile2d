@@ -12,18 +12,18 @@ import java.awt.image.*;
 
 /**
  * Performs	operations on Java AWT BufferedImage data. <p>
- * 
- * In particular, provides methods to convert from Java	component 
- * ordering	(A,R,G,B) to OpenGL	component ordering (R, G, B, A)	- necessary	
- * because for some	unknowable reason Java and OpenGL's	large set of component 
+ *
+ * In particular, provides methods to convert from Java	component
+ * ordering	(A,R,G,B) to OpenGL	component ordering (R, G, B, A)	- necessary
+ * because for some	unknowable reason Java and OpenGL's	large set of component
  * orderings manage	to not overlap!
  */
 public class ImageUtils {
 	/**
 	 * Maximum W and H that a texture image may have. If its greater than that AgileGraphics will tile it in smaller n^2 tiles.
 	 * @Maximum W and H that a texture image may have. If its greater than that AgileGraphics will tile it in smaller n^2 tiles.
-	 */	
-	public final static int MAX_TEX_SIZE = 1024;
+	 */
+	public static int MAX_TEX_SIZE = 1024;
 	/**
 	 * Returns the power of	2 immediately larger or	equal to the specified size.
 	 * @param size the size
@@ -32,7 +32,7 @@ public class ImageUtils {
 	public static int nextPowerOf2(int size) {
 		if (size == 0)
 			return 0;
-		for (int i = 1; i <= MAX_TEX_SIZE; i= i << 1) {  
+		for (int i = 1; i <= MAX_TEX_SIZE; i= i << 1) {
 	        //no more than MAX_TEX_SIZE
 			if (i >= size)
 				return i;
@@ -108,16 +108,16 @@ public class ImageUtils {
 			}
 		}
 	}
-	
+
 	public static int ARGBtoRGBA(int srcPix) {
-		return 
+		return
 			((srcPix & 0xff00ff00))	|
 			((srcPix & 0x00ff0000) >> 16) |
 			((srcPix & 0x000000ff) << 16);
 	}
-	
+
 	public static int RGBAtoARGB(int srcPix) {
-		return 
+		return
 			((srcPix & 0xff00ff00))	|
 			((srcPix & 0x00ff0000) >> 16) |
 			((srcPix & 0x000000ff) << 16);
@@ -126,7 +126,7 @@ public class ImageUtils {
 	/**
 	 * Converts	a Java ARGB	Image into a GL	RGBA Image.	Takes the source data from
 	 * srcPixels and stores	the	result in dstPixels. (They can point to	the	same pixel
-	 * array to	perform	the	conversion inline).	
+	 * array to	perform	the	conversion inline).
 	 */
 	public static void convertARGBtoRGBA(int srcPixels[], int srcScanSize,
 					int sx1, int sy1, int width, int height, int dstPixels[], int dstScanSize) {
@@ -167,10 +167,10 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Converts	a Java ARGB	Image into a GL	RGBA Image.	In addition, this flips	
+	 * Converts	a Java ARGB	Image into a GL	RGBA Image.	In addition, this flips
 	 * the Y orientation of	the	image.
 	 */
-	public static void convertAndFlipARGBtoRGBA(int srcPixels[], int imageWidth, int imageHeight, 
+	public static void convertAndFlipARGBtoRGBA(int srcPixels[], int imageWidth, int imageHeight,
 									int width, int height) {
 		int	srcPos,	dstPos,	srcPix,	dstPix;
 
@@ -186,7 +186,7 @@ public class ImageUtils {
 
 			srcPos = srcBase;
 			dstPos = dstBase;
-			
+
 			int	x;
 			for	(x = 0;	x <	bwidth;	x += 8) {
 				// UNROLL 1
