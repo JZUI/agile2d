@@ -147,7 +147,7 @@
         <configuration>
           <archive>
             <manifest>
-              <packageName>agile2d.benchmark</packageName>
+              <packageName>agile2d</packageName>
               <addClasspath>true</addClasspath>
             </manifest>
             <manifestEntries>

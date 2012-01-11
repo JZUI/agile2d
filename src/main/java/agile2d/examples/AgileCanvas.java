@@ -5,10 +5,11 @@
  * a copy of which has been included with this distribution in the           *
  * license-agile2d.txt file.                                                 *
  *****************************************************************************/
-package agile2d;
+package agile2d.examples;
+
+import agile2d.AgileGraphics2D;
 
 import java.awt.Color;
-
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.BasicStroke;
@@ -96,9 +97,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
 		gl.glGetIntegerv(GL2.GL_SAMPLES, samples, 0);
 
-		//Defines frequency at which buffers (back and front) are changed
-		gl.setSwapInterval(1);
-
 		try {
 			img_buff = ImageIO.read(new File(PATH_TO_IMAGE));
 		} catch (IOException e) {}
@@ -143,19 +141,22 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		switch(exampleNb){
 		case 1:
 			jgraphics.translate(camera_x, camera_y);
+			//
+			/*
 			jgraphics.setColor(Color.GREEN);
 			jgraphics.drawRect(90, 90, 500, 500);
-/*			jgraphics.setColor(Color.YELLOW);
+			jgraphics.setColor(Color.YELLOW);
 			jgraphics.fillRect(120, 120, 60, 60);
 			jgraphics.setColor(Color.BLUE);
 			jgraphics.drawString("Test drawString", 50, 50);		
 			jgraphics.setColor(Color.RED);
 			jgraphics.drawRoundRect(150, 150, 100, 100, 40, 40);
+*/
 			jgraphics.setColor(Color.YELLOW);
 			jgraphics.drawOval(300, 300, 300, 300);
 			jgraphics.setColor(Color.BLUE);
 			jgraphics.fillOval(150, 150, 60, 60);
-*/			
+			
 			break;
 
 		case 2:
@@ -329,7 +330,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			frame.add(canvas);
 			canvas.addGLEventListener(agile);
 			agile.setRoot(canvas);
-			System.out.println("Observation: 'GLJPanel' enables antialiasing thru multisampling.\n\n");
 		}
 		else if(args[0].equals("GLJPanel")){
 			final GLJPanel panel = new GLJPanel(glCaps);
