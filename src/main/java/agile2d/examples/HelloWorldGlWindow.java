@@ -10,7 +10,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 
 
-public class HelloWorldNEWT {
+public class HelloWorldGLWindow {
 	public static int WIN_W = 800;
 	public static int WIN_H = 640;
 

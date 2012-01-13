@@ -75,6 +75,6 @@ class RectUtils {
 		};
 
 		at.transform(coords, 0, coords, 0, 2);
-		return new Rectangle2D.Double(coords[0], coords[1], coords[2], coords[3]);
+		return new Rectangle2D.Double(coords[0], coords[1], coords[2]-coords[0], coords[3]-coords[1]);
 	}
 }

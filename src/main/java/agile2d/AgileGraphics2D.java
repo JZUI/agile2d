@@ -921,10 +921,9 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		void doDrawRect(int x1, int y1, int width, int height) {
 
-			//Check if rectangle is outside and, in that case, abort routine
-			/*if( isOutside(new Rectangle2D.Double(x1, y1, width, height)) ){
+			//If rectangle is outside the clipping view, return routine immediately
+			if( isOutside(new Rectangle2D.Double(x1, y1, width, height)) )
 				return;
-			}*/
 
 			int x2 = x1 + width;
 			int y2 = y1;
@@ -967,11 +966,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		boolean isOutside(Rectangle2D bounds){
 			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
+			
+			
 			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
 
-			//System.out.println("tbounds: "+tBounds);
-			//System.out.println("clip: "+active.clipArea.getBounds());
 			//The Shape.intersects() method is faster, although less precise, than its Area.intersects() counterpart
 			//See http://docs.oracle.com/javase/1.4.2/docs/api/java/awt/Shape.html#intersects(java.awt.geom.Rectangle2D)
 			if ( (active.clipArea != null) && !( ((Shape)active.clipArea).intersects(tBounds)))
@@ -1042,11 +1041,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		}
 
 		void doFillShape(Shape shape) {
-			//Check if shape is outside and, in this case, abort routine
-			/*if(isOutside(shape.getBounds2D()))
-				return;
-			*/
-			
 			//			fillShape(shape, null, immutableShapeHint, convexHint);
 			tesselator.fill(gl, shape,  null, 1);
 		}
@@ -2068,14 +2062,6 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 			Color bgcolor, ImageObserver observer) {
 
 		makeCurrent();
-
-		/*
-		//Check if image rectangle is outside and, in that case, abort routine
-		if( engine.isOutside(new Rectangle2D.Double(dx1, dy1, (dx2-dx1), (dy2-dy1))) ){
-			return false;
-		}
-		*/
-
 		// Ensure that sx/sy are positive (dx/dy can be negative)
 		if (sx2 < sx1) {
 			int t = sx2;
