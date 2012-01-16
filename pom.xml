@@ -26,30 +26,29 @@
     Maven deploy command and parameters used to deploy JOGL jars and platform-specific jars (native libraries):
     . mvn deploy:deploy-file -DgroupId=org.jogamp.gluegen -DartifactId=gluegen-rt -Dversion=v2.0-rc5 -Dpackaging=jar -Dfile=third-party-artifacts/gluegen-rt.jar -DrepositoryId=agile2d.sf.net -Durl=scp://shell.sourceforge.net/home/project-web/agile2d/htdocs/maven
     . mvn deploy:deploy-file -DgroupId=org.jogamp.gluegen -DartifactId=gluegen-rt-natives -Dversion=v2.0-rc5 -Dpackaging=jar -Dfile=third-party-artifacts/gluegen-rt-natives-linux-amd64.jar -DrepositoryId=agile2d.sf.net -Dclassifier=linux-amd64 -Durl=scp://shell.sourceforge.net/home/project-web/agile2d/htdocs/maven
-    Observation: In order to the scp (or the FTP) work, it may be necessary to create a settings.xml file on your .m2 directory and to place in it the id, username and password of the account to the site hosting the repository.
+    Observation: In order to the scp (or the FTP) work, it may be necessary to create a settings.xml file on your ~/.m2 directory and to place in this file: id, username and password of the account to the site hosting the repository.
     -->
 	<repository>
         <!-- JOGL and Gluegen jar files from http://jogamp.org/deployment/v2.0-rc5/jar/ are available in the (maven) repository below -->
-      <id>agile2d.sf.net</id>
-      <url>http://agile2d.sourceforge.net/maven</url>
+        <id>agile2d.sf.net</id>
+        <url>http://agile2d.sourceforge.net/maven</url>
     </repository>
-   </repositories>
-	
-	<distributionManagement>
-		<repository>
-	      <id>agile2d.sf.net</id>
-	      <url>scp://shell.sourceforge.net/home/project-web/agile2d/htdocs/maven</url>
-	    </repository>
-	</distributionManagement>	
+</repositories>
+<distributionManagement>
+    <repository>
+        <id>agile2d.sf.net</id>
+        <url>scp://shell.sourceforge.net/home/project-web/agile2d/htdocs/maven</url>
+    </repository>
+</distributionManagement>	
 <profiles>
     <profile>
-      <id>osx</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <build.type>macosx-universal</build.type>
-      </properties>
+        <id>osx</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <properties>
+            <build.type>macosx-universal</build.type>
+        </properties>
     </profile>
     <profile>
       <id>lin32</id>
@@ -75,8 +74,8 @@
         <build.type>windows-amd64</build.type>
       </properties>
     </profile>
-    </profiles>
-   <dependencies>
+</profiles>
+<dependencies>
 	<dependency>
     	<groupId>org.jogamp.jogl</groupId>
     	<artifactId>jogl.all</artifactId>
@@ -102,21 +101,21 @@
  	<artifactId>slf4j-simple</artifactId>
  	<version>1.6.1</version>
  	</dependency>    
-	</dependencies>
-  <build>
-  <extensions>
-    <!-- Enabling the use of SSH / SCP -->
-    <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>2.2</version>
-    </extension>
-  </extensions>
-<plugins>
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-dependency-plugin</artifactId>
-  <executions>
+</dependencies>
+<build>
+    <extensions>
+    <!-- Enabling the use of SSH / SCP for deploying Agile2D (and JOGL) artifacts -->
+        <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh</artifactId>
+            <version>2.2</version>
+        </extension>
+    </extensions>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
     <execution>
       <id>unpack</id>
       <phase>compile</phase>
