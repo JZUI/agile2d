@@ -143,17 +143,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		switch(exampleNb){
 		case 1:
 			jgraphics.translate(camera_x, camera_y);
-			//
-			/*
-			jgraphics.setColor(Color.GREEN);
-			jgraphics.drawRect(90, 90, 500, 500);
-			jgraphics.setColor(Color.YELLOW);
-			jgraphics.fillRect(120, 120, 60, 60);
-			jgraphics.setColor(Color.BLUE);
-			jgraphics.drawString("Test drawString", 50, 50);		
-			jgraphics.setColor(Color.RED);
-			jgraphics.drawRoundRect(150, 150, 100, 100, 40, 40);
-*/
 			jgraphics.setColor(Color.YELLOW);
 			jgraphics.drawOval(300, 300, 300, 300);
 			jgraphics.setColor(Color.BLUE);
@@ -424,7 +413,6 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		tl = new TextLayout("CubicCurve2D", glGraphics.getFont(), frc);
 		xx = (float) (w*.5-tl.getBounds().getWidth()/2);
 		tl.draw(glGraphics, xx, h*.5f);
-		//        glGraphics.setStroke(new BasicStroke(5.0f));
 		glGraphics.setStroke(new BasicStroke(5.0f));
 
 		float yy = 20;
