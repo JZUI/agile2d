@@ -1,10 +1,9 @@
-/*****************************************************************************
- * Copyright (C) 2006 Jean-Daniel Fekete and INRIA, France                  *
- * ------------------------------------------------------------------------- *
- * This software is published under the terms of the X11 Software License    *
- * a copy of which has been included with this distribution in the           *
- * license.txt file.                                                         *
- *****************************************************************************/
+/************************************************************************************
+ * Copyright (C) 2012, Rodrigo de Almeida, Jean-Daniel Fekete and Emmanuel Pietriga *        
+ * Copyright (C) 2006, Jon Meyer, Ben Bederson and Jean-Daniel Fekete               *
+ * ---------------------------------------------------------------------------------*
+ * This software is published under the terms of the BSD Software License    	    *
+ ************************************************************************************/
 package agile2d;
 
 /**

@@ -6,14 +6,13 @@
   <name>Agile2D</name>
   <description>Agile2D is a framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API.</description>
   <url>http://sourceforge.net/projects/agile2d/</url>
-  <licenses>
-    <license>
-      <name>GNU Lesser General Public License (LGPL)</name>
-      <url>http://www.gnu.org/licenses/lgpl.html</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
+    <licenses>
+        <license>
+            <name>BSD Software License</name>
+            <url>http://creativecommons.org/licenses/BSD/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- By default, tests are skipped. To run them, use the flag "-DskipTests=false". e.g.: "mvn install -DskipTests=false" -->
