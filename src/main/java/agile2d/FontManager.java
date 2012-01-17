@@ -1,10 +1,12 @@
-/*****************************************************************************
- * Copyright (C) 2006, Jon Meyer, Ben Bederson and Jean-Daniel Fekete        *
- * ------------------------------------------------------------------------- *
- * This software is published under the terms of the BSD Software License    *
- * a copy of which has been included with this distribution in the           *
- * license-agile2d.txt file.                                                 *
- *****************************************************************************/
+/************************************************************************************
+ * Copyright (C) 2012, Rodrigo de Almeida, Jean-Daniel Fekete and Emmanuel Pietriga *        
+ * This is an upgraded version of the 2006 software of                              *
+ * Jon Meyer, Ben Bederson and Jean-Daniel Fekete                                   *
+ * ---------------------------------------------------------------------------------*
+ * This software is published under the terms of the BSD Software License    	    *
+ * a copy of which has been included with this distribution in the           	    *
+ * license-agile2d.txt file.                                                 	    *
+ ************************************************************************************/
 
 package agile2d;
 
@@ -16,9 +18,12 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 
 /**
- * Used to manage switching among possible drawString strategies.
+ *  Manage switching among different font rendering strategies.
  *
+ * @author Rodrigo de Almeida, Jean-Daniel Fekete
+ * @version $Revision: 3.0 $
  */
+
 class FontManager {
 	public static final int TEXTURE_MODE = 0;
 	public static final int OUTLINE_MODE = 1;

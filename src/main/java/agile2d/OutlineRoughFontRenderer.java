@@ -1,10 +1,12 @@
-/*****************************************************************************
- * Copyright (C) 2011, Rodrigo ALmeida
- * ------------------------------------------------------------------------- *
- * This software is published under the terms of the BSD Software License    *
- * a copy of which has been included with this distribution in the           *
- * license-agile2d.txt file.                                                 *
- *****************************************************************************/
+/************************************************************************************
+ * Copyright (C) 2012, Rodrigo de Almeida, Jean-Daniel Fekete and Emmanuel Pietriga *        
+ * This is an upgraded version of the 2006 software of                              *
+ * Jon Meyer, Ben Bederson and Jean-Daniel Fekete                                   *
+ * ---------------------------------------------------------------------------------*
+ * This software is published under the terms of the BSD Software License    	    *
+ * a copy of which has been included with this distribution in the           	    *
+ * license-agile2d.txt file.                                                 	    *
+ ************************************************************************************/
 package agile2d;
 
 import agile2d.geom.VertexArrayList;
@@ -21,10 +23,10 @@ import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
- * Render Fonts from their outlines
+ * Makes a key from the font name, style and size
  *
- * @author
- * @version $Revision: 1.4 $
+ * @author Rodrigo de Almeida
+ * @version $Revision: 3.0 $
  */
 
 class GlyphKey implements Comparable<GlyphKey>
@@ -63,6 +65,14 @@ class GlyphKey implements Comparable<GlyphKey>
 	}
 
 }
+
+
+/**
+ * Render Fonts from their outlines
+ *
+ * @author Rodrigo de Almeida
+ * @version $Revision: 3.0 $
+ */
 
 class OutlineRoughFontRenderer extends BasicOutlineFontRenderer {
 	//This is the "by default" value of this parameter
