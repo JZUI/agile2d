@@ -62,17 +62,6 @@ public class AgileSample implements GLEventListener, KeyListener {
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: " + glu.gluGetString(GLU.GLU_VERSION));
 
-		//Check if MULTISAMPLE is avaiable
-		int[] buf = new int[2];
-		int[] samples = new int[2];
-		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
-		gl.glGetIntegerv(GL2.GL_SAMPLES, samples, 0);
-		System.out.println("Number of sample buffers: " + buf[0]);
-		System.out.println("Number of samples: " + samples[0]);
-
-		//Defines frequency in which buffers (back and front) are changed
-		//gl.setSwapInterval(1);
-
 		//Set text rendering strategy to the best one since we are looking for render quality
 		//ROUGH_TEXT_RENDERING_STRATEGY is the default one in order to obtain performance gains when zooming and animating text
 		jgraphics.setFontRenderingStrategy(AgileGraphics2D.BEST_TEXT_RENDERING_STRATEGY);
@@ -134,24 +123,25 @@ public class AgileSample implements GLEventListener, KeyListener {
 	}
 
 	private BufferedImage createImageFromBuffer(GL2 gl){
-		ByteBuffer buffer = ByteBuffer.allocateDirect(width*height*4);
+		final int number_of_pixel_components = 4;
+		ByteBuffer buffer = ByteBuffer.allocateDirect(width*height*number_of_pixel_components);
 		gl.glReadPixels(0, 0, width, height, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buffer);
 		BufferedImage bImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		int[] pixelInts = new int[ width*height ];
 
-		//Points to first byte (red) in each row.
-		int p = width * height * 4;
+		int p = width * height * number_of_pixel_components;//Points to first byte (red) in each row.
 		int q; // Index into ByteBuffer
-		int i = 0; // Index into target int[]
-		int w4 = width * 4; // Number of bytes in each row
-		for(int row=0; row<width; row++){
+		int i = 0; // Index into pixelInts
+		int w4 = width * number_of_pixel_components; // Number of bytes in each row
+		for(int row=0; row<height; row++){
 			p -= w4;
 			q = p;
 			for(int col=0; col<width; col++){
 				int iR = buffer.get(q++);
 				int iG = buffer.get(q++);
 				int iB = buffer.get(q++);
-				pixelInts[i++] = 0xFF000000 | ((iR & 0x000000FF) << 16) | ((iG & 0x000000FF) << 8) | (iB & 0x000000FF);
+				q++;//ignores the last byte (alpha)
+				pixelInts[i++] = 0xFF000000 | ((iR & 0x000000FF) << 16) | ((iG & 0x000000FF) << 8) | (iB & 0x000000FF);		
 			}
 		}
 		bImage.setRGB( 0, 0, width, height, pixelInts, 0, width);
