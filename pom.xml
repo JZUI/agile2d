@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>agile2d</groupId>
   <artifactId>agile2d</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.1</version>
   <name>Agile2D</name>
   <description>Agile2D is a framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API.</description>
   <url>http://sourceforge.net/projects/agile2d/</url>
