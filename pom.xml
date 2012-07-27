@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>agile2d</groupId>
   <artifactId>agile2d</artifactId>
-  <version>3.0.1</version>
+  <version>3.0.2-SNAPSHOT</version>
   <name>Agile2D</name>
   <description>Agile2D is a framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API.</description>
   <url>http://sourceforge.net/projects/agile2d/</url>
@@ -219,6 +219,41 @@
                 <skipTests>${skipTests}</skipTests>
             </configuration> 		
         </plugin>
+		<plugin>
+		    <artifactId>maven-antrun-plugin</artifactId>
+		    <executions>
+		        <execution>
+		            <phase>validate</phase>
+		            <goals>
+		                <goal>run</goal>
+		            </goals>
+		            <configuration>
+		                <tasks>
+<echo>
+.
+
+--------------------------------------------------------------------------------
+
+Platform-dependent build. Use the appropriate profile:
+
+mvn -P &lt;platform&gt; &lt;goal&gt;
+
+with &lt;platform&gt; one the following:
+  * win32   Microsoft Windows, 32-bits JVM
+  * win64   Microsoft Windows, 64-bits JVM
+  * lin32   Linux, 32-bits JVM
+  * lin64   Linux, 64-bits JVM
+  * osx     Apple Mac OS X (default)
+
+--------------------------------------------------------------------------------
+
+.
+</echo>
+		                </tasks>
+		            </configuration>
+		        </execution>
+		    </executions>
+		</plugin>
 	</plugins>
   </build>
 </project>
