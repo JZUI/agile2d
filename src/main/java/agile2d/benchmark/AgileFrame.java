@@ -46,7 +46,9 @@ public class AgileFrame implements GLEventListener, KeyListener{
 		return bench;
 	}
 
-    @Override
+    /**
+     * {@inheritDoc}
+     */
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();
     	GLU glu = new GLU();
@@ -73,13 +75,17 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 	}
 
-    @Override
+
+	/**
+     * {@inheritDoc}
+     */
 	public void reshape(GLAutoDrawable arg0, int x, int y, int width, int height) {
 			w=width;
 			h=height;
 	}
 
-	@Override
+    
+
 	public void display(GLAutoDrawable drawable) {
 		//AgileGraphics2D.setMaxTileSize(32);
 		//AgileGraphics2D.displayTilesGrid(true);
@@ -106,13 +112,15 @@ public class AgileFrame implements GLEventListener, KeyListener{
 
 	}
 
-	@Override
+    /**
+     * {@inheritDoc}
+     */
 	public void dispose(GLAutoDrawable drawable) {
 	}
 
-	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
-			boolean deviceChanged) {
-	}
+//	public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
+//			boolean deviceChanged) {
+//	}
 
 	public void keyTyped(KeyEvent e) {
 	}

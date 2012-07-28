@@ -36,7 +36,9 @@ class GlyphKey implements Comparable<GlyphKey>
 		_key = glyphCode_+"_"+f_.getFontName()+"_"+f_.getStyle()+"_"+f_.getSize();
 	}
 
-	@Override
+	/**
+	 * {@inheritDoc}
+	 */
 	public int compareTo(GlyphKey other)
 	{
 		return _key.compareTo(other._key);

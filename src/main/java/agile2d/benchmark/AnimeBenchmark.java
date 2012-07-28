@@ -6,8 +6,6 @@
  ************************************************************************************/
 package agile2d.benchmark;
 
-import agile2d.benchmark.Chrono;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -15,8 +13,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -33,7 +31,7 @@ public class AnimeBenchmark{
 	public final static int NB_SHAPE_TYPES = 3;
 	public final static float INIT_FONT_SIZE = 6.0f;
 	public final static float MAX_SCALE = 9.0f;
-	public final static String PATH_TO_IMAGES = "src/main/resources/";
+	public final static String PATH_TO_IMAGES = "/";//src/main/resources/";
 
 	public static int tick_interval;
 
@@ -232,15 +230,23 @@ public class AnimeBenchmark{
 		}
 		//or if images have to be loaded and set width/height vars
 		else if(n>nbImages){
-			for(int i=nbImages; i<n; i++){
+			for(int i=nbImages; i<n; i++) {
+			    URL url = AnimeBenchmark.class.getResource(PATH_TO_IMAGES+imageNames[i]);
+			    if (url != null)
 				try {
-					bufferedImages[i] = ImageIO.read(new File(PATH_TO_IMAGES+imageNames[i]));
+					bufferedImages[i] = ImageIO.read(url);
 					imgCoord[i][2] = bufferedImages[i].getWidth();
 					imgCoord[i][3] = bufferedImages[i].getHeight();
 				} catch (IOException e) {
-					System.out.println("Problem while loading image file: "+imageNames[i]);
+				    System.err.println("Problem while loading image file: "+imageNames[i]);
 
 				}
+			    else {
+			        System.err.println("Image file does not exist: "+imageNames[i]);
+                    bufferedImages[i] = null;
+                    imgCoord[i][2] = 0;
+                    imgCoord[i][3] = 0;
+			    }
 			}
 		}
 		nbImages=n;

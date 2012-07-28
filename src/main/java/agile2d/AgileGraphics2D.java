@@ -1969,9 +1969,10 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	}
 
 	/**
-	 * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, java.awt.image.ImageObserver)
+	 * {@inheritDoc}
 	 */
 	public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
+        if (img == null) return true;
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 
@@ -1980,10 +1981,11 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	}
 
 	/**
-	 * @see java.awt.Graphics#drawImage(java.awt.Image, int, int, int, int, java.awt.image.ImageObserver)
-	 */
-	public boolean drawImage(Image img, int x, int y, int width, int height,
+     * {@inheritDoc}
+     */
+    public boolean drawImage(Image img, int x, int y, int width, int height,
 			ImageObserver observer) {
+        if (img == null) return true;	    
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 
@@ -1996,6 +1998,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 */
 	public boolean drawImage(Image img, int x, int y, Color bgcolor,
 			ImageObserver observer) {
+        if (img == null) return true;
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 
@@ -2008,6 +2011,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	 */
 	public boolean drawImage(Image img, int x, int y, int width, int height,
 			Color bgcolor, ImageObserver observer) {
+        if (img == null) return true;
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 
