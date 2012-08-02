@@ -19,7 +19,7 @@ You should pass as argument 'GLCanvas', 'GLJPanel', or 'NEWT' in order to make A
 The rendering performance (measured in frames per second) of GLCanvas and NEWT seems to be much superior to that of GLJPanel.
 
 . Launching the Benchmark application:
-	java -Djava.library.path=target/lib/ -cp target/agile2d-3.0.jar agile2d.benchmark.BenchmarkGUI 
+	java -Djava.library.path=target/lib/ -cp target/agile2d-3.0.jar:target/test-classes agile2d.benchmark.BenchmarkGUI
 Use this application to see the performance differences between Agile2D and Java2D but also among different GLDrawable implementations (GLCanvas, GLJPanel, NEWT) when drawing different quantities and types (text, images, shapes) of objects.
 
 . Porting existing Java2D applications to Agile2D:
