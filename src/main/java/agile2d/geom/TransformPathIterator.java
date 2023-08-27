@@ -17,82 +17,82 @@ import java.awt.geom.PathIterator;
  * @version $Revision: 1.2 $
  */
 public class TransformPathIterator implements PathIterator {
-	PathIterator iter;
-	AffineTransform transform;
+    PathIterator iter;
+    AffineTransform transform;
 
-	/**
-	 * Constructor for TransformPathIterator.
-	 * @param iter the iterator
-	 * @param transform the transform to apply
-	 */
-	public TransformPathIterator(PathIterator iter, AffineTransform transform) {
-		this.iter = iter;
-		this.transform = transform;
-	}
+    /**
+     * Constructor for TransformPathIterator.
+     * @param iter the iterator
+     * @param transform the transform to apply
+     */
+    public TransformPathIterator(PathIterator iter, AffineTransform transform) {
+        this.iter = iter;
+        this.transform = transform;
+    }
 
 
 
-	/**
-	 * @see java.awt.geom.PathIterator#currentSegment(double[])
-	 */
-	public int currentSegment(double[] coords) {
-		int type = iter.currentSegment(coords);
-		switch(type) {
-		case SEG_MOVETO:
-		case SEG_LINETO:
-			transform.transform(coords, 0, coords, 0, 1);
-			break;
-		case SEG_QUADTO:
-			transform.transform(coords, 0, coords, 0, 2);
-			break;
-		case SEG_CUBICTO:
-			transform.transform(coords, 0, coords, 0, 3);
-			break;
-		case SEG_CLOSE:
-		}
-		return type;
-	}
+    /**
+     * @see java.awt.geom.PathIterator#currentSegment(double[])
+     */
+    public int currentSegment(double[] coords) {
+        int type = iter.currentSegment(coords);
+        switch(type) {
+        case SEG_MOVETO:
+        case SEG_LINETO:
+            transform.transform(coords, 0, coords, 0, 1);
+            break;
+        case SEG_QUADTO:
+            transform.transform(coords, 0, coords, 0, 2);
+            break;
+        case SEG_CUBICTO:
+            transform.transform(coords, 0, coords, 0, 3);
+            break;
+        case SEG_CLOSE:
+        }
+        return type;
+    }
 
-	/**
-	 * @see java.awt.geom.PathIterator#currentSegment(float[])
-	 */
-	public int currentSegment(float[] coords) {
-		int type = iter.currentSegment(coords);
-		switch(type) {
-		case SEG_MOVETO:
-		case SEG_LINETO:
-			transform.transform(coords, 0, coords, 0, 1);
-			break;
-		case SEG_QUADTO:
-			transform.transform(coords, 0, coords, 0, 2);
-			break;
-		case SEG_CUBICTO:
-			transform.transform(coords, 0, coords, 0, 3);
-			break;
-		case SEG_CLOSE:
-		}
-		return type;
-	}
+    /**
+     * @see java.awt.geom.PathIterator#currentSegment(float[])
+     */
+    public int currentSegment(float[] coords) {
+        int type = iter.currentSegment(coords);
+        switch(type) {
+        case SEG_MOVETO:
+        case SEG_LINETO:
+            transform.transform(coords, 0, coords, 0, 1);
+            break;
+        case SEG_QUADTO:
+            transform.transform(coords, 0, coords, 0, 2);
+            break;
+        case SEG_CUBICTO:
+            transform.transform(coords, 0, coords, 0, 3);
+            break;
+        case SEG_CLOSE:
+        }
+        return type;
+    }
 
-	/**
-	 * @see java.awt.geom.PathIterator#getWindingRule()
-	 */
-	public int getWindingRule() {
-		return iter.getWindingRule();
-	}
+    /**
+     * @see java.awt.geom.PathIterator#getWindingRule()
+     */
+    public int getWindingRule() {
+        return iter.getWindingRule();
+    }
 
-	/**
-	 * @see java.awt.geom.PathIterator#isDone()
-	 */
-	public boolean isDone() {
-		return iter.isDone();
-	}
+    /**
+     * @see java.awt.geom.PathIterator#isDone()
+     */
+    public boolean isDone() {
+        return iter.isDone();
+    }
 
-	/**
-	 * @see java.awt.geom.PathIterator#next()
-	 */
-	public void next() {
-		iter.next();
-	}
+    /**
+     * @see java.awt.geom.PathIterator#next()
+     */
+    public void next() {
+        iter.next();
+    }
 
 }

@@ -20,13 +20,13 @@ import javax.swing.*;
  *
  */
 public class G2DExample extends JFrame {
-	private static Graphics2D g2;
+    private static Graphics2D g2;
 
-	public void paint(Graphics g) {
-		// Paint sample primitives
-		g2 = (Graphics2D)g;
-		g2.setBackground(Color.WHITE);
-		g2.clearRect(0, 0, HelloWorld.WIN_W, HelloWorld.WIN_H);
-		HelloWorld.drawHelloWorld(g2);
-	}
+    public void paint(Graphics g) {
+        // Paint sample primitives
+        g2 = (Graphics2D)g;
+        g2.setBackground(Color.WHITE);
+        g2.clearRect(0, 0, HelloWorld.WIN_W, HelloWorld.WIN_H);
+        HelloWorld.drawHelloWorld(g2);
+    }
 }

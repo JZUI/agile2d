@@ -31,8 +31,8 @@ public class VertexAttributes {
     private boolean smooth;
 
     public VertexAttributes(int reserve) {
-		bcolorBuffer = VertexArray.newByteBuffer(reserve*4);
-    	colorBuffer = bcolorBuffer.asIntBuffer();
+        bcolorBuffer = VertexArray.newByteBuffer(reserve*4);
+        colorBuffer = bcolorBuffer.asIntBuffer();
     }
 
     public VertexAttributes() {
@@ -43,9 +43,9 @@ public class VertexAttributes {
         return top;
     }
 
-	/**
-	 * Returns a copy of the per-vertex data as an IntBuffer.
-	 */
+    /**
+     * Returns a copy of the per-vertex data as an IntBuffer.
+     */
     public java.nio.IntBuffer getData() {
         java.nio.IntBuffer ret = VertexArray.newByteBuffer(top*4).asIntBuffer();
         colorBuffer.rewind();
@@ -54,25 +54,25 @@ public class VertexAttributes {
         return ret;
     }
 
-	/**
-	 * Returns a reference to the internal color array.
-	 */
-	public java.nio.ByteBuffer getColorRef() {
+    /**
+     * Returns a reference to the internal color array.
+     */
+    public java.nio.ByteBuffer getColorRef() {
         return bcolorBuffer;
     }
 
-	/**
-	 * Empties out the vertex attributes array.
-	 */
+    /**
+     * Empties out the vertex attributes array.
+     */
     public void clear() {
         top = 0;
         colorBuffer.rewind();
     }
 
-	/**
-	 * Ensures that the array has at least the specified size.
-	 */
-	public void reserve(int size) {
+    /**
+     * Ensures that the array has at least the specified size.
+     */
+    public void reserve(int size) {
         if (colorBuffer.capacity() < size) {
             int newSize = colorBuffer.capacity() * 2;
             if (newSize < size)
@@ -89,33 +89,33 @@ public class VertexAttributes {
         }
     }
 
-	/**
-	 * Appends a Color attribute to the vertex attributes array.
-	 */
-	public void addColor(Color color) {
+    /**
+     * Appends a Color attribute to the vertex attributes array.
+     */
+    public void addColor(Color color) {
         addColor(color.getRGB());
     }
 
-	/**
-	 * Appends a Color attribute to the vertex attributes array.
-	 */
-	public void addColor(int color) {
+    /**
+     * Appends a Color attribute to the vertex attributes array.
+     */
+    public void addColor(int color) {
         reserve(top+1);
         colorBuffer.put(ImageUtils.ARGBtoRGBA(color));
         top++;
     }
 
-	/**
-	 * Returns the color attribute at the specified index.
-	 */
-	public Color getColorAt(int index) {
+    /**
+     * Returns the color attribute at the specified index.
+     */
+    public Color getColorAt(int index) {
         return new Color(ImageUtils.RGBAtoARGB(this.colorBuffer.get(index)), true);
     }
 
-	/**
-	 * Returns the OpenGL RGBA color attribute at the specified index.
-	 */
-	public int getColorValueAt(int index) {
+    /**
+     * Returns the OpenGL RGBA color attribute at the specified index.
+     */
+    public int getColorValueAt(int index) {
         return this.colorBuffer.get(index);
     }
 

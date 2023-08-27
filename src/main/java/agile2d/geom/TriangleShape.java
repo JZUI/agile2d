@@ -25,19 +25,19 @@ public class TriangleShape extends PolygonShape {
         return 3;
     }
 
-	public float getX0() { return getXAt(0); }
-	public void setX0(float v) { setXAt(0, v); }
-	public float getY0() { return getYAt(0); }
-	public void setY0(float v) { setYAt(0, v); }
+    public float getX0() { return getXAt(0); }
+    public void setX0(float v) { setXAt(0, v); }
+    public float getY0() { return getYAt(0); }
+    public void setY0(float v) { setYAt(0, v); }
 
-	public float getX1() { return getXAt(1); }
-	public void setX1(float v) { setXAt(1, v); }
-	public float getY1() { return getYAt(1); }
-	public void setY1(float v) { setYAt(1, v); }
+    public float getX1() { return getXAt(1); }
+    public void setX1(float v) { setXAt(1, v); }
+    public float getY1() { return getYAt(1); }
+    public void setY1(float v) { setYAt(1, v); }
 
-	public float getX2() { return getXAt(2); }
-	public void setX2(float v) { setXAt(2, v); }
-	public float getY2() { return getYAt(2); }
-	public void setY2(float v) { setYAt(2, v); }
+    public float getX2() { return getXAt(2); }
+    public void setX2(float v) { setXAt(2, v); }
+    public float getY2() { return getYAt(2); }
+    public void setY2(float v) { setYAt(2, v); }
 
 }

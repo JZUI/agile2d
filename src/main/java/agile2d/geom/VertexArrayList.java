@@ -17,83 +17,83 @@ import java.io.Serializable;
  * Memorize the result of a tesselation.
  */
 public class VertexArrayList implements Shape, Serializable {
-	private static final long serialVersionUID = -22386521332422441L;
-	private VertexArray[] list;
-	private int           top;
-	private transient Area area;
+    private static final long serialVersionUID = -22386521332422441L;
+    private VertexArray[] list;
+    private int           top;
+    private transient Area area;
 
-	/**
-	 * Create a new VertexArrayList object.
-	 */
-	public VertexArrayList() {
-		list = new VertexArray[10];
-		top = 0;
-	}
+    /**
+     * Create a new VertexArrayList object.
+     */
+    public VertexArrayList() {
+        list = new VertexArray[10];
+        top = 0;
+    }
 
-	/**
-	 * Clears the VertexArrayList
-	 */
-	public void clear() {
-		top = 0;
-		area = null;
-	}
+    /**
+     * Clears the VertexArrayList
+     */
+    public void clear() {
+        top = 0;
+        area = null;
+    }
 
-	/**
-	 * Reserve more room for VertexArrays
-	 *
-	 * @param size the new allocated room.
-	 */
-	public void resize(int size) {
-		if (list.length < size) {
-			int newSize = list.length * 2;
-			if (newSize < size)
-				newSize = size;
-			VertexArray[] newList = new VertexArray[newSize];
-			System.arraycopy(list, 0, newList, 0, list.length);
-			list = newList;
-		}
-	}
+    /**
+     * Reserve more room for VertexArrays
+     *
+     * @param size the new allocated room.
+     */
+    public void resize(int size) {
+        if (list.length < size) {
+            int newSize = list.length * 2;
+            if (newSize < size)
+                newSize = size;
+            VertexArray[] newList = new VertexArray[newSize];
+            System.arraycopy(list, 0, newList, 0, list.length);
+            list = newList;
+        }
+    }
 
-	/**
-	 * Adds a <code>VertexArray</code>
-	 *
-	 * @param v the <code>VertexArray</code>
-	 */
-	public void add(VertexArray v) {
-		area = null;
-		resize(top + 1);
-		list[top++] = v;
-	}
+    /**
+     * Adds a <code>VertexArray</code>
+     *
+     * @param v the <code>VertexArray</code>
+     */
+    public void add(VertexArray v) {
+        area = null;
+        resize(top + 1);
+        list[top++] = v;
+    }
 
-	/**
-	 * Returns the size
-	 *
-	 * @return the size
-	 */
-	public int size() {
-		return top;
-	}
+    /**
+     * Returns the size
+     *
+     * @return the size
+     */
+    public int size() {
+        return top;
+    }
 
-	public int capacity() {
-		return list.length;
-	}
+    public int capacity() {
+        return list.length;
+    }
 
-	/**
-	 * Returns the <code>VertexArray</code> at the specified index
-	 *
-	 * @param index the index
-	 *
-	 * @return the <code>VertexArray</code> at the specified index
-	 */
-	public VertexArray getVertexArrayAt(int index) {
-		return list[index];
-	}
+    /**
+     * Returns the <code>VertexArray</code> at the specified index
+     *
+     * @param index the index
+     *
+     * @return the <code>VertexArray</code> at the specified index
+     */
+    public VertexArray getVertexArrayAt(int index) {
+        return list[index];
+    }
 
-	public void fill(Graphics g) {
-		for (int i = 0; i < size(); i++) {
-			getVertexArrayAt(i).fill(g);
-		}
-	}
+    public void fill(Graphics g) {
+        for (int i = 0; i < size(); i++) {
+            getVertexArrayAt(i).fill(g);
+        }
+    }
 
     // Shape interface
     protected Area getArea() {
@@ -190,8 +190,8 @@ public class VertexArrayList implements Shape, Serializable {
     protected void finalize() throws Throwable {
         try {
             for(int i=0; i<list.length; i++){
-            	list[i].clear();
-            	list[i].finalize();
+                list[i].clear();
+                list[i].finalize();
             }
         } finally {
             super.finalize();

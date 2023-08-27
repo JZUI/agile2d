@@ -11,6 +11,6 @@ package agile2d.geom;
 //
 public interface VertexArraySupport
 {
-	public void drawVertexArray(VertexArray array, VertexAttributes attributes);
-	public void fillVertexArray(VertexArray array, VertexAttributes attributes);
+    public void drawVertexArray(VertexArray array, VertexAttributes attributes);
+    public void fillVertexArray(VertexArray array, VertexAttributes attributes);
 }

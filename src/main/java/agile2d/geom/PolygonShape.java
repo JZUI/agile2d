@@ -33,9 +33,9 @@ public abstract class PolygonShape implements Shape {
         this.closed = closed;
     }
 
-	// JM - removed operations that relied on modifying the path.
+    // JM - removed operations that relied on modifying the path.
 
-	public float getXAt(int index) {
+    public float getXAt(int index) {
         return vertices[origin+2*index];
     }
 
@@ -122,72 +122,72 @@ public abstract class PolygonShape implements Shape {
         return closed;
     }
 
-	/**
-	 * Draws an outline of this polygon using the VertexAttributes for the color information for
-	 * each vertex. Colors are smoothly interpolated between vertices.
-	 *
-	 * @param vertexAttributes vertex attay containing color attributes for each vertex.
-	 * @param index specifies where in the VertexAttributes array the color information starts.
-	 */
-	void drawSmooth(Graphics2D g, VertexAttributes vertexAttributes, int index) {
-		if (vertexAttributes != null && vertexAttributes.isSmooth()) {
-			int c = vertexAttributes.getColorValueAt(index);
-			for (int i = 1; i < this.getSize(); i++) {
-				if (c != vertexAttributes.getColorValueAt(index + i)) {
-					// we have to use gradients, lack of better solution
-					GradientPaint gp = new GradientPaint(
-						this.getXAt(i - 1),
-						this.getYAt(i - 1),
-						vertexAttributes.getColorAt(index + i - 1),
-						this.getXAt(i),
-						this.getYAt(i),
-						vertexAttributes.getColorAt(index + i),
-						true);
-					g.setPaint(gp);
-					Stroke stroke = g.getStroke();
-					g.fill(stroke.createStrokedShape(this));
-					return;
-				}
-			}
-			// falls through
-		}
-		if (vertexAttributes != null) {
-			g.setColor(vertexAttributes.getColorAt(index));
-		}
-		g.draw(this);
-	}
+    /**
+     * Draws an outline of this polygon using the VertexAttributes for the color information for
+     * each vertex. Colors are smoothly interpolated between vertices.
+     *
+     * @param vertexAttributes vertex attay containing color attributes for each vertex.
+     * @param index specifies where in the VertexAttributes array the color information starts.
+     */
+    void drawSmooth(Graphics2D g, VertexAttributes vertexAttributes, int index) {
+        if (vertexAttributes != null && vertexAttributes.isSmooth()) {
+            int c = vertexAttributes.getColorValueAt(index);
+            for (int i = 1; i < this.getSize(); i++) {
+                if (c != vertexAttributes.getColorValueAt(index + i)) {
+                    // we have to use gradients, lack of better solution
+                    GradientPaint gp = new GradientPaint(
+                        this.getXAt(i - 1),
+                        this.getYAt(i - 1),
+                        vertexAttributes.getColorAt(index + i - 1),
+                        this.getXAt(i),
+                        this.getYAt(i),
+                        vertexAttributes.getColorAt(index + i),
+                        true);
+                    g.setPaint(gp);
+                    Stroke stroke = g.getStroke();
+                    g.fill(stroke.createStrokedShape(this));
+                    return;
+                }
+            }
+            // falls through
+        }
+        if (vertexAttributes != null) {
+            g.setColor(vertexAttributes.getColorAt(index));
+        }
+        g.draw(this);
+    }
 
-	/**
-	 * Fills this polygon using the VertexAttributes for the color information for
-	 * each vertex. Colors are smoothly interpolated between vertices.
-	 *
-	 * @param vertexAttributes vertex attay containing color attributes for each vertex.
-	 * @param index specifies where in the VertexAttributes array the color information starts.
-	 */
-	void fillSmooth(Graphics2D g, VertexAttributes vertexAttributes, int index) {
-		if (vertexAttributes != null && vertexAttributes.isSmooth()) {
-			int c = vertexAttributes.getColorValueAt(index);
-			for (int i = 1; i < this.getSize(); i++) {
-				if (c != vertexAttributes.getColorValueAt(index + i)) {
-					// we have to use gradients, lack of better solution
-					GradientPaint gp = new GradientPaint(
-						this.getXAt(i - 1),
-						this.getYAt(i - 1),
-						vertexAttributes.getColorAt(index + i - 1),
-						this.getXAt(i),
-						this.getYAt(i),
-						vertexAttributes.getColorAt(index + i),
-						true);
-					g.setPaint(gp);
-					g.fill(this);
-					return;
-				}
-			}
-			// falls through
-		}
-		if (vertexAttributes != null) {
-			g.setColor(vertexAttributes.getColorAt(index));
-		}
-		g.fill(this);
-	}
+    /**
+     * Fills this polygon using the VertexAttributes for the color information for
+     * each vertex. Colors are smoothly interpolated between vertices.
+     *
+     * @param vertexAttributes vertex attay containing color attributes for each vertex.
+     * @param index specifies where in the VertexAttributes array the color information starts.
+     */
+    void fillSmooth(Graphics2D g, VertexAttributes vertexAttributes, int index) {
+        if (vertexAttributes != null && vertexAttributes.isSmooth()) {
+            int c = vertexAttributes.getColorValueAt(index);
+            for (int i = 1; i < this.getSize(); i++) {
+                if (c != vertexAttributes.getColorValueAt(index + i)) {
+                    // we have to use gradients, lack of better solution
+                    GradientPaint gp = new GradientPaint(
+                        this.getXAt(i - 1),
+                        this.getYAt(i - 1),
+                        vertexAttributes.getColorAt(index + i - 1),
+                        this.getXAt(i),
+                        this.getYAt(i),
+                        vertexAttributes.getColorAt(index + i),
+                        true);
+                    g.setPaint(gp);
+                    g.fill(this);
+                    return;
+                }
+            }
+            // falls through
+        }
+        if (vertexAttributes != null) {
+            g.setColor(vertexAttributes.getColorAt(index));
+        }
+        g.fill(this);
+    }
 }

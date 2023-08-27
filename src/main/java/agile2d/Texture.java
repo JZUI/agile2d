@@ -64,14 +64,14 @@ final class Texture {
         this.gl = gl;
         this.smooth = smooth;
         glState = AgileState.get(gl);
-	if(glState.checkGlExtension("GL_ARB_texture_non_power_of_two")==true){
-	        textureWidth = width;
-	        textureHeight = height;
-	}
-	else{
-	        textureWidth = ImageUtils.nextPowerOf2(width);
-	        textureHeight = ImageUtils.nextPowerOf2(height);
-	}
+    if(glState.checkGlExtension("GL_ARB_texture_non_power_of_two")==true){
+            textureWidth = width;
+            textureHeight = height;
+    }
+    else{
+            textureWidth = ImageUtils.nextPowerOf2(width);
+            textureHeight = ImageUtils.nextPowerOf2(height);
+    }
         internalFormat = components;
         numComponents = components;
 
@@ -98,54 +98,54 @@ final class Texture {
     }
 
 
-	static ColorModel glAlphaColorModel, glColorModel;
+    static ColorModel glAlphaColorModel, glColorModel;
 
-	static {
-		glAlphaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-			new int[] {8,8,8,8},
-			true,
-			false,
-			ComponentColorModel.TRANSLUCENT,
-			DataBuffer.TYPE_BYTE);
+    static {
+        glAlphaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+            new int[] {8,8,8,8},
+            true,
+            false,
+            ComponentColorModel.TRANSLUCENT,
+            DataBuffer.TYPE_BYTE);
 
-		glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
-			new int[] {8,8,8,0},
-			false,
-			false,
-			ComponentColorModel.OPAQUE,
-			DataBuffer.TYPE_BYTE);
-	}
+        glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+            new int[] {8,8,8,0},
+            false,
+            false,
+            ComponentColorModel.OPAQUE,
+            DataBuffer.TYPE_BYTE);
+    }
 
-	// From http://wiki.java.net/bin/view/Games/TextureLoadingExample
-	//
-	static private ByteBuffer convertImageData(BufferedImage bufferedImage, int texWidth, int texHeight) throws java.io.IOException {
-		ByteBuffer imageBuffer = null;
-		WritableRaster raster;
-		BufferedImage texImage;
+    // From http://wiki.java.net/bin/view/Games/TextureLoadingExample
+    //
+    static private ByteBuffer convertImageData(BufferedImage bufferedImage, int texWidth, int texHeight) throws java.io.IOException {
+        ByteBuffer imageBuffer = null;
+        WritableRaster raster;
+        BufferedImage texImage;
 
-		if (bufferedImage.getColorModel().hasAlpha()) {
-			raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 4, null);
-			texImage = new BufferedImage(glAlphaColorModel, raster, false, new Hashtable());
-		} else {
-			raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 3, null);
-			texImage = new BufferedImage(glColorModel, raster, false, new Hashtable());
-		}
+        if (bufferedImage.getColorModel().hasAlpha()) {
+            raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 4, null);
+            texImage = new BufferedImage(glAlphaColorModel, raster, false, new Hashtable());
+        } else {
+            raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 3, null);
+            texImage = new BufferedImage(glColorModel, raster, false, new Hashtable());
+        }
 
-		Graphics g = texImage.getGraphics();
-		g.drawImage(bufferedImage, 0, 0, null);
+        Graphics g = texImage.getGraphics();
+        g.drawImage(bufferedImage, 0, 0, null);
         g.dispose();
 
-		byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData();
+        byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData();
 
-		imageBuffer = ByteBuffer.allocateDirect(data.length);
-		imageBuffer.order(ByteOrder.nativeOrder());
-		imageBuffer.put(data, 0, data.length);
+        imageBuffer = ByteBuffer.allocateDirect(data.length);
+        imageBuffer.order(ByteOrder.nativeOrder());
+        imageBuffer.put(data, 0, data.length);
 
-		return imageBuffer;
-	}
+        return imageBuffer;
+    }
 
 
-	public boolean isNormalized() {
+    public boolean isNormalized() {
         return (s2 == 1) && (t2 == 1);
     }
 

@@ -21,10 +21,10 @@ package agile2d;
  * and for other purposes as well.
  */
 interface TesselatorVisitor {
-	public void begin(int mode);
-	public void addVertex(double[] coords);
-	public void addVertex(double x, double y);
-	public void end();
-	public void error(int errorCode);
-	public void combine(double[] coords, Object[] vertex_data, float[] weight, Object[] dataOut);
+    public void begin(int mode);
+    public void addVertex(double[] coords);
+    public void addVertex(double x, double y);
+    public void end();
+    public void error(int errorCode);
+    public void combine(double[] coords, Object[] vertex_data, float[] weight, Object[] dataOut);
 }

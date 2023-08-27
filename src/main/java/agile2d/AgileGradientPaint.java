@@ -39,7 +39,7 @@ public class AgileGradientPaint extends GradientPaint {
      * @throws NullPointerException if either one of colors is null
      */
     public AgileGradientPaint(float x1, float y1, Color color1,
-							  float x2, float y2, Color color2) {
+                              float x2, float y2, Color color2) {
         super(x1, y1, color1, x2, y2, color2);
     }
 
@@ -55,7 +55,7 @@ public class AgileGradientPaint extends GradientPaint {
      * is null
      */
     public AgileGradientPaint(Point2D pt1, Color color1,
-							  Point2D pt2, Color color2) {
+                              Point2D pt2, Color color2) {
         super(pt1, color1, pt2, color2);
     }
 
@@ -78,8 +78,8 @@ public class AgileGradientPaint extends GradientPaint {
      * repeatedly between the two colors; <code>false</code> otherwise
      */
     public AgileGradientPaint(float x1, float y1, Color color1,
-							  float x2, float y2, Color color2,
-					          boolean cyclic) {
+                              float x2, float y2, Color color2,
+                              boolean cyclic) {
         super(x1, y1, color1, x2, y2, color2, cyclic);
     }
 
@@ -100,7 +100,7 @@ public class AgileGradientPaint extends GradientPaint {
      * is null
      */
     public AgileGradientPaint(Point2D pt1, Color color1,
-							  Point2D pt2, Color color2, boolean cyclic) {
+                              Point2D pt2, Color color2, boolean cyclic) {
         super(pt1, color1, pt2, color2, cyclic);
     }
 
@@ -123,7 +123,7 @@ public class AgileGradientPaint extends GradientPaint {
      * repeatedly between the two colors; <code>false</code> otherwise
      */
     public AgileGradientPaint(float x1, float y1, int c1,
-							  float x2, float y2, int c2, boolean cyclic) {
+                              float x2, float y2, int c2, boolean cyclic) {
         super(x1, y1, null, x2, y2, null, cyclic);
         this.c1 = c1;
         this.c2 = c2;

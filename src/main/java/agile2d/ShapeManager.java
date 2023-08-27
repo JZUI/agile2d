@@ -120,98 +120,98 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
     // Draw a stroke
     //
     public void draw(Shape shape, VertexAttributes attributes, float scale,
-					 Stroke stroke, boolean immutable, boolean convex) {
-		if (immutable) {
-			//
-			// Cached route -
-			//    1. flatten the stroke in object space
-			//    2. draw as polygon or tesselation according to the convex parameter
-			//    3. store the result in a display list
-			//
-			ShapeInfo info = (ShapeInfo) drawn.get(shape);
-			if (info == null || info.stroke != stroke) {
-				// Not in cache
-				int id = genID();
-				gl.glNewList(id, GL2.GL_COMPILE);
+                     Stroke stroke, boolean immutable, boolean convex) {
+        if (immutable) {
+            //
+            // Cached route -
+            //    1. flatten the stroke in object space
+            //    2. draw as polygon or tesselation according to the convex parameter
+            //    3. store the result in a display list
+            //
+            ShapeInfo info = (ShapeInfo) drawn.get(shape);
+            if (info == null || info.stroke != stroke) {
+                // Not in cache
+                int id = genID();
+                gl.glNewList(id, GL2.GL_COMPILE);
 
-				if (shape instanceof VertexArray) {
-					renderLineMode((VertexArray)shape, attributes);
-				} else if (convex) {
-					send(getStrokeIterator(shape, scale, stroke), true);
-				} else {
-					tesselate(getStrokeIterator(shape, scale, stroke));
-				}
-				gl.glEndList();
-				info = new ShapeInfo(id, stroke);
-				drawn.put(shape, info);
-			}
-			gl.glCallList(info.id);
-		} else if (shape instanceof VertexArray) {
-			renderLineMode((VertexArray)shape, attributes);
-		} else if (convex) {
+                if (shape instanceof VertexArray) {
+                    renderLineMode((VertexArray)shape, attributes);
+                } else if (convex) {
+                    send(getStrokeIterator(shape, scale, stroke), true);
+                } else {
+                    tesselate(getStrokeIterator(shape, scale, stroke));
+                }
+                gl.glEndList();
+                info = new ShapeInfo(id, stroke);
+                drawn.put(shape, info);
+            }
+            gl.glCallList(info.id);
+        } else if (shape instanceof VertexArray) {
+            renderLineMode((VertexArray)shape, attributes);
+        } else if (convex) {
             // Faster route - flatten the stroke in object space and draw as polygon
             send(getStrokeIterator(shape, scale, stroke), true);
-		} else {
+        } else {
             // Slowest and most correct route - flatten the stroke in device space & tesselate
-			tesselate(getStrokeIterator(shape, scale, stroke));
+            tesselate(getStrokeIterator(shape, scale, stroke));
         }
     }
 
-	PathIterator getStrokeIterator(Shape shape, float scale, Stroke stroke) {
-		return stroke.createStrokedShape(shape).getPathIterator(IDENTITY, tolerance/scale);
-	}
+    PathIterator getStrokeIterator(Shape shape, float scale, Stroke stroke) {
+        return stroke.createStrokedShape(shape).getPathIterator(IDENTITY, tolerance/scale);
+    }
 
 
     // Fill a Shape.
     //
     public void fill(Shape shape, VertexAttributes attributes, float scale, boolean immutable, boolean convex) {
-		if (immutable) {
-			//
-			// Cached route -
-			//    1. flatten the shape in object space
-			//    2. draw as polygon or tesselation according to the convex parameter
-			//    3. store the result in a display list
-			//
-			ShapeInfo info = (ShapeInfo) filled.get(shape);
-			if (info == null) {
-				// Not in cache
-				int id = genID();
-				gl.glNewList(id, GL2.GL_COMPILE);
+        if (immutable) {
+            //
+            // Cached route -
+            //    1. flatten the shape in object space
+            //    2. draw as polygon or tesselation according to the convex parameter
+            //    3. store the result in a display list
+            //
+            ShapeInfo info = (ShapeInfo) filled.get(shape);
+            if (info == null) {
+                // Not in cache
+                int id = genID();
+                gl.glNewList(id, GL2.GL_COMPILE);
 
-				if (shape instanceof VertexArray) {
-					//if (varray.getMode() < VertexArray.MODE_TRIANGLES)
-					//	return; // not filled
-					render(gl, (VertexArray)shape, attributes);
-				} else {
-					PathIterator path = shape.getPathIterator(IDENTITY, tolerance/scale);
-					tesselate(path);
-				}
+                if (shape instanceof VertexArray) {
+                    //if (varray.getMode() < VertexArray.MODE_TRIANGLES)
+                    //    return; // not filled
+                    render(gl, (VertexArray)shape, attributes);
+                } else {
+                    PathIterator path = shape.getPathIterator(IDENTITY, tolerance/scale);
+                    tesselate(path);
+                }
 
-				gl.glEndList();
-				info = new ShapeInfo(id, null);
-				filled.put(shape, info);
-			}
-			gl.glCallList(info.id);
-		}
-		else if (shape instanceof VertexArray) {
-			render(gl, (VertexArray)shape, attributes);
-		} else if (convex) {
-//			System.out.println("In shapeManager.fill(). Shape is Convex");
-			// Faster route - flatten the shape in object space and draw as polygon
-			PathIterator path = shape.getPathIterator(IDENTITY, tolerance/scale);
-			send(path, true);
-		}
-		else {
-//			System.out.println("In shapeManager.fill(). Shape is neither immutable nor convex. Slowest route");
-			// Slowest and most correct route - flatten the shape in device space & tesselate
-			PathIterator path = shape.getPathIterator(IDENTITY, tolerance/scale);
-//			tesselate(path);
-//			we will test to use the routine (and TesselatorAdaptor class) used by GLite toolkit
-//			GLite lines code are below
-//		        TesselationManager tess = TesselationManager.get(ctx);
-	                tesselator.fill(gl, shape, null, 1);
+                gl.glEndList();
+                info = new ShapeInfo(id, null);
+                filled.put(shape, info);
+            }
+            gl.glCallList(info.id);
+        }
+        else if (shape instanceof VertexArray) {
+            render(gl, (VertexArray)shape, attributes);
+        } else if (convex) {
+//            System.out.println("In shapeManager.fill(). Shape is Convex");
+            // Faster route - flatten the shape in object space and draw as polygon
+            PathIterator path = shape.getPathIterator(IDENTITY, tolerance/scale);
+            send(path, true);
+        }
+        else {
+//            System.out.println("In shapeManager.fill(). Shape is neither immutable nor convex. Slowest route");
+            // Slowest and most correct route - flatten the shape in device space & tesselate
+            PathIterator path = shape.getPathIterator(IDENTITY, tolerance/scale);
+//            tesselate(path);
+//            we will test to use the routine (and TesselatorAdaptor class) used by GLite toolkit
+//            GLite lines code are below
+//                TesselationManager tess = TesselationManager.get(ctx);
+                    tesselator.fill(gl, shape, null, 1);
 
-		}
+        }
     }
 
     // Tesselate a polygon defined as point arrays
@@ -235,7 +235,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
                 return;
         }
         if (convex) {
-//	    System.out.println("In shapeManager.fill(). Shape is Convex");
+//        System.out.println("In shapeManager.fill(). Shape is Convex");
             begin(GL2.GL_POLYGON);
             for (int i = 0; i < nPts; i++) {
                 addVertex(xPts[i], yPts[i]);
@@ -243,7 +243,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
             end();
         }
         else {
-//	    System.out.("In shapeManager.fill(). Shape is Concave. Tesselating...");
+//        System.out.("In shapeManager.fill(). Shape is Concave. Tesselating...");
             // Slower and more correct route - tesselate
             tesselate(xPts, yPts, nPts);
         }
@@ -269,10 +269,10 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 //                    System.out.println("SEG_LINETO " + point[0] + ", " + point[1]);
                     addVertex(point);
                     break;
-		case PathIterator.SEG_CLOSE :
+        case PathIterator.SEG_CLOSE :
                     if (!fill){
                         setMode(MODE_LINE_LOOP);
-	   	    }
+               }
                     end();
                     started = false;
                     break;
@@ -345,107 +345,107 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
         return tesselator;
     }
 
-	public void render() {
-		render(gl, this, null);
-	}
+    public void render() {
+        render(gl, this, null);
+    }
 
-	void renderLineMode(VertexArray array, VertexAttributes attributes) {
-		if (array.getMode() >= VertexArray.MODE_TRIANGLES) {
-			gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-		}
-		render(gl, array, attributes);
-		if (array.getMode() >= VertexArray.MODE_TRIANGLES) {
-			gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-		}
-	}
+    void renderLineMode(VertexArray array, VertexAttributes attributes) {
+        if (array.getMode() >= VertexArray.MODE_TRIANGLES) {
+            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        }
+        render(gl, array, attributes);
+        if (array.getMode() >= VertexArray.MODE_TRIANGLES) {
+            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        }
+    }
 
 
-	// Basic method for rendering a VertexArray
-	static void render(GLAutoDrawable drawable, VertexArray array, VertexAttributes attributes) {
-		GL2 gl = drawable.getGL().getGL2();
-		int count = array.getVertexCount();
-		java.nio.FloatBuffer arrayData = array.getDataRef();
+    // Basic method for rendering a VertexArray
+    static void render(GLAutoDrawable drawable, VertexArray array, VertexAttributes attributes) {
+        GL2 gl = drawable.getGL().getGL2();
+        int count = array.getVertexCount();
+        java.nio.FloatBuffer arrayData = array.getDataRef();
 
-		if (count == 0) {
-			return;
-		}
+        if (count == 0) {
+            return;
+        }
 
-		if (attributes == null) {
-			// It would be great if we could avoid setting the vertex pointer, but
-			// we couldn't because Java Garbage Collector can move objects at any time.
-			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-			arrayData.rewind();
-			gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
-			gl.glDrawArrays(array.getMode(), 0, count);
-			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        if (attributes == null) {
+            // It would be great if we could avoid setting the vertex pointer, but
+            // we couldn't because Java Garbage Collector can move objects at any time.
+            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+            arrayData.rewind();
+            gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
+            gl.glDrawArrays(array.getMode(), 0, count);
+            gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 
-			return;
-		}
+            return;
+        }
 
-		count = Math.min(array.getVertexCount(), attributes.getSize());
-		java.nio.ByteBuffer attributeData = attributes.getColorRef();
+        count = Math.min(array.getVertexCount(), attributes.getSize());
+        java.nio.ByteBuffer attributeData = attributes.getColorRef();
 
-		if (attributes.isSmooth()) {
-			gl.glShadeModel(GL2.GL_SMOOTH);
-		}
+        if (attributes.isSmooth()) {
+            gl.glShadeModel(GL2.GL_SMOOTH);
+        }
 
-		// It would be great if we could avoid setting the vertex pointer, but
-		// we couldn't because Java Garbage Collector can move objects at any time.
-		// TODO: JM - we could potentially use the VertexBufferObject in JOGL to address this!
-		gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-		gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
-		gl.glColorPointer(4, GL2.GL_UNSIGNED_BYTE, 0, attributeData);
-		gl.glDrawArrays(array.getMode(), 0, count);
-		gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-		gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        // It would be great if we could avoid setting the vertex pointer, but
+        // we couldn't because Java Garbage Collector can move objects at any time.
+        // TODO: JM - we could potentially use the VertexBufferObject in JOGL to address this!
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
+        gl.glColorPointer(4, GL2.GL_UNSIGNED_BYTE, 0, attributeData);
+        gl.glDrawArrays(array.getMode(), 0, count);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 
-		if (attributes.isSmooth()) {
-			gl.glShadeModel(GL2.GL_FLAT);
-		}
-	}
+        if (attributes.isSmooth()) {
+            gl.glShadeModel(GL2.GL_FLAT);
+        }
+    }
 
-	// Basic method for rendering a VertexArray
-	static void render(GL2 gl, VertexArray array, VertexAttributes attributes) {
-		int count = array.getVertexCount();
-		java.nio.FloatBuffer arrayData = array.getDataRef();
+    // Basic method for rendering a VertexArray
+    static void render(GL2 gl, VertexArray array, VertexAttributes attributes) {
+        int count = array.getVertexCount();
+        java.nio.FloatBuffer arrayData = array.getDataRef();
 
-		if (count == 0) {
-			return;
-		}
+        if (count == 0) {
+            return;
+        }
 
-		if (attributes == null) {
-			// It would be great if we could avoid setting the vertex pointer, but
-			// we couldn't because Java Garbage Collector can move objects at any time.
-			gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-			arrayData.rewind();
-			gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
-			gl.glDrawArrays(array.getMode(), 0, count);
-			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        if (attributes == null) {
+            // It would be great if we could avoid setting the vertex pointer, but
+            // we couldn't because Java Garbage Collector can move objects at any time.
+            gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+            arrayData.rewind();
+            gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
+            gl.glDrawArrays(array.getMode(), 0, count);
+            gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 
-			return;
-		}
+            return;
+        }
 
-		count = Math.min(array.getVertexCount(), attributes.getSize());
-		java.nio.ByteBuffer attributeData = attributes.getColorRef();
+        count = Math.min(array.getVertexCount(), attributes.getSize());
+        java.nio.ByteBuffer attributeData = attributes.getColorRef();
 
-		if (attributes.isSmooth()) {
-			gl.glShadeModel(GL2.GL_SMOOTH);
-		}
+        if (attributes.isSmooth()) {
+            gl.glShadeModel(GL2.GL_SMOOTH);
+        }
 
-		// It would be great if we could avoid setting the vertex pointer, but
-		// we couldn't because Java Garbage Collector can move objects at any time.
-		// TODO: JM - we could potentially use the VertexBufferObject in JOGL to address this!
-		gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
-		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-		gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
-		gl.glColorPointer(4, GL2.GL_UNSIGNED_BYTE, 0, attributeData);
-		gl.glDrawArrays(array.getMode(), 0, count);
-		gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
-		gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        // It would be great if we could avoid setting the vertex pointer, but
+        // we couldn't because Java Garbage Collector can move objects at any time.
+        // TODO: JM - we could potentially use the VertexBufferObject in JOGL to address this!
+        gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
+        gl.glColorPointer(4, GL2.GL_UNSIGNED_BYTE, 0, attributeData);
+        gl.glDrawArrays(array.getMode(), 0, count);
+        gl.glDisableClientState(GL2.GL_COLOR_ARRAY);
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 
-		if (attributes.isSmooth()) {
-			gl.glShadeModel(GL2.GL_FLAT);
-		}
-	}
+        if (attributes.isSmooth()) {
+            gl.glShadeModel(GL2.GL_FLAT);
+        }
+    }
 }

@@ -28,8 +28,8 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
     private GLUtessellator tobj;
     private GLU glu;
     private double[] point = new double[8];
-	// JM - rather than using a static array like this, now dynamically allocates points
-	// private double[][]        coords = new double[10000][3];
+    // JM - rather than using a static array like this, now dynamically allocates points
+    // private double[][]        coords = new double[10000][3];
     private TesselatorVisitor visitor;
 
     /**
@@ -187,7 +187,7 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      */
 
    public void begin(int which) {
-	visitor.begin(which);
+    visitor.begin(which);
     }
 
     /**
@@ -206,7 +206,7 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      */
     public void error(int errorCode) {
         visitor.error(errorCode);
-	System.err.println("GLU Tesselation Error Description: " + glu.gluErrorString(errorCode));
+    System.err.println("GLU Tesselation Error Description: " + glu.gluErrorString(errorCode));
     }
 
 
@@ -240,27 +240,27 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
   public static void defaultCombine(double[] coords, Object[] data,float[] weight, Object[] dataOut) {
       double[] vertex = new double[6];
 
-	/*
-	//System.err.println("Vertex length: "+vertex.length+", data length :"+data.length+" and weight length: "+weight.length);
-	//Trace info about data object
-	int max_i, max_j;
-	max_i = data.length;
-	for (int i=0; i<max_i; i++){
-		max_j=((double[])data[i]).length;
-		for(int j=0;j<max_j; j++)
-			System.out.println("data["+i+"]["+j+"]= "+((double[])data[i])[j]);
-	}
-	*/
+    /*
+    //System.err.println("Vertex length: "+vertex.length+", data length :"+data.length+" and weight length: "+weight.length);
+    //Trace info about data object
+    int max_i, max_j;
+    max_i = data.length;
+    for (int i=0; i<max_i; i++){
+        max_j=((double[])data[i]).length;
+        for(int j=0;j<max_j; j++)
+            System.out.println("data["+i+"]["+j+"]= "+((double[])data[i])[j]);
+    }
+    */
 
       //Crashs while accessing the data[] array
       /*    for (int i = 3; i < 6; i++){
-	System.out.println("I: "+i);
+    System.out.println("I: "+i);
         vertex[i] =
-	weight[0] * ((double[]) data[0])[i] +
-	weight[1] * ((double[]) data[1])[i];
-	//weight[2] * ((double[]) data[2])[i] +
-	//weight[3] * ((double[]) data[3])[i];
-	}
+    weight[0] * ((double[]) data[0])[i] +
+    weight[1] * ((double[]) data[1])[i];
+    //weight[2] * ((double[]) data[2])[i] +
+    //weight[3] * ((double[]) data[3])[i];
+    }
       */
 
       vertex[0] = coords[0];

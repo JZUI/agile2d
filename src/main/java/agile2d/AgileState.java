@@ -61,8 +61,8 @@ public class AgileState {
         AgileState s = gl2state.get(gl);
         if (s == null) {
             s = new AgileState(gl);
-			gl2state.put(gl, s); // JM - Moved this up from the Constructor to make it clearer whats going on
-		}
+            gl2state.put(gl, s); // JM - Moved this up from the Constructor to make it clearer whats going on
+        }
         return s;
     }
 
@@ -85,7 +85,7 @@ public class AgileState {
         state.put(GL2.GL_TEXTURE_BINDING_1D, 0);
         state.put(GL2.GL_TEXTURE_BINDING_2D, 0);
         state.put(GL2.GL_TEXTURE_ENV_MODE, 0);
-	getGlExtensions();
+    getGlExtensions();
     }
 
     private int initializeState(int attrib) {
@@ -97,13 +97,13 @@ public class AgileState {
     //Gets (only once) a list of GL extensions available on the implementation being used,
     //splits it, and put GL extension strings in a hash table
     private void getGlExtensions(){
-	String[] ogl_extensions;
-	int table_size;
-	ogl_extensions = (gl.glGetString(GL2.GL_EXTENSIONS)).split(" ");
-	table_size = ogl_extensions.length;
-	extensions = new Hashtable(table_size);
-	for(int i=0; i<table_size; i++)
-		extensions.put(ogl_extensions[i], 1);
+    String[] ogl_extensions;
+    int table_size;
+    ogl_extensions = (gl.glGetString(GL2.GL_EXTENSIONS)).split(" ");
+    table_size = ogl_extensions.length;
+    extensions = new Hashtable(table_size);
+    for(int i=0; i<table_size; i++)
+        extensions.put(ogl_extensions[i], 1);
     }
 
     /**
@@ -111,14 +111,14 @@ public class AgileState {
      * @checks if a given GL Extension is avaiable.
      */
     public boolean checkGlExtension(String extensionName){
-	if(extensions.containsKey(extensionName)){
-//		System.out.println("Extension "+extensionName+" is avaiable");
-		return true;
-	}
-	else{
-		System.out.println("GL Extension \""+extensionName+"\" is NOT avaiable");
-		return false;
-	}
+    if(extensions.containsKey(extensionName)){
+//        System.out.println("Extension "+extensionName+" is avaiable");
+        return true;
+    }
+    else{
+        System.out.println("GL Extension \""+extensionName+"\" is NOT avaiable");
+        return false;
+    }
     }
 
     /**
@@ -299,22 +299,22 @@ public class AgileState {
     }
 
 
-	/**
-	 * Pushes all GL attributes onto the GL state stack, using glPushAttrib and glPushClientAttrib.
-	 */
-	public void save() {
-		// Save all attributes
-		gl.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
+    /**
+     * Pushes all GL attributes onto the GL state stack, using glPushAttrib and glPushClientAttrib.
+     */
+    public void save() {
+        // Save all attributes
+        gl.glPushAttrib(GL2.GL_ALL_ATTRIB_BITS);
 
-		gl.glPushClientAttrib((int)GL2.GL_ALL_CLIENT_ATTRIB_BITS);
-	}
+        gl.glPushClientAttrib((int)GL2.GL_ALL_CLIENT_ATTRIB_BITS);
+    }
 
-	/**
-	 * Pops all GL attributes from the GL state stack, using glPopAttrib and glPopClientAttrib.
-	 */
-	public void restore() {
-		// Restore attributes
-		gl.glPopClientAttrib();
-		gl.glPopAttrib();
-	}
+    /**
+     * Pops all GL attributes from the GL state stack, using glPopAttrib and glPopClientAttrib.
+     */
+    public void restore() {
+        // Restore attributes
+        gl.glPopClientAttrib();
+        gl.glPopAttrib();
+    }
 }

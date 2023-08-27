@@ -11,7 +11,7 @@ public final class Chrono{
     private long begin, end;
 
     public Chrono(){
-    	begin = end = 0;
+        begin = end = 0;
     }
 
     public void start(){
