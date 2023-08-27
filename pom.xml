@@ -228,7 +228,7 @@
 		                <goal>run</goal>
 		            </goals>
 		            <configuration>
-		                <tasks>
+		                <target>
 <echo>
 .
 
@@ -249,7 +249,7 @@ with &lt;platform&gt; one the following:
 
 .
 </echo>
-		                </tasks>
+		                </target>
 		            </configuration>
 		        </execution>
 		    </executions>
