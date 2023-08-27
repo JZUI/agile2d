@@ -1,3 +1,11 @@
+<!--
+SPDX-FileCopyrightText: 2011 - 2012 Emmanuel Pietriga <emmanuel.pietriga@inria.fr>
+SPDX-FileCopyrightText: 2011 - 2012 Rodrigo A. B. de Almeida <>
+SPDX-FileCopyrightText: 2023 Robin Vobruba <hoijui.quaero@gmail.com>
+
+SPDX-License-Identifier: BSD-4-Clause
+-->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>agile2d</groupId>

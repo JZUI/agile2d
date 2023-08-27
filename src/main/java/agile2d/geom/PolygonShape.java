@@ -1,8 +1,9 @@
-/*****************************************************************************
- * Copyright (C) 2006, Jon Meyer, Ben Bederson and Jean-Daniel Fekete        *
- * ------------------------------------------------------------------------- *
- * This software is published under the terms of the BSD Software License    *
- *****************************************************************************/
+/*
+ * Copyright (C) 2006 Jon Meyer, Ben Bederson and Jean-Daniel Fekete        *
+ *
+ * SPDX-License-Identifier: BSD-4-Clause
+ */
+
 package agile2d.geom;
 
 import java.awt.*;

@@ -1,10 +1,8 @@
-/*****************************************************************************
- * Copyright (C) 2011, Jean-Daniel Fekete, Emmanuel Pietriga, Rodrigo Almeida*
- * ------------------------------------------------------------------------- *
- * This software is published under the terms of the BSD Software License    *
- * a copy of which has been included with this distribution in the           *
- * license-agile2d.txt file.                                                 *
- *****************************************************************************/
+/*
+ * Copyright (C) 2011 Jean-Daniel Fekete, Emmanuel Pietriga, Rodrigo Almeida*
+ *
+ * SPDX-License-Identifier: BSD-4-Clause
+ */
 
 package agile2d.test;
 

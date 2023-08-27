@@ -1,0 +1,9 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: agile2d
+Upstream-Contact: Robin Vobruba (OSEG) <hoijui.quaero@gmail.com>
+Source: https://github.com/hoijui/agile2d
+
+Files: src/main/resources/*.jpg
+Copyright:
+    2012 Rodrigo A. B. de Almeida <>
+License: BSD-4-Clause

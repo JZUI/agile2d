@@ -1,9 +1,10 @@
-/************************************************************************************
- * Copyright (C) 2012, Rodrigo de Almeida, Jean-Daniel Fekete and Emmanuel Pietriga *        
- * Copyright (C) 2006, Jon Meyer, Ben Bederson and Jean-Daniel Fekete               *
- * ---------------------------------------------------------------------------------*
- * This software is published under the terms of the BSD Software License    	    *
- ************************************************************************************/
+/*
+ * Copyright (C) 2006 Jon Meyer, Ben Bederson and Jean-Daniel Fekete               *
+ * Copyright (C) 2012 Rodrigo de Almeida, Jean-Daniel Fekete and Emmanuel Pietriga *
+ *
+ * SPDX-License-Identifier: BSD-4-Clause
+ */
+
 package agile2d;
 
 import agile2d.geom.VertexArrayList;
