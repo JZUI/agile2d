@@ -10,6 +10,13 @@ SPDX-License-Identifier: BSD-4-Clause
 
 # Agile2D
 
+[![License: BSD-4-Clause](
+    https://img.shields.io/badge/License-BSD--4--Clause-blue.svg)](
+    https://spdx.org/licenses/BSD-4-Clause.html)
+[![REUSE status](
+    https://api.reuse.software/badge/github.com/hoijui/agile2d)](
+    https://api.reuse.software/info/github.com/hoijui/agile2d)
+
 A framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API.
 
 ## Building Agile with Maven
