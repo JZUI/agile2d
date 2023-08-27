@@ -1,3 +1,13 @@
+<!--
+SPDX-FileCopyrightText: 2012 Emmanuel Pietriga <emmanuel.pietriga@inria.fr>
+SPDX-FileCopyrightText: 2006-2012 Jean-Daniel Fekete <jean-daniel.fekete@inria.fr>
+SPDX-FileCopyrightText: 2012 Rodrigo A. B. de Almeida
+SPDX-FileCopyrightText: 2006 Jon Meyer
+SPDX-FileCopyrightText: 2006 Ben Bederson
+
+SPDX-License-Identifier: BSD-4-Clause
+-->
+
 # Agile2D
 
 A framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API.
@@ -64,12 +74,3 @@ Observation: The off-heap memory is not subject to the Garbage Collector and is 
 
 - The current version of JOGL (2.0-RC5) crashes in some platforms using OSX Lion (10.7) and OSX Leopard (10.5.8 and maybe below). JOGL Community is aware of these problems and may fix them in a future release.
 - The current version of JOGL also crashes when using Java7 (Preview Release) under OSX (10.6.8 and 10.7 tested). It seems to work fine with Java7 under Windows7 (32 bits) and Linux (64 bits)
-
----
-
-Copyright (C) 2012, Rodrigo de Almeida, Jean-Daniel Fekete and Emmanuel Pietriga.
-This is an upgraded version of the 2006 software of Jon Meyer, Ben Bederson and Jean-Daniel Fekete.
-
----
-
-This software is published under the terms of the BSD Software License.
