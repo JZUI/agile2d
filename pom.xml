@@ -83,12 +83,12 @@
 	<dependency>
     	<groupId>org.jogamp.jogl</groupId>
     	<artifactId>jogl-all</artifactId>
-    	<version>2.0-rc9</version>
+    	<version>2.0-rc11</version>
 	</dependency>
 	<dependency>
 		<groupId>org.jogamp.gluegen</groupId>
 		<artifactId>gluegen-rt</artifactId>
-		<version>2.0-rc9</version>
+		<version>2.0-rc11</version>
 	</dependency>
 	<dependency>
 	    <groupId>junit</groupId>
@@ -131,7 +131,7 @@
 			<artifactItem>
 			  <groupId>org.jogamp.jogl</groupId>
 			  <artifactId>jogl-all</artifactId>
-			  <version>2.0-rc9</version>
+			  <version>2.0-rc11</version>
  			  <classifier>${build.type}</classifier>
 			  <type>jar</type>
 			  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
@@ -141,7 +141,7 @@
 			<artifactItem>
 			  <groupId>org.jogamp.gluegen</groupId>
 			  <artifactId>gluegen-rt</artifactId>
-			  <version>2.0-rc9</version>
+			  <version>2.0-rc11</version>
  			  <classifier>${build.type}</classifier>
 			  <type>jar</type>
               <includes>*.jnilib,*.lib,*.so,*.dll</includes>
