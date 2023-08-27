@@ -142,7 +142,7 @@ class CompareRoutines {
 			g2d.drawString("abcdefghijklmnopqrstuvwxyz", x_, cursor_y);
 
 		}
-	}	
+	}
 
 
 
@@ -165,7 +165,7 @@ class CompareRoutines {
 			g2d.drawString("abcdefghijklmnopqrstuvwxyz", x_, (int)(cursor_y/scl_));
 			g2d.scale(1.0/scl_, 1.0/scl_);
 		}
-	}	
+	}
 
 
 
@@ -260,7 +260,7 @@ class CompareRoutines {
 		GradientPaint gradient = new GradientPaint(0, 0, Color.red, 175, 175, Color.yellow,true); // true (last arg) means repeat pattern
 		g2d.setPaint(gradient);
 		g2d.fillRect(200, 100, 150, 350);
-	}	
+	}
 
 	public static void drawAlpha(Graphics2D g2d) {
 		int w, h;

@@ -58,7 +58,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
     private static final AffineTransform IDENTITY = new AffineTransform();
 
     // The ShapeInfo class is what is added to the drawn/filled maps.
-    //		
+    //
     private class ShapeInfo {
         int id; // GL Drawing list for shape
         Object stroke; // Null for filled shapes
@@ -119,11 +119,11 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 
     // Draw a stroke
     //
-    public void draw(Shape shape, VertexAttributes attributes, float scale, 
+    public void draw(Shape shape, VertexAttributes attributes, float scale,
 					 Stroke stroke, boolean immutable, boolean convex) {
 		if (immutable) {
 			//
-			// Cached route - 
+			// Cached route -
 			//    1. flatten the stroke in object space
 			//    2. draw as polygon or tesselation according to the convex parameter
 			//    3. store the result in a display list
@@ -152,11 +152,11 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
             // Faster route - flatten the stroke in object space and draw as polygon
             send(getStrokeIterator(shape, scale, stroke), true);
 		} else {
-            // Slowest and most correct route - flatten the stroke in device space & tesselate			
+            // Slowest and most correct route - flatten the stroke in device space & tesselate
 			tesselate(getStrokeIterator(shape, scale, stroke));
         }
     }
-    
+
 	PathIterator getStrokeIterator(Shape shape, float scale, Stroke stroke) {
 		return stroke.createStrokedShape(shape).getPathIterator(IDENTITY, tolerance/scale);
 	}
@@ -167,7 +167,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
     public void fill(Shape shape, VertexAttributes attributes, float scale, boolean immutable, boolean convex) {
 		if (immutable) {
 			//
-			// Cached route - 
+			// Cached route -
 			//    1. flatten the shape in object space
 			//    2. draw as polygon or tesselation according to the convex parameter
 			//    3. store the result in a display list
@@ -177,10 +177,10 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 				// Not in cache
 				int id = genID();
 				gl.glNewList(id, GL2.GL_COMPILE);
-				
+
 				if (shape instanceof VertexArray) {
 					//if (varray.getMode() < VertexArray.MODE_TRIANGLES)
-					//	return; // not filled			
+					//	return; // not filled
 					render(gl, (VertexArray)shape, attributes);
 				} else {
 					PathIterator path = shape.getPathIterator(IDENTITY, tolerance/scale);
@@ -351,15 +351,15 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 
 	void renderLineMode(VertexArray array, VertexAttributes attributes) {
 		if (array.getMode() >= VertexArray.MODE_TRIANGLES) {
-			gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);                    
+			gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
 		}
 		render(gl, array, attributes);
 		if (array.getMode() >= VertexArray.MODE_TRIANGLES) {
-			gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);                    
+			gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 		}
 	}
 
-	
+
 	// Basic method for rendering a VertexArray
 	static void render(GLAutoDrawable drawable, VertexArray array, VertexAttributes attributes) {
 		GL2 gl = drawable.getGL().getGL2();
@@ -378,7 +378,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 			gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
 			gl.glDrawArrays(array.getMode(), 0, count);
 			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-			
+
 			return;
 		}
 
@@ -404,7 +404,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 			gl.glShadeModel(GL2.GL_FLAT);
 		}
 	}
-	
+
 	// Basic method for rendering a VertexArray
 	static void render(GL2 gl, VertexArray array, VertexAttributes attributes) {
 		int count = array.getVertexCount();
@@ -422,7 +422,7 @@ class ShapeManager extends VertexArray implements TesselatorVisitor {
 			gl.glVertexPointer(2, GL2.GL_FLOAT, 0, arrayData);
 			gl.glDrawArrays(array.getMode(), 0, count);
 			gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-			
+
 			return;
 		}
 

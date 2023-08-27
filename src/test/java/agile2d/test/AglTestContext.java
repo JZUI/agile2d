@@ -15,14 +15,14 @@ package agile2d.test;
 import java.awt.Graphics2D;
 
 class AglTestContext {
- 
+
     private TestStrategy strategy;
- 
+
     // Constructor
     public AglTestContext(TestStrategy strategy) {
         this.strategy = strategy;
     }
- 
+
     public void drawStrategy(Graphics2D gSample) {
         strategy.draw(gSample);
     }

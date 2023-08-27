@@ -11,7 +11,7 @@ import java.awt.geom.*;
 
 /**
  * PolygonShape is a base class for TriangleShape and QuadShape, which are rendered efficiently on OpenGL.
- * 
+ *
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.2 $
  */
@@ -20,21 +20,21 @@ public abstract class PolygonShape implements Shape {
     protected int origin;
     protected boolean closed;
     transient GeneralPath path;
-    
+
     protected PolygonShape(float[] vertices, int origin, boolean closed) {
         this.vertices = vertices;
         this.origin = origin;
         this.closed = closed;
     }
-    
+
     protected PolygonShape(int size, boolean closed) {
         this.vertices = new float[size*2];
         this.origin = 0;
         this.closed = closed;
     }
-    
+
 	// JM - removed operations that relied on modifying the path.
-	
+
 	public float getXAt(int index) {
         return vertices[origin+2*index];
     }
@@ -42,21 +42,21 @@ public abstract class PolygonShape implements Shape {
     public float getYAt(int index) {
         return vertices[origin+2*index+1];
     }
-    
+
     public void setXAt(int index, float value) {
         vertices[origin+2*index] = value;
         path = null;
     }
-    
+
     public void setYAt(int index, float value) {
         vertices[origin+2*index+1] = value;
         path = null;
     }
-    
+
     public int getSize() {
         return vertices.length;
     }
-    
+
     GeneralPath toGeneralPath() {
         if (path == null) {
             path = new GeneralPath();
@@ -125,7 +125,7 @@ public abstract class PolygonShape implements Shape {
 	/**
 	 * Draws an outline of this polygon using the VertexAttributes for the color information for
 	 * each vertex. Colors are smoothly interpolated between vertices.
-	 * 
+	 *
 	 * @param vertexAttributes vertex attay containing color attributes for each vertex.
 	 * @param index specifies where in the VertexAttributes array the color information starts.
 	 */
@@ -160,7 +160,7 @@ public abstract class PolygonShape implements Shape {
 	/**
 	 * Fills this polygon using the VertexAttributes for the color information for
 	 * each vertex. Colors are smoothly interpolated between vertices.
-	 * 
+	 *
 	 * @param vertexAttributes vertex attay containing color attributes for each vertex.
 	 * @param index specifies where in the VertexAttributes array the color information starts.
 	 */
@@ -189,5 +189,5 @@ public abstract class PolygonShape implements Shape {
 			g.setColor(vertexAttributes.getColorAt(index));
 		}
 		g.fill(this);
-	}	
+	}
 }

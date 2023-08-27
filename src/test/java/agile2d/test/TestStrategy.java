@@ -17,6 +17,6 @@ import java.awt.Graphics2D;
 
 
 interface TestStrategy {
-    void draw(Graphics2D gSample); 
+    void draw(Graphics2D gSample);
     Object[] getObjects();
 }

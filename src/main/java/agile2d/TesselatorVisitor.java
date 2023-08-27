@@ -16,7 +16,7 @@ package agile2d;
  * much faster since they avoid a function call overhead at each vertex.
  * This is even more true from gl4java that needs to perform a JNI function,
  * more expensive than a mere C function call.
- * 
+ *
  * TesselatorVisitor objects are meant to be used by Tesselator objects,
  * and for other purposes as well.
  */

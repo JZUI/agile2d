@@ -57,7 +57,7 @@ final class ImageManager {
 	//
 	// Constructs a texture manager. The buffered image and Graphics
 	// objects are passed in from the GLGraphics2D class - they are used
-	// as temporary store when an image is loaded into texture memory. 
+	// as temporary store when an image is loaded into texture memory.
 	//
 	ImageManager(GL2 gl, BufferedImage buf, Graphics bg) {
 		this.gl = gl;
@@ -106,17 +106,17 @@ final class ImageManager {
 			resident.remove(image);
 		}
 	}
-	
+
 	public Texture getTexture(Image image, Rectangle bounds, boolean immutable) {
 		Entry entry = getTextureEntry(image, bounds);
 
 		if (entry != null && immutable) {
 			return entry.texture;
 		}
-            
+
 		return null;
 	}
-        
+
 	public Texture getDefaultTexture() {
 		if (defaultTexture == null) {
 			defaultTexture = new Texture(gl, 4, buf.getWidth(), buf.getHeight(), false);
@@ -153,7 +153,7 @@ final class ImageManager {
 		}
 		return false;
 	}
-	
+
 	//
 	// Loads an AWT image into an OpenGL texture
 	//
@@ -163,18 +163,18 @@ final class ImageManager {
 
 		// For texturePaint, we need to have the texture filled, i.e.
 		// grow the image to fit the whole texture width and height
-		// to use OpenGL 2D repeated textures. 
+		// to use OpenGL 2D repeated textures.
 		if (entry != null && immutable) {
 			if (! forTexturePaint || (forTexturePaint && entry.texture.isNormalized())){
 				return entry.texture;
 			}
 		}
-		
+
 		// System.out.println("LOAD TEXTURE " + e.texture.getSize());
 		if (!(image instanceof BufferedImage)) {
 			// Force AWT images to load
 			tracker.addImage(image, 1);
-			try { tracker.waitForID(1); } 
+			try { tracker.waitForID(1); }
 			catch (InterruptedException ie) { }
 			tracker.removeImage(image);
 		}
@@ -182,13 +182,13 @@ final class ImageManager {
 		if (bounds == null) {
 			bounds = new Rectangle(0, 0, image.getWidth(null), image.getHeight(null));
 		}
-		
+
 		int x = (int)bounds.getX();
 		int y = (int)bounds.getY();
 		int width = (int)bounds.getWidth();
 		int height = (int)bounds.getHeight();
 		//
-		int twidth, theight;		
+		int twidth, theight;
 		if(texture_non_power_of_two==true){
 			twidth = width;
 			theight = height;
@@ -199,12 +199,12 @@ final class ImageManager {
 		}
 		// Create the texture
 		Texture texture;
-		if (entry != null) {  
+		if (entry != null) {
 		  // was immutable before, now said to be mutable
 			texture = entry.texture;
 		}
-		else if (! immutable && 
-			(! forTexturePaint || 
+		else if (! immutable &&
+			(! forTexturePaint ||
 			(twidth == buf.getWidth() && theight == buf.getHeight()))) {
 			texture = getDefaultTexture();
 		}
@@ -214,7 +214,7 @@ final class ImageManager {
 
 		BufferedImage img =
 			(image instanceof BufferedImage) ? ((BufferedImage)image) : null;
-		if (img != null && 
+		if (img != null &&
 			(width == twidth || height == theight) &&
 			(img.getType() == BufferedImage.TYPE_INT_ARGB  ||
 			img.getType() == BufferedImage.TYPE_INT_RGB)) {
@@ -222,7 +222,7 @@ final class ImageManager {
 			texture.loadPixels(img, new Rectangle(x, y, twidth, theight));
 		}
 		else {
-			// We draw the image into a temporary buffer, and then load the 
+			// We draw the image into a temporary buffer, and then load the
 			// pixels from that buffer. This ensures that the pixel data is accessible
 			// in a known format.
 			//
@@ -246,7 +246,7 @@ final class ImageManager {
 				entries.add(entry);
 			}
 		}
-		
+
 		return texture;
 	}
 

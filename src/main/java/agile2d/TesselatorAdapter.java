@@ -9,7 +9,7 @@ package agile2d;
 
 /**
  * Default implementation of a TesselatorVisitor.
- * 
+ *
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.1 $
  */
@@ -49,7 +49,7 @@ public void addVertex(double x, double y){
     public void combine(
             double[] coords,
             Object[] vertex_data,//double[] vertex_data,
-            float[] weight,            
+            float[] weight,
 	    Object[] dataOut) { //double[] dataOut) {
         Tesselator.defaultCombine(coords, vertex_data, weight, dataOut);
     }

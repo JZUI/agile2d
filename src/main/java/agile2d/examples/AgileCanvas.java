@@ -48,7 +48,7 @@ import javax.media.opengl.GLProfile;
 
 /**
  * <b>AgileCanvas</b>
- * 
+ *
  * @author Jean-Daniel Fekete and Rodrigo de Almeida
  * @version $Revision$
  */
@@ -56,10 +56,10 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	private final static int NB_OF_SAMPLES_FOR_MULTISAMPLE = 4;
 	private final static int WIN_W=800;
 	private final static int WIN_H=600;
-	private final static String PATH_TO_IMAGE = "src/main/resources/blue_marble.jpg";	
+	private final static String PATH_TO_IMAGE = "src/main/resources/blue_marble.jpg";
 	private static int camera_x = 0;
 	private static int camera_y = 0;
-	
+
 	private AgileGraphics2D jgraphics;
 	private Component       root;
 	private BufferedImage img_buff = null;
@@ -69,10 +69,10 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	private double zFactor = 1.00;
 	private int fontIndex;
 	private Font[] allFonts;
-	
+
 	/**
 	 * Creates an Agile canvas from a Component.
-	 * 
+	 *
 	 * @param root
 	 *            the root component
 	 */
@@ -91,7 +91,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		System.out.println("INIT GL IS: " + gl.getClass().getName());
 		System.out.println("GLU version is: " + glu.gluGetString(GLU.GLU_VERSION));
 
-		//Check if MULTISAMPLE is avaiable	
+		//Check if MULTISAMPLE is avaiable
 		int[] buf = new int[2];
 		int[] samples = new int[2];
 		gl.glGetIntegerv(GL2.GL_SAMPLE_BUFFERS, buf, 0);
@@ -135,7 +135,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		jgraphics.clearRect(0, 0, WIN_W, WIN_H);
 
 		if(interactive_antialias==true){
-			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);			
+			jgraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		}
 
 		switch(exampleNb){
@@ -145,7 +145,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			jgraphics.drawOval(300, 300, 300, 300);
 			jgraphics.setColor(Color.BLUE);
 			jgraphics.fillOval(150, 150, 60, 60);
-			
+
 			break;
 
 		case 2:
@@ -204,7 +204,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 
 	/**
 	 * Set the root
-	 * 
+	 *
 	 * @param root
 	 *            the new root
 	 */
@@ -284,7 +284,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			camera_y -= 5;
 			break;
 		}
-		root.repaint();	
+		root.repaint();
 	}
 
 	public void keyReleased(KeyEvent e){}
@@ -292,7 +292,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	/**
 	 * Main program to test.
 
-	 * 
+	 *
 	 * @param args
 	 *            arg list
 	 */
@@ -300,7 +300,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		//Set this property here to avoid "java.util.zip.ZipException" error messages
 		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
 		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
-		
+
 		if(args.length == 0){
 			System.out.println("\nBad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (AWT component) or 'GLJPanel' (Swing component).");
 			System.exit(0);
@@ -342,17 +342,17 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 	}
 
 
-	//Sample display to test tesselation while rotating an arc 
+	//Sample display to test tesselation while rotating an arc
 	void drawBigImage(int x, int y, AgileGraphics2D glGraphics){
 		glGraphics.translate(camera_x, camera_y);
 		glGraphics.drawImage((Image)img_buff, 0, 0, 1200, 800, null);
 	}
 
-	//Sample display to test tesselation while rotating an arc 
-	void drawRotateArc(int x, int y, double rotation, AgileGraphics2D glGraphics){	
+	//Sample display to test tesselation while rotating an arc
+	void drawRotateArc(int x, int y, double rotation, AgileGraphics2D glGraphics){
 		glGraphics.setColor(Color.GREEN);
-		glGraphics.translate(x, y);		
-		glGraphics.rotate(rotation);		
+		glGraphics.translate(x, y);
+		glGraphics.rotate(rotation);
 		//		glGraphics.fillArc(0, 0, 200, 200, 0, 220);
 		glGraphics.drawArc(0, 0, 200, 200, 0, 220);
 	}
@@ -495,17 +495,17 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		AttributedString as = new AttributedString(s);
 
 		/*
-		 * applies the TextAttribute.Font attribute to the AttributedString 
+		 * applies the TextAttribute.Font attribute to the AttributedString
 		 * with the range 0 to 10, which encompasses the letters 'A' through
 		 * 'd' of the String "AttributedString"
-		 */ 
+		 */
 		as.addAttribute(TextAttribute.FONT, f, 0, 10 );
 
 		/*
-		 * applies the TextAttribute.Font attribute to the AttributedString 
+		 * applies the TextAttribute.Font attribute to the AttributedString
 		 * with the range 10 to the length of the String s, which encompasses
 		 * the letters 'S' through 'g' of String "AttributedString"
-		 */ 
+		 */
 		as.addAttribute(TextAttribute.FONT, f1, 10, s.length() );
 
 		AttributedCharacterIterator aci = as.getIterator();
@@ -542,8 +542,8 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		f = new Font("sansserif",Font.ITALIC,w/8);
 
 		/*
-		 * creates a new shearing AffineTransform 
-		 */ 
+		 * creates a new shearing AffineTransform
+		 */
 		AffineTransform fontAT = new AffineTransform();
 
 		fontAT.shear(-0.2, 0.0);
@@ -595,7 +595,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		Color reds[] = { Color.red.darker(), Color.red };
 
 		/*
-		 * fills 18 Ellipse2D.Float objects, which get smaller as 
+		 * fills 18 Ellipse2D.Float objects, which get smaller as
 		 * N increases
 		 */
 		for (int N = 0; N < 18; N++) {
@@ -633,7 +633,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		glGraphics.setColor(Color.BLACK);
 		tl.draw(glGraphics, (float) (w/2-sw/2), sh+5);
 
-		BasicStroke dotted = new BasicStroke(3, BasicStroke.CAP_ROUND, 
+		BasicStroke dotted = new BasicStroke(3, BasicStroke.CAP_ROUND,
 				BasicStroke.JOIN_ROUND, 0, new float[]{6,6,6,6}, 0);
 
 		glGraphics.setStroke(dotted);
@@ -645,11 +645,11 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 		float j = 1.1f;
 		for (int i = 0; i < bs.length; i++, j += 1.0f) {
 			float dash[] = { j };
-			BasicStroke b = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, 
+			BasicStroke b = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
 			glGraphics.setStroke(b);
 			glGraphics.drawLine(20, y, w-20, y);
-			bs[i] = new BasicStroke(3.0f, BasicStroke.CAP_BUTT, 
+			bs[i] = new BasicStroke(3.0f, BasicStroke.CAP_BUTT,
 					BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
 			y += 5;
 		}
@@ -661,7 +661,7 @@ public class AgileCanvas implements GLEventListener, KeyListener {
 			y = (i <= 2) ? (int) sh+h/12 : h/2;
 
 			glGraphics.setStroke(bs[i]);
-			glGraphics.translate(x, y);  
+			glGraphics.translate(x, y);
 
 
 			switch (i) {

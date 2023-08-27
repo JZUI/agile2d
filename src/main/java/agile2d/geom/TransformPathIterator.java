@@ -10,9 +10,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 
 /**
- * Takes a PathIterator and generates a new path iterator which applies an AffineTransform 
+ * Takes a PathIterator and generates a new path iterator which applies an AffineTransform
  * to the first path.
- * 
+ *
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.2 $
  */
@@ -29,8 +29,8 @@ public class TransformPathIterator implements PathIterator {
 		this.iter = iter;
 		this.transform = transform;
 	}
-	
-	
+
+
 
 	/**
 	 * @see java.awt.geom.PathIterator#currentSegment(double[])

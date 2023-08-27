@@ -8,16 +8,16 @@ package agile2d.geom;
 
 /**
  * Class QuadShape
- * 
+ *
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.2 $
  */
 public class QuadShape extends PolygonShape {
-    
+
     public QuadShape() {
         super(4, true);
     }
-    
+
     public QuadShape(float[] vertices, int index, boolean closed) {
         super(vertices, index, closed);
     }

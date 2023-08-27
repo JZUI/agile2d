@@ -10,10 +10,10 @@ package agile2d;
 import agile2d.geom.VertexArray;
 import agile2d.geom.VertexArrayList;
 
-/** 
+/**
  * Tesselates a shape and stores the result in a VertexArrayList
  */
-public class VertexArrayTesselatorVisitor implements TesselatorVisitor {	
+public class VertexArrayTesselatorVisitor implements TesselatorVisitor {
 	VertexArrayList list;
 	VertexArray last;
 
@@ -59,5 +59,5 @@ public class VertexArrayTesselatorVisitor implements TesselatorVisitor {
 
 	public void error(int errorCode) {
 		Tesselator.defaultError(errorCode);
-	}   
+	}
 }

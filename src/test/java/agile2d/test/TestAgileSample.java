@@ -47,9 +47,9 @@ public class TestAgileSample {
 	static Frame frameg2d;
 	static GLCanvas glCanvas;
 	static G2DSample g2dCanvas;
-	static AgileSample sample; 
+	static AgileSample sample;
 	static private int width, height, win_x, win_y;
-	//Number of offset pixels (in each direction) while applying the jittering to the mask	
+	//Number of offset pixels (in each direction) while applying the jittering to the mask
 	final static private int TOLERANCE_PIXELS = 1;
 	final static private String RESULT_IMG_DIR = "testResults";
 	final static private int RGB_TOLERANCE = 15;
@@ -76,7 +76,7 @@ public class TestAgileSample {
 		Assert.assertNotNull(glCanvas);
 		frame.add(glCanvas);
 		frame.setLocation(win_x, win_y);
-		frame.setSize(width, height);				
+		frame.setSize(width, height);
 
 		sample = new AgileSample(null);
 		glCanvas.addGLEventListener(sample);
@@ -87,7 +87,7 @@ public class TestAgileSample {
 		glCanvas.repaint();
 
 		Assert.assertNotNull(frame);
-		Assert.assertNotNull(glCanvas);				
+		Assert.assertNotNull(glCanvas);
 
 		//Normal Frame
 		frameg2d = new Frame("G2DCanvas Test");
@@ -289,7 +289,7 @@ public class TestAgileSample {
 
 		if(updateBothContexts==true){
 			//do what must be done in the Graphics2D context and call its drawing routines
-			g2dCanvas.setContext(_context);	
+			g2dCanvas.setContext(_context);
 			g2dCanvas.repaint();
 		}
 		else{
@@ -298,7 +298,7 @@ public class TestAgileSample {
 		try { Thread.sleep(delay);} catch (InterruptedException e) {}
 
 		if(testShape==true || testColor==true)
-			compareRenderings(basename, testShape, testColor);		
+			compareRenderings(basename, testShape, testColor);
 	}
 
 
@@ -314,7 +314,7 @@ public class TestAgileSample {
 		color_ok = true;
 		//get Agile Front Buffer thanks to glReadPixels
 		imgAg2d = sample.getBufferedImage();
-		//get G2D image drawing directly on a BufferedImage		
+		//get G2D image drawing directly on a BufferedImage
 		imgG2d = g2dCanvas.getBufferedImage();
 		//Create mask
 		img_mask = buildMask(imgG2d);
@@ -348,9 +348,9 @@ public class TestAgileSample {
 		}
 
 		if(all_ok==false){
-			try{					
+			try{
 				if(testShape==false)
-					img_report = buildReport(baseName, imgG2d, imgAg2d, img_diff, null, testShape);					
+					img_report = buildReport(baseName, imgG2d, imgAg2d, img_diff, null, testShape);
 				else
 					img_report = buildReport(baseName, imgG2d, imgAg2d, img_diff, img_masked, testShape);
 
@@ -359,7 +359,7 @@ public class TestAgileSample {
 				img_report.flush();
 
 			}catch (IOException e) { }
-		}										 
+		}
 
 		//check if result image (after applying the mask) has NO DIRTY PIXELS
 		Assert.assertTrue(shape_ok);
@@ -367,7 +367,7 @@ public class TestAgileSample {
 
 		//Flush buffered images
 		imgAg2d.flush();
-		imgG2d.flush();		
+		imgG2d.flush();
 		img_mask.flush();
 		jit_mask.flush();
 		img_masked.flush();
@@ -386,15 +386,15 @@ public class TestAgileSample {
 		g2d_.drawString("Testing routine: \""+testName+"\"", 30, 50);
 		g2d_.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		//Draw first line (reference and test rendering)
-		g2d_.drawString("\"Reference\" rendering (Graphics2d)", 30, 110);				
+		g2d_.drawString("\"Reference\" rendering (Graphics2d)", 30, 110);
 		g2d_.drawImage(ref, 30, 120, null);
-		g2d_.drawString("\"Test\" rendering (Agile2d)", 60+ref.getWidth(), 110);	
+		g2d_.drawString("\"Test\" rendering (Agile2d)", 60+ref.getWidth(), 110);
 		g2d_.drawImage(gen, 60+ref.getWidth(), 120, null);
 		//Draw second line (masked and diff rendering)
-		g2d_.drawString("Difference rendering: test minus reference", 30, 170+ref.getHeight());	
+		g2d_.drawString("Difference rendering: test minus reference", 30, 170+ref.getHeight());
 		g2d_.drawImage(diff, 30, 180+ref.getHeight(), null);
 		if(testShape==true){
-			g2d_.drawString("Test rendering after mask (image should be all white)",  60+ref.getWidth(), 170+ref.getHeight());	
+			g2d_.drawString("Test rendering after mask (image should be all white)",  60+ref.getWidth(), 170+ref.getHeight());
 			g2d_.drawImage(afterMask, 60+ref.getWidth(), 180+ref.getHeight(), null);
 		}
 		return report;
@@ -404,12 +404,12 @@ public class TestAgileSample {
 		int x, y;
 		int w=ref.getWidth();
 		int h=ref.getHeight();
-		BufferedImage mask = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);				
+		BufferedImage mask = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 
 		for (y=0; y<h; y++) {
 			//get a row of pixels from the reference image
 			for(x=0; x<w; x++){
-				if( (ref.getRGB(x, y) & 0x00ffffff) == 0x00ffffff) 
+				if( (ref.getRGB(x, y) & 0x00ffffff) == 0x00ffffff)
 					mask.setRGB(x,y, 0x00ffffff);
 				else
 					mask.setRGB(x,y, 0xffffffff);
@@ -439,7 +439,7 @@ public class TestAgileSample {
 		BufferedImage masked = new BufferedImage(gen.getWidth(), gen.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d_ = (Graphics2D)masked.createGraphics();
 		g2d_.drawImage(gen, 0, 0, null);
-		g2d_.drawImage(mask, 0, 0, null);	
+		g2d_.drawImage(mask, 0, 0, null);
 		return masked;
 	}
 
@@ -475,7 +475,7 @@ public class TestAgileSample {
 				diffPix[x+3] = 0xff;
 				//keeps the max rgb difference value
 				if(drgb>dist_max)
-					dist_max=drgb;				
+					dist_max=drgb;
 			}
 			diffWR.setPixels(0, y, w, 1, diffPix);
 		}
@@ -488,7 +488,7 @@ public class TestAgileSample {
 		int dist = (int)Math.sqrt(
 				(double)( Math.pow(r2-r1, 2.0) + Math.pow(g2-g1, 2.0) + Math.pow(b2-b1, 2.0) )
 		);
-		return dist;		
+		return dist;
 	}
 
 	//Apply mask pixel per pixel
@@ -509,5 +509,5 @@ public class TestAgileSample {
 			}
 		}
 		return true;
-	}	
+	}
 }

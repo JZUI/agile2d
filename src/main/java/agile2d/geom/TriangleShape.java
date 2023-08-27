@@ -8,19 +8,19 @@ package agile2d.geom;
 
 /**
  * Class TriangleShape
- * 
+ *
  * @author Jean-Daniel Fekete
  * @version $Revision: 1.2 $
  */
 public class TriangleShape extends PolygonShape {
-    
+
     public TriangleShape() {
         super(3, true);
     }
     public TriangleShape(float[] vertices, int index) {
         super(vertices, index, true);
     }
-    
+
     public int getSize() {
         return 3;
     }

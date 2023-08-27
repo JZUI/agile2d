@@ -9,7 +9,7 @@ package agile2d.geom;
 //
 // Interface for rendering VertexArrays. Implemented by AgileGraphics2D.
 //
-public interface VertexArraySupport 
+public interface VertexArraySupport
 {
 	public void drawVertexArray(VertexArray array, VertexAttributes attributes);
 	public void fillVertexArray(VertexArray array, VertexAttributes attributes);

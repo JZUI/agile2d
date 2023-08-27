@@ -17,7 +17,7 @@ import javax.media.opengl.GLAutoDrawable;
 
 /**
  * Basic services for Font renderers.
- * 
+ *
  * @author Jean-Daniel Fekete, Rodrigo de Almeida
  * @version $Revision: 3.0 $
  */
@@ -43,7 +43,7 @@ abstract class BasicFontRenderer {
     /**
      * Installs the resources to render the font and return <code>true</code>
      * if the font has been installed or <code>false</code> otherwise.
-     * 
+     *
      * @param drawable the GLDrawable
      * @param font the font
      * @param scale the current scane
@@ -68,7 +68,7 @@ abstract class BasicFontRenderer {
     /**
      * Called after install has returned <code>true</code>, this call
      * renders the font on the drawable at the current 0,0 position.
-     * 
+     *
      * @param drawable
      * @param string
      * @param scale

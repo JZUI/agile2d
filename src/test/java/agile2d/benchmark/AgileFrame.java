@@ -85,7 +85,7 @@ public class AgileFrame implements GLEventListener, KeyListener{
 			h=height;
 	}
 
-    
+
 
 	public void display(GLAutoDrawable drawable) {
 		//AgileGraphics2D.setMaxTileSize(32);

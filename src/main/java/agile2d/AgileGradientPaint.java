@@ -12,7 +12,7 @@ import java.awt.GradientPaint;
 import java.awt.geom.Point2D;
 
 /**
- * A GradientPaint that contains RGB int methods for setting colors, to 
+ * A GradientPaint that contains RGB int methods for setting colors, to
  * avoid allocating Color objects if possible.
  *
  * @author Jean-Daniel Fekete
@@ -28,13 +28,13 @@ public class AgileGradientPaint extends GradientPaint {
      * <code>Point</code> in user space
      * @param y1 y coordinates of the first specified
      * <code>Point</code> in user space
-     * @param color1 <code>Color</code> at the first specified 
+     * @param color1 <code>Color</code> at the first specified
      * <code>Point</code>
      * @param x2 x coordinates of the second specified
      * <code>Point</code> in user space
      * @param y2 y coordinates of the second specified
      * <code>Point</code> in user space
-     * @param color2 <code>Color</code> at the second specified 
+     * @param color2 <code>Color</code> at the second specified
      * <code>Point</code>
      * @throws NullPointerException if either one of colors is null
      */
@@ -46,12 +46,12 @@ public class AgileGradientPaint extends GradientPaint {
     /**
      * Constructs a simple acyclic <code>AgileGradientPaint</code> object.
      * @param pt1 the first specified <code>Point</code> in user space
-     * @param color1 <code>Color</code> at the first specified 
+     * @param color1 <code>Color</code> at the first specified
      * <code>Point</code>
      * @param pt2 the second specified <code>Point</code> in user space
-     * @param color2 <code>Color</code> at the second specified 
+     * @param color2 <code>Color</code> at the second specified
      * <code>Point</code>
-     * @throws NullPointerException if either one of colors or points 
+     * @throws NullPointerException if either one of colors or points
      * is null
      */
     public AgileGradientPaint(Point2D pt1, Color color1,
@@ -66,13 +66,13 @@ public class AgileGradientPaint extends GradientPaint {
      * <code>Point</code> in user space
      * @param y1 y coordinates of the first specified
      * <code>Point</code> in user space
-     * @param color1 <code>Color</code> at the first specified 
+     * @param color1 <code>Color</code> at the first specified
      * <code>Point</code>
      * @param x2 x coordinates of the second specified
      * <code>Point</code> in user space
      * @param y2 y coordinates of the second specified
      * <code>Point</code> in user space
-     * @param color2 <code>Color</code> at the second specified 
+     * @param color2 <code>Color</code> at the second specified
      * <code>Point</code>
      * @param cyclic <code>true</code> if the gradient pattern should cycle
      * repeatedly between the two colors; <code>false</code> otherwise
@@ -86,24 +86,24 @@ public class AgileGradientPaint extends GradientPaint {
     /**
      * Constructs either a cyclic or acyclic <code>AgileGradientPaint</code>
      * object depending on the <code>boolean</code> parameter.
-     * @param pt1 the first specified <code>Point</code> 
+     * @param pt1 the first specified <code>Point</code>
      * in user space
-     * @param color1 <code>Color</code> at the first specified 
+     * @param color1 <code>Color</code> at the first specified
      * <code>Point</code>
-     * @param pt2 the second specified <code>Point</code> 
+     * @param pt2 the second specified <code>Point</code>
      * in user space
-     * @param color2 <code>Color</code> at the second specified 
+     * @param color2 <code>Color</code> at the second specified
      * <code>Point</code>
      * @param cyclic <code>true</code> if the gradient pattern should cycle
      * repeatedly between the two colors; <code>false</code> otherwise
-     * @throws NullPointerException if either one of colors or points 
+     * @throws NullPointerException if either one of colors or points
      * is null
      */
     public AgileGradientPaint(Point2D pt1, Color color1,
 							  Point2D pt2, Color color2, boolean cyclic) {
         super(pt1, color1, pt2, color2, cyclic);
     }
-    
+
     /**
      * Constructs either a cyclic or acyclic <code>AgileGradientPaint</code>
      * object depending on the <code>boolean</code> parameter.
@@ -128,7 +128,7 @@ public class AgileGradientPaint extends GradientPaint {
         this.c1 = c1;
         this.c2 = c2;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -139,7 +139,7 @@ public class AgileGradientPaint extends GradientPaint {
         }
         return c;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -150,7 +150,7 @@ public class AgileGradientPaint extends GradientPaint {
         }
         return c;
     }
-    
+
     /**
      * Returns the <code>int</code> argb value of color anchored by
      * the point P1.
@@ -160,7 +160,7 @@ public class AgileGradientPaint extends GradientPaint {
     public int getC1() {
         return c1;
     }
-    
+
     /**
      * Returns the <code>int</code> argb value of color anchored by
      * the point P2.

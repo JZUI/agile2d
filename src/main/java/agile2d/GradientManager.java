@@ -17,7 +17,7 @@ import javax.media.opengl.GL2;
 
 /**
  * Used to fill rectangles with a gradient.
- * 
+ *
  * Works by computing a 2texels 1D texture and filling the shapes using
  * texture indices computed through glTexGen
  */
@@ -41,7 +41,7 @@ class GradientManager {
     void setAlpha(float a) {
         alpha = a;
     }
-    
+
     void createTexture() {
         if (texture == 0) {
             int[] texName = { 0 };
@@ -82,7 +82,7 @@ class GradientManager {
             g1 = ((c1&0xFF00)>>8) / 255.0f;
             b1 = ((c1&0xFF)) / 255.0f;
             a1 = ((c1&0xFF000000)>>>24) / 255.0f;
-            
+
             int c2 = agl.getC2();
             r2 = ((c2&0xFF0000)>>16) / 255.0f;
             g2 = ((c2&0xFF00)>>8) / 255.0f;
@@ -95,7 +95,7 @@ class GradientManager {
             g1 = color1.getGreen() / 255.0f;
             b1 = color1.getBlue() / 255.0f;
             a1 = color1.getAlpha() / 255.0f;
-    
+
             Color color2 = gradient.getColor2();
             r2 = color2.getRed() / 255.0f;
             g2 = color2.getGreen() / 255.0f;
@@ -105,7 +105,7 @@ class GradientManager {
 
         cyclic = gradient.isCyclic();
         createTexture();
-        
+
         float p1x = originX-vecX/2;
         float p1y = originY-vecY/2;
         float pdx = 2*vecX;
@@ -116,15 +116,15 @@ class GradientManager {
         // P(x,y) x * pdx + y * pdy + CST = 0
         // CST is then -(p1x * pdx + p1y * pdy)
         // We need to normalize so that P(p2x,p2y) = 1
-        // so we divide the parameters by pdx*pdx+pdy*pdy 
+        // so we divide the parameters by pdx*pdx+pdy*pdy
         float den = pdx*pdx + pdy*pdy;
         texParams[0] = pdx / den;
         texParams[1] = pdy / den;
         texParams[3] = -(p1x*pdx + p1y*pdy) / den;
     }
-    
+
     public void begin(float alpha) {
-        if (invalid){     	
+        if (invalid){
             return;
         }
         glState.glEnable(GL2.GL_TEXTURE_1D);
@@ -143,7 +143,7 @@ class GradientManager {
         gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
         gl.glTexGenfv(GL2.GL_S, GL2.GL_OBJECT_PLANE, texParams, 0);
     }
-    
+
     public void end() {
         if (invalid)
             return;

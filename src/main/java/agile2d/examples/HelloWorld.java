@@ -27,12 +27,12 @@ public class HelloWorld {
 	public final static int WIN_H = 640;
 
 	private static final String ARG_ERROR = "Bad usage.\nYou must pass as an argument the type of component that you want to use: 'GLCanvas' (Agile2D with AWT component) or 'GLJPanel' (Agile2D with Swing component) or 'NEWT' (Agile2D with NEWT component) or 'JFrame' (pure Graphics2D implementation, i.e., no Agile2D)";
-	
+
 	public static void main(String[] args) {
 		//Set this property here to avoid "java.util.zip.ZipException" error messages
 		//Further details: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE
-		System.setProperty("jogamp.gluegen.UseTempJarCache","false");		
-		
+		System.setProperty("jogamp.gluegen.UseTempJarCache","false");
+
 		if (args.length == 0) {
 			System.out.println("\n"+ARG_ERROR);
 			System.exit(0);
@@ -57,8 +57,8 @@ public class HelloWorld {
 				agile.setRoot(panel);
 			}
 			else if (args[0].equals("NEWT")) {
-				GLWindow window = GLWindow.create(caps); 
-				window.addGLEventListener(agile);        
+				GLWindow window = GLWindow.create(caps);
+				window.addGLEventListener(agile);
 				NewtCanvasAWT canvas = new NewtCanvasAWT(window);
 				frame.add(canvas);
 			}
@@ -69,7 +69,7 @@ public class HelloWorld {
 					System.exit(0);
 				}
 			});
-			frame.setVisible(true);			
+			frame.setVisible(true);
 			frame.addKeyListener(agile);
 		}
 		else if (args[0].equals("JFrame")) {
@@ -89,7 +89,7 @@ public class HelloWorld {
 
 	public static void drawHelloWorld(Graphics2D g_){
 		Font font_ = new Font("SansSerif", Font.BOLD, 48);
-		g_.setFont(font_);		
-		g_.drawString("Hello 2D World!", 200, (HelloWorld.WIN_H/2));				
+		g_.setFont(font_);
+		g_.drawString("Hello 2D World!", 200, (HelloWorld.WIN_H/2));
 	}
 }

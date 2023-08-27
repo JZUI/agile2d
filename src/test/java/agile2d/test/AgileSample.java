@@ -139,7 +139,7 @@ public class AgileSample implements GLEventListener, KeyListener {
 				int iG = buffer.get(q++);
 				int iB = buffer.get(q++);
 				q++;//ignores the last byte (alpha)
-				pixelInts[i++] = 0xFF000000 | ((iR & 0x000000FF) << 16) | ((iG & 0x000000FF) << 8) | (iB & 0x000000FF);		
+				pixelInts[i++] = 0xFF000000 | ((iR & 0x000000FF) << 16) | ((iG & 0x000000FF) << 8) | (iB & 0x000000FF);
 			}
 		}
 		bImage.setRGB( 0, 0, width, height, pixelInts, 0, width);

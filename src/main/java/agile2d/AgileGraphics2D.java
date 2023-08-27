@@ -93,7 +93,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 	/**
 	 * Set size in pixel for the tiles that will be created when drawing an image.
 	 * Has no effect if the size is bigger than the maximum texture size supported by the current OpenGL implementation
-	 */	
+	 */
 	public static int getMaxTileSize(){
 		return ImageUtils.MAX_TEX_SIZE;
 	}
@@ -966,8 +966,8 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 
 		boolean isOutside(Rectangle2D bounds){
 			Rectangle2D tBounds = RectUtils.transform(bounds, active.transform);
-			
-			
+
+
 			tBounds.add(tBounds.getMinX()-absLineWidth/2, tBounds.getMinY()-absLineWidth/2);
 			tBounds.add(tBounds.getMaxX()+absLineWidth/2, tBounds.getMaxY()+absLineWidth/2);
 
@@ -1057,7 +1057,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
 		private void fillShape(Shape shape, VertexAttributes attributes, boolean immutable, boolean convex) {
 			if(isOutside(shape.getBounds2D()))
 				return;
-			
+
 			switch (paintMode) {
 			case PAINT_SOLID:
 				// Just fill the shape
@@ -1986,7 +1986,7 @@ public final class AgileGraphics2D extends Graphics2D implements Cloneable, Vert
      */
     public boolean drawImage(Image img, int x, int y, int width, int height,
 			ImageObserver observer) {
-        if (img == null) return true;	    
+        if (img == null) return true;
 		int imgWidth = img.getWidth(observer);
 		int imgHeight = img.getHeight(observer);
 

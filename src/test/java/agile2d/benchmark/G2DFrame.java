@@ -16,16 +16,16 @@ import javax.swing.*;
 
 /**
  * <b>AgileCanvas</b>
- * 
+ *
  */
 public class G2DFrame extends JPanel implements Runnable {
 	private static final long serialVersionUID = 9044699885885527920L;
 	private static Graphics2D g2;
-	private static Chrono chrono;	
+	private static Chrono chrono;
 	private Thread thread;
-	private Image mImage;	
+	private Image mImage;
 	private AnimeBenchmark bench;
-	
+
 	public void start() {
 		thread = new Thread(this);
 		thread.setPriority(Thread.MIN_PRIORITY);
@@ -33,11 +33,11 @@ public class G2DFrame extends JPanel implements Runnable {
 	}
 
 	public G2DFrame(){
-		chrono = new Chrono();		
+		chrono = new Chrono();
 		bench = new AnimeBenchmark(chrono);
 		bench.resetCounter();
 	}
-	
+
 	public void paint(Graphics g) {
 		// Clear the offscreen image.
 		Dimension d = getSize();
@@ -80,11 +80,11 @@ public class G2DFrame extends JPanel implements Runnable {
 
 	public void reset(int w, int h) {
 	}
-	
+
 	public void doPaint(Graphics g) {
 		// Paint sample primitives
 		g2 = (Graphics2D)g;
-		g2.setBackground(Color.WHITE);	
+		g2.setBackground(Color.WHITE);
 		g2.clearRect(0, 0, AnimeBenchmark.WIN_W, AnimeBenchmark.WIN_H);
 		AnimeBenchmark.drawFullOvals(g2);
 		AnimeBenchmark.drawRects(g2);
@@ -94,7 +94,7 @@ public class G2DFrame extends JPanel implements Runnable {
 		bench.increment();
 		bench.step();
 	}
-	
+
 	public AnimeBenchmark getRefToBench(){
 		if(bench==null)
 			System.out.println("Warning. Bench is empty");

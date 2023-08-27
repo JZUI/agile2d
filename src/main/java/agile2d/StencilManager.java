@@ -17,13 +17,13 @@ import javax.media.opengl.GL2;
  * as a separate set of stencil planes that can be written or used
  * independently.<p>
  *
- * To use stencils, first render the shape you want to clip against 
+ * To use stencils, first render the shape you want to clip against
  * into the stencil:
  *
  * <pre>
  *    stencilManager.begin(StencilManager.STENCIL_1, shape.getBounds());
  *		fill(shape);
- *    stencilManager.end(); 
+ *    stencilManager.end();
  * </pre>
  *
  * Then, to draw shapes and have them be clipped by the shape drawn above
@@ -31,7 +31,7 @@ import javax.media.opengl.GL2;
  *
  * <pre>
  *    stencilManager.enableClipping(StencilManager.STENCIL_1);
- *		fillShapes(otherShapes); 
+ *		fillShapes(otherShapes);
  *    stencilManager.disableClipping(StencilManager.STENCIL_1);
  * </pre>
  *
@@ -45,27 +45,27 @@ import javax.media.opengl.GL2;
  *
  * means clip against everything in plane 1 and 2.
  */
- 
+
 class StencilManager {
 	GL2 gl;
 	int clipMask; // which planes are currently being clipped against
         AgileState glState;
-	
+
 	static final int STENCIL_1 = 1;
 	static final int STENCIL_2 = 2;
 	static final int STENCIL_3 = 4;
-	
+
 	StencilManager(GL2 gl) {
 		this.gl = gl;
                 this.glState = AgileState.get(gl);
 	}
-		
-	//		
-	// Prepares a bitplane of the stencil buffer for writing. If bounds 
+
+	//
+	// Prepares a bitplane of the stencil buffer for writing. If bounds
 	// is null, that entire bitplane is cleared. Otherwise, only the
 	// specified portion (in user coordinates) of the bitplane is cleared.
 	//
-	void begin(int maskBit, Rectangle2D bounds) {			
+	void begin(int maskBit, Rectangle2D bounds) {
 		// Disable the color and depth buffer
 		gl.glColorMask(false, false, false, false);
 		gl.glDepthMask(false);
@@ -84,46 +84,46 @@ class StencilManager {
 			//
 			gl.glStencilFunc(GL2.GL_ALWAYS, maskBit, maskBit);
 			gl.glStencilOp(GL2.GL_ZERO, GL2.GL_ZERO, GL2.GL_ZERO);
-			gl.glRectf((float)bounds.getMinX() - 1, (float)bounds.getMinY() - 1, 
+			gl.glRectf((float)bounds.getMinX() - 1, (float)bounds.getMinY() - 1,
 						(float)bounds.getMaxX() + 1, (float)bounds.getMaxY() + 1);
 		}
-		
+
 		// Turn on mode to draw into stencil buffer
 		gl.glStencilFunc(GL2.GL_ALWAYS, maskBit, maskBit);
 		gl.glStencilOp(GL2.GL_REPLACE, GL2.GL_REPLACE, GL2.GL_REPLACE);
 	}
 
 	//
-	// Called after calling begin() - this closes the stencil buffer 
+	// Called after calling begin() - this closes the stencil buffer
 	// for writing and reactivates the normal depth/color buffers.
 	//
-	void end() {			
+	void end() {
 		// Now restore the color/depth buffer and disable stencil
 		gl.glColorMask(true, true, true, true);
 		gl.glDepthMask(true);
-		checkClipMask();			
+		checkClipMask();
 	}
 
-	// After calling this, shapes are only drawn if all the bits 
+	// After calling this, shapes are only drawn if all the bits
 	// specified in mask are set in the stencil buffer.
-	// 
-	void enableClipping(int mask) {		
+	//
+	void enableClipping(int mask) {
 		clipMask |= mask;
 		checkClipMask();
 	}
 
-	void disableClipping(int mask) {		
+	void disableClipping(int mask) {
 		clipMask &= ~mask;
 		checkClipMask();
 	}
 
 	private void checkClipMask() {
 		if (clipMask != 0) {
-			glState.glEnable(GL2.GL_STENCIL_TEST);			
+			glState.glEnable(GL2.GL_STENCIL_TEST);
 			gl.glStencilFunc(GL2.GL_EQUAL, clipMask, clipMask);
 			gl.glStencilOp(GL2.GL_KEEP, GL2.GL_KEEP, GL2.GL_KEEP);
 		} else {
-			glState.glDisable(GL2.GL_STENCIL_TEST);			
+			glState.glDisable(GL2.GL_STENCIL_TEST);
 		}
 	}
 }

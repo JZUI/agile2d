@@ -110,7 +110,7 @@ public class VertexArray implements Shape {
 
 	public static ByteBuffer newByteBuffer(int numElements) {
 		nb_buffers_counter++;
-		nb_elements_in_buffer+=numElements;		
+		nb_elements_in_buffer+=numElements;
 		ByteBuffer bb = ByteBuffer.allocateDirect(numElements);
 		bb.order(ByteOrder.nativeOrder());
 		return bb;
@@ -544,7 +544,7 @@ public class VertexArray implements Shape {
 	public boolean intersects(Rectangle2D r) {
 		return toGeneralPath().intersects(r);
 	}
-	
+
     protected void finalize() throws Throwable {
         try {
             //System.out.println("VertexArray. Calling finalize method.");
@@ -793,7 +793,7 @@ public class VertexArray implements Shape {
 	}
 
 
-	
+
 	/**
 	 * Draws the outline of the geometry in this VertexArray using the current Stoke and Paint
 	 * attributes of the graphics.
@@ -805,7 +805,7 @@ public class VertexArray implements Shape {
 	/**
 	 * Draws the outline of the geometry in this VertexArray using the per-vertex color attributes
 	 * specified in the VertexAttributes array.
-	 * 
+	 *
 	 * For an AgileGraphics2D, this is equivalent to calling agraphics.drawVertexArray(this, attributes).
 	 * For a standard Graphics2D object, a less performant series of draw commands are executed.
 	 */

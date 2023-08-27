@@ -59,11 +59,11 @@ final class Texture {
     Texture(GL2 gl, int components, int size, boolean smooth) {
         this(gl, components, size, size, smooth);
     }
-    
+
     Texture(GL2 gl, int components, int width, int height, boolean smooth) {
         this.gl = gl;
         this.smooth = smooth;
-        glState = AgileState.get(gl);	
+        glState = AgileState.get(gl);
 	if(glState.checkGlExtension("GL_ARB_texture_non_power_of_two")==true){
 	        textureWidth = width;
 	        textureHeight = height;
@@ -75,7 +75,7 @@ final class Texture {
         internalFormat = components;
         numComponents = components;
 
-        
+
         switch (numComponents) {
         case 1:
             pixelFormat = GL2.GL_ALPHA;
@@ -92,14 +92,14 @@ final class Texture {
             break;
         }
     }
-    
+
     Texture(GL2 gl, int components, int size) {
         this(gl, components, size, true);
     }
 
 
 	static ColorModel glAlphaColorModel, glColorModel;
-	
+
 	static {
 		glAlphaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
 			new int[] {8,8,8,8},
@@ -107,7 +107,7 @@ final class Texture {
 			false,
 			ComponentColorModel.TRANSLUCENT,
 			DataBuffer.TYPE_BYTE);
-                                            
+
 		glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
 			new int[] {8,8,8,0},
 			false,
@@ -118,11 +118,11 @@ final class Texture {
 
 	// From http://wiki.java.net/bin/view/Games/TextureLoadingExample
 	//
-	static private ByteBuffer convertImageData(BufferedImage bufferedImage, int texWidth, int texHeight) throws java.io.IOException { 
-		ByteBuffer imageBuffer = null; 
+	static private ByteBuffer convertImageData(BufferedImage bufferedImage, int texWidth, int texHeight) throws java.io.IOException {
+		ByteBuffer imageBuffer = null;
 		WritableRaster raster;
 		BufferedImage texImage;
-        
+
 		if (bufferedImage.getColorModel().hasAlpha()) {
 			raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 4, null);
 			texImage = new BufferedImage(glAlphaColorModel, raster, false, new Hashtable());
@@ -130,23 +130,23 @@ final class Texture {
 			raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, texWidth, texHeight, 3, null);
 			texImage = new BufferedImage(glColorModel, raster, false, new Hashtable());
 		}
-        
+
 		Graphics g = texImage.getGraphics();
 		g.drawImage(bufferedImage, 0, 0, null);
         g.dispose();
 
-		byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData(); 
+		byte[] data = ((DataBufferByte) texImage.getRaster().getDataBuffer()).getData();
 
-		imageBuffer = ByteBuffer.allocateDirect(data.length); 
-		imageBuffer.order(ByteOrder.nativeOrder()); 
-		imageBuffer.put(data, 0, data.length); 
+		imageBuffer = ByteBuffer.allocateDirect(data.length);
+		imageBuffer.order(ByteOrder.nativeOrder());
+		imageBuffer.put(data, 0, data.length);
 
-		return imageBuffer; 
-	} 
+		return imageBuffer;
+	}
 
-		
+
 	public boolean isNormalized() {
-        return (s2 == 1) && (t2 == 1); 
+        return (s2 == 1) && (t2 == 1);
     }
 
     public Object getPixels() {
@@ -261,7 +261,7 @@ final class Texture {
             gl.glTexSubImage2D(GL2.GL_TEXTURE_2D, 0, 0, 0,
                                paintRect.width, paintRect.height, GL2.GL_BGRA,
                                GL2.GL_UNSIGNED_BYTE, buffer);
-            gl.glPixelTransferf(GL2.GL_ALPHA_BIAS, 0);                               
+            gl.glPixelTransferf(GL2.GL_ALPHA_BIAS, 0);
         }
         gl.glPixelStorei(GL2.GL_UNPACK_ROW_LENGTH, 0);
         if (paintRect.x != 0)
@@ -306,7 +306,7 @@ final class Texture {
     public int getWidth() {
         return textureWidth;
     }
-    
+
     public int getHeight() {
         return textureHeight;
     }
@@ -369,7 +369,7 @@ final class Texture {
         else {
             gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
             gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
-        }                        
+        }
     }
 
     private void bind() {
@@ -427,26 +427,26 @@ final class Texture {
 
         disable();
     }
-    
+
     double[] xequal= new double[4];
     double[] yequal= new double[4];
-    
+
     void begin(Rectangle2D anchorRect) {
         enable();
 
         gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
         gl.glTexParameterf(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
         xequal[0] = 1/anchorRect.getWidth();
-        xequal[1] = 0; 
-        xequal[2] = 0; 
+        xequal[1] = 0;
+        xequal[2] = 0;
         xequal[3] = -anchorRect.getX() / anchorRect.getWidth();
         gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
         gl.glTexGendv(GL2.GL_S, GL2.GL_OBJECT_PLANE, xequal, 0);
         glState.glEnable(GL2.GL_TEXTURE_GEN_S);
-        
-        yequal[0] = 0; 
+
+        yequal[0] = 0;
         yequal[1] = 1/anchorRect.getHeight();
-        yequal[2] = 0; 
+        yequal[2] = 0;
         yequal[3] = -anchorRect.getY() / anchorRect.getHeight();
         gl.glTexGeni(GL2.GL_T, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_OBJECT_LINEAR);
         gl.glTexGendv(GL2.GL_T, GL2.GL_OBJECT_PLANE, yequal, 0);
@@ -456,7 +456,7 @@ final class Texture {
         }
 
     }
-    
+
     void end(){
         glState.glDisable(GL2.GL_TEXTURE_GEN_S);
         glState.glDisable(GL2.GL_TEXTURE_GEN_T);

@@ -50,14 +50,14 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
         glu.gluTessCallback(tobj, GLU.GLU_TESS_END, this);
         glu.gluTessCallback(tobj, GLU.GLU_TESS_ERROR, this);
         glu.gluTessCallback(tobj, GLU.GLU_TESS_COMBINE, this);
-        
+
         // Important: Specify the normal for the shape as a whole,
         // so that GLU doesn't both calculating it. Since all our flat
         // shapes are in the z=0 plane, the normal is easy to calculate:
         //
         glu.gluTessNormal(tobj, 0.0, 0.0, -1.0);
 
-        // 
+        //
         // Ideally, the GLU tesselator would contain a hint to indicate
         // whether or not to use its greedy approach to pick the best mesh
         // type to use. For cases such as font outlines (which are cached) this
@@ -187,7 +187,7 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      */
 
    public void begin(int which) {
-	visitor.begin(which);      
+	visitor.begin(which);
     }
 
     /**
@@ -226,7 +226,7 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
         visitor.combine(coords, data, weight, dataOut);
     }
 
-    
+
     /**
      * Default implementation of the TesselatorVisitor combine method usable
      * in any implementations.
@@ -239,14 +239,14 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
 
   public static void defaultCombine(double[] coords, Object[] data,float[] weight, Object[] dataOut) {
       double[] vertex = new double[6];
-      
+
 	/*
 	//System.err.println("Vertex length: "+vertex.length+", data length :"+data.length+" and weight length: "+weight.length);
 	//Trace info about data object
 	int max_i, max_j;
 	max_i = data.length;
 	for (int i=0; i<max_i; i++){
-		max_j=((double[])data[i]).length;	
+		max_j=((double[])data[i]).length;
 		for(int j=0;j<max_j; j++)
 			System.out.println("data["+i+"]["+j+"]= "+((double[])data[i])[j]);
 	}
@@ -266,7 +266,7 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
       vertex[0] = coords[0];
       vertex[1] = coords[1];
       vertex[2] = coords[2];
-      
+
       dataOut[0] = vertex;
 
     }
@@ -290,8 +290,8 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
      */
     public void fill(
             final GL2 gl,
-            Shape shape, 
-            AffineTransform at, 
+            Shape shape,
+            AffineTransform at,
             float flatness) {
         PathIterator path = shape.getPathIterator(at, flatness);
         tesselate(path, new TesselatorAdapter() {
@@ -302,14 +302,14 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
                 gl.glBegin(mode);
 
             }
-            
+
             /**
              * {@inheritDoc}
              */
-            public void addVertex(double[] coords) { 
+            public void addVertex(double[] coords) {
                 gl.glVertex2dv(coords, 0);
             }
-            
+
             /**
              * {@inheritDoc}
              */
@@ -318,8 +318,8 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
             }
         });
     }
-    
-  
+
+
     /**
      * Fills a specified shape.
      * @param gl the GL context
@@ -329,7 +329,7 @@ final class Tesselator extends GLUtessellatorCallbackAdapter {
     public void fill(GL2 gl, Shape shape, AffineTransform at) {
         fill(gl, shape, at, 1);
     }
-    
+
     /**
      * Fills a specified shape.
      * @param gl the GL context

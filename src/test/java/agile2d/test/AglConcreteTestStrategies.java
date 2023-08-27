@@ -32,14 +32,14 @@ class AglTestStrategyClearRect implements TestStrategy {
 class AglTestStrategyDrawRect implements TestStrategy {
      public void draw(Graphics2D gSample) {
 	CompareRoutines.drawRect(gSample);
-     }    
+     }
      public Object[] getObjects() {return null;}
 }
 
 class AglTestStrategyDrawRoundRect implements TestStrategy {
      public void draw(Graphics2D gSample) {
 	CompareRoutines.drawRoundRect(gSample);
-     }    
+     }
      public Object[] getObjects() {return null;}
 }
 
@@ -152,7 +152,7 @@ class AglTestStrategySetGetClipRect implements TestStrategy {
         gSample.setClip(x, y, w, h);
 	clipFound = gSample.getClipBounds();//Call getClipBounds(Rectangle r) so we don't need to test the latter
 	//draw a yellow rect just to see if the clip works
-	gSample.setColor(Color.YELLOW);	
+	gSample.setColor(Color.YELLOW);
 	gSample.fillRect(0, 0, 600, 600);
     }
     public Object[] getObjects(){
@@ -210,7 +210,7 @@ class AglTestStrategyGetFontMetrics implements TestStrategy {
 class AglTestStrategySetGetTransform implements TestStrategy {
      private AffineTransform transfToSet, transfFound;
      public void draw(Graphics2D gSample) {
-	gSample.setColor(Color.YELLOW);	
+	gSample.setColor(Color.YELLOW);
 	gSample.fillRect(50, 50, 200, 200);
 	transfToSet = new AffineTransform();
 	transfToSet.translate(100,100);
@@ -218,7 +218,7 @@ class AglTestStrategySetGetTransform implements TestStrategy {
 	transfToSet.rotate(1.5);
         gSample.setTransform(transfToSet);
 	transfFound = gSample.getTransform();
-	gSample.setColor(Color.RED);	
+	gSample.setColor(Color.RED);
 	gSample.fillRect(0, 0, 200, 200);
     }
     public Object[] getObjects(){

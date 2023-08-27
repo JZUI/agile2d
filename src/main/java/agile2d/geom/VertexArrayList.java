@@ -21,7 +21,7 @@ public class VertexArrayList implements Shape, Serializable {
 	private VertexArray[] list;
 	private int           top;
 	private transient Area area;
-    
+
 	/**
 	 * Create a new VertexArrayList object.
 	 */
@@ -60,7 +60,7 @@ public class VertexArrayList implements Shape, Serializable {
 	 * @param v the <code>VertexArray</code>
 	 */
 	public void add(VertexArray v) {
-		area = null;        
+		area = null;
 		resize(top + 1);
 		list[top++] = v;
 	}
@@ -74,7 +74,7 @@ public class VertexArrayList implements Shape, Serializable {
 		return top;
 	}
 
-	public int capacity() { 
+	public int capacity() {
 		return list.length;
 	}
 
@@ -102,7 +102,7 @@ public class VertexArrayList implements Shape, Serializable {
         }
         return area;
     }
-    
+
     public boolean contains(double x, double y, double w, double h) {
         return getArea().contains(x, y, w, h);
     }
@@ -131,13 +131,13 @@ public class VertexArrayList implements Shape, Serializable {
         int index;
         AffineTransform at;
         PathIterator current;
-        
+
         VAListIterator(AffineTransform at) {
             this.at = at;
             index = -1;
             next();
         }
-        
+
         public int currentSegment(double[] coords) {
             if (current != null)
                 return current.currentSegment(coords);
@@ -186,7 +186,7 @@ public class VertexArrayList implements Shape, Serializable {
     public boolean intersects(Rectangle2D r) {
         return getArea().intersects(r);
     }
-    
+
     protected void finalize() throws Throwable {
         try {
             for(int i=0; i<list.length; i++){
