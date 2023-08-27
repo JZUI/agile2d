@@ -1,6 +1,6 @@
 # Agile2D
 
-A framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API. 
+A framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API.
 
 ## Building Agile with Maven
 
@@ -15,7 +15,7 @@ You should be connected to the internet the first time you use this command so t
 
 ## Native Libraries
 
-Agile2D uses JOGL, which is the "Java Binding for the OpenGL API" (check <http://jogamp.org/jogl> ) 
+Agile2D uses JOGL, which is the "Java Binding for the OpenGL API" (check <http://jogamp.org/jogl> )
 Thus, the native library files location must be indicated to the VM, in one of the two ways explained below:
 A. Simply passing the flag "-Djava.library.path=target/lib/" to the JVM when launching the application
 B. Setting the related environment variable, e.g. "export DYLD_LIBRARY_PATH=target/lib" (Warning. The name of this variable and its setting command vary across platforms.)
@@ -24,7 +24,7 @@ Observation: By default, Maven places the native library files in the local "./t
 ## Launching a "HelloWorld" example and switching among GLCanvas, GLJPanel, and NEWT
 
 ```shell
-java -Djava.library.path=target/lib/ -cp target/agile2d-3.0.jar agile2d.examples.HelloWorld [GLCanvas | GLJPanel | NEWT] 
+java -Djava.library.path=target/lib/ -cp target/agile2d-3.0.jar agile2d.examples.HelloWorld [GLCanvas | GLJPanel | NEWT]
 ```
 
 You should pass as argument 'GLCanvas', 'GLJPanel', or 'NEWT' in order to make Agile2D use respectively GLCanvas (Heavyweight component), GLJPanel (Swing Lightweight Component) or NEWT (JOGL's High Performance Native Windowing Toolkit)
@@ -72,4 +72,4 @@ This is an upgraded version of the 2006 software of Jon Meyer, Ben Bederson and 
 
 ---
 
-This software is published under the terms of the BSD Software License. 
+This software is published under the terms of the BSD Software License.
