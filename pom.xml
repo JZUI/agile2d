@@ -14,53 +14,55 @@ SPDX-License-Identifier: BSD-4-Clause
   <name>Agile2D</name>
   <description>Agile2D is a framework that provides a nearly complete implementation of Java2D built using the industry standard OpenGL API.</description>
   <url>http://sourceforge.net/projects/agile2d/</url>
-    <licenses>
-        <license>
-            <name>BSD Software License</name>
-            <url>http://creativecommons.org/licenses/BSD/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+
+  <licenses>
+      <license>
+          <name>BSD Software License</name>
+          <url>http://creativecommons.org/licenses/BSD/</url>
+          <distribution>repo</distribution>
+      </license>
+  </licenses>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- By default, tests are skipped. To run them, use the flag "-DskipTests=false". e.g.: "mvn install -DskipTests=false" -->
     <skipTests>true</skipTests>
   </properties>
-    <!-- Repositories -->
+
   <repositories>
-	<repository>
-     <id>maven2-repository.dev.java.net</id>
-     <name>Java.net Repository for Maven</name>
-     <url>http://download.java.net/maven/2/</url>
-     <layout>default</layout>
+    <repository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+      <layout>default</layout>
     </repository>
     <repository>
       <id>central</id>
       <name>Maven Repository</name>
       <url>http://repo1.maven.org/maven2</url>
     </repository>
-	<repository>
-        <id>jogamp.org</id>
-        <url>http://jogamp.org/deployment/maven</url>
-    </repository>
-
-</repositories>
-
-<distributionManagement>
     <repository>
-        <id>agile2d.sf.net</id>
-        <url>scp://shell.sourceforge.net/home/project-web/agile2d/htdocs/maven</url>
+      <id>jogamp.org</id>
+      <url>http://jogamp.org/deployment/maven</url>
     </repository>
-</distributionManagement>
-<profiles>
+  </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>agile2d.sf.net</id>
+      <url>scp://shell.sourceforge.net/home/project-web/agile2d/htdocs/maven</url>
+    </repository>
+  </distributionManagement>
+
+  <profiles>
     <profile>
-        <id>osx</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
-        <properties>
-            <build.type>natives-macosx-universal</build.type>
-        </properties>
+      <id>osx</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <build.type>natives-macosx-universal</build.type>
+      </properties>
     </profile>
     <profile>
       <id>lin32</id>
@@ -86,87 +88,89 @@ SPDX-License-Identifier: BSD-4-Clause
         <build.type>natives-windows-amd64</build.type>
       </properties>
     </profile>
-</profiles>
-<dependencies>
-	<dependency>
-    	<groupId>org.jogamp.jogl</groupId>
-    	<artifactId>jogl-all</artifactId>
-    	<version>2.0-rc11</version>
-	</dependency>
-	<dependency>
-		<groupId>org.jogamp.gluegen</groupId>
-		<artifactId>gluegen-rt</artifactId>
-		<version>2.0-rc11</version>
-	</dependency>
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>4.8</version>
-	</dependency>
-    	<dependency>
-	  <groupId>net.sf.ehcache</groupId>
-	  <artifactId>ehcache-core</artifactId>
-	  <version>2.4.1</version>
-	</dependency>
-	<dependency>
- 	<groupId>org.slf4j</groupId>
- 	<artifactId>slf4j-simple</artifactId>
- 	<version>1.6.1</version>
- 	</dependency>
-</dependencies>
-<build>
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jogamp.jogl</groupId>
+      <artifactId>jogl-all</artifactId>
+      <version>2.0-rc11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jogamp.gluegen</groupId>
+      <artifactId>gluegen-rt</artifactId>
+      <version>2.0-rc11</version>
+    </dependency>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.8</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache-core</artifactId>
+      <version>2.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.6.1</version>
+      </dependency>
+  </dependencies>
+
+  <build>
     <extensions>
-    <!-- Enabling the use of SSH / SCP for deploying Agile2D (and JOGL) artifacts -->
-        <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ssh</artifactId>
-            <version>2.2</version>
-        </extension>
+      <!-- Enabling the use of SSH / SCP for deploying Agile2D (and JOGL) artifacts -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.2</version>
+      </extension>
     </extensions>
     <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-    <execution>
-      <id>unpack</id>
-      <phase>compile</phase>
-      <goals>
-        <goal>unpack</goal>
-      </goals>
-      <configuration>
-        <artifactItems>
-			<artifactItem>
-			  <groupId>org.jogamp.jogl</groupId>
-			  <artifactId>jogl-all</artifactId>
-			  <version>2.0-rc11</version>
- 			  <classifier>${build.type}</classifier>
-			  <type>jar</type>
-			  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
-			  <overWrite>true</overWrite>
-			  <outputDirectory>${project.build.directory}/lib</outputDirectory>
-			</artifactItem>
-			<artifactItem>
-			  <groupId>org.jogamp.gluegen</groupId>
-			  <artifactId>gluegen-rt</artifactId>
-			  <version>2.0-rc11</version>
- 			  <classifier>${build.type}</classifier>
-			  <type>jar</type>
-              <includes>*.jnilib,*.lib,*.so,*.dll</includes>
-			  <!-- Exclude native library files of jogl for mobile platforms -->
-              <!-- <excludes>%ant[*mobile*]</excludes> -->
-			  <overWrite>true</overWrite>
-			  <outputDirectory>${project.build.directory}/lib</outputDirectory>
-			</artifactItem>
-        </artifactItems>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
-<plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.jogamp.jogl</groupId>
+                  <artifactId>jogl-all</artifactId>
+                  <version>2.0-rc11</version>
+                  <classifier>${build.type}</classifier>
+                  <type>jar</type>
+                  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.jogamp.gluegen</groupId>
+                  <artifactId>gluegen-rt</artifactId>
+                  <version>2.0-rc11</version>
+                  <classifier>${build.type}</classifier>
+                  <type>jar</type>
+                  <includes>*.jnilib,*.lib,*.so,*.dll</includes>
+                  <!-- Exclude native library files of jogl for mobile platforms -->
+                  <!-- <excludes>%ant[*mobile*]</excludes> -->
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-	<version>2.3.1</version>
+        <version>2.3.1</version>
         <configuration>
           <archive>
             <manifest>
@@ -192,51 +196,51 @@ SPDX-License-Identifier: BSD-4-Clause
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-		  <argLine>-Djava.library.path=${basedir}/lib</argLine>
+              <argLine>-Djava.library.path=${basedir}/lib</argLine>
               <outputDirectory>${project.build.directory}</outputDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<version>2.3.2</version>
-	<configuration>
-	  <source>1.7</source>
-	  <target>1.7</target>
-	  <showDeprecation>true</showDeprecation>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <showDeprecation>true</showDeprecation>
+        </configuration>
       </plugin>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-eclipse-plugin</artifactId>
-	<version>2.8</version>
-	<configuration>
-	  <downloadSources>true</downloadSources>
-	</configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <downloadSources>true</downloadSources>
+        </configuration>
       </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.8.1</version>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.8.1</version>
+          <configuration>
+            <!-- Set the UseTempJarCache property to avoid "java.util.zip.ZipException" error messages: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE -->
+            <argLine>-Djava.library.path=${basedir}/target/lib -Djogamp.gluegen.UseTempJarCache=false</argLine>
+            <!-- BY DEFAULT, tests are SKIPPED. In order to RUN them once, use the flag "-DskipTests=false". e.g.: "mvn install -DskipTests=false" -->
+            <skipTests>${skipTests}</skipTests>
+          </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
             <configuration>
-                <!-- Set the UseTempJarCache property to avoid "java.util.zip.ZipException" error messages: http://jogamp.org/deployment/jogamp-next/javadoc/gluegen/javadoc/com/jogamp/common/os/Platform.html#USE_TEMP_JAR_CACHE -->
-                <argLine>-Djava.library.path=${basedir}/target/lib -Djogamp.gluegen.UseTempJarCache=false</argLine>
-                <!-- BY DEFAULT, tests are SKIPPED. In order to RUN them once, use the flag "-DskipTests=false". e.g.: "mvn install -DskipTests=false" -->
-                <skipTests>${skipTests}</skipTests>
-            </configuration>
-        </plugin>
-		<plugin>
-		    <artifactId>maven-antrun-plugin</artifactId>
-		    <executions>
-		        <execution>
-		            <phase>validate</phase>
-		            <goals>
-		                <goal>run</goal>
-		            </goals>
-		            <configuration>
-		                <target>
+              <target>
 <echo>
 .
 
@@ -257,11 +261,11 @@ with &lt;platform&gt; one the following:
 
 .
 </echo>
-		                </target>
-		            </configuration>
-		        </execution>
-		    </executions>
-		</plugin>
-	</plugins>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>
